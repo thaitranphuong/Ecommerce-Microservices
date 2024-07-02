@@ -1,0 +1,74 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Blogs</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search " style="border: 1px solid #ccc; border-radius: 6px ">
+                <div class="input-group">
+                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for name"
+                           aria-label="Search" aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search fa-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Title</th>
+                            <th>Thumbnail</th>
+                            <th>Views</th>
+                            <th>Author</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>System Architect</td>
+                            <td>
+                                <img style="width: 70px; height: 70px; object-fit: cover; border: 1px solid #ccc" src="~/img/best-product-1.jpg" />
+                            </td>
+                            <td>System Architect</td>
+                            <td>System Architect</td>
+                            <td>
+                                <form style="display: inline" method="get" action="/admin/blog/edit/1">
+                                    <button class="btn btn-success">Edit</button>
+                                </form>
+                                <form style="display: inline" method="get" action="/admin/blog/edit/1">
+                                    <button class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <div class="col-12">
+                    <div class="pagination d-flex justify-content-center mt-5">
+                        <a href="#" class="btn btn-dark rounded" style="margin-right: 10px">&laquo;</a>
+                        <a href="#" class="btn btn-primary active rounded" style="border: 1px solid #0072ff; margin-right: 10px">1</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">2</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">3</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">4</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">5</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">6</a>
+                        <a href="#" class="btn btn-primary rounded" style="border: 1px solid #0072ff; margin-right: 10px">&raquo;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

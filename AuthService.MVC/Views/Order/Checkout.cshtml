@@ -1,0 +1,250 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+
+<!-- Checkout Page Start -->
+<div class="container-fluid py-5">
+    <div class="container py-5">
+        <h1 class="mb-4">Billing details</h1>
+        <form action="#">
+            <div class="row g-5">
+                <div class="col-md-12 col-lg-5 col-xl-4">
+                    <div class="form-item">
+                        <label class="form-label my-3">Name<sup>*</sup></label>
+                        <input type="text" class="form-control">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3">Phone<sup>*</sup></label>
+                        <input type="tel" class="form-control">
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3">City<sup>*</sup></label>
+                        <select id="city-select" class="form-control">
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3">District<sup>*</sup></label>
+                        <select id="district-select" class="form-control" disabled>
+                            <option value="">Select District</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3">Ward<sup>*</sup></label>
+                        <select id="ward-select" class="form-control" disabled>
+                            <option value="">Select Ward</option>
+                        </select>
+                    </div>
+                    <div class="form-item">
+                        <label class="form-label my-3">Street<sup>*</sup></label>
+                        <input type="text" class="form-control" placeholder="House Number Street Name">
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-7 col-xl-8">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Products</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center mt-2">
+                                            <img src="~/img/vegetable-item-2.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                        </div>
+                                    </th>
+                                    <td class="py-5">Awesome Brocoli</td>
+                                    <td class="py-5">$69.00</td>
+                                    <td class="py-5">2</td>
+                                    <td class="py-5">$138.00</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center mt-2">
+                                            <img src="~/img/vegetable-item-5.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                        </div>
+                                    </th>
+                                    <td class="py-5">Potatoes</td>
+                                    <td class="py-5">$69.00</td>
+                                    <td class="py-5">2</td>
+                                    <td class="py-5">$138.00</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center mt-2">
+                                            <img src="~/img/vegetable-item-3.png" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                                        </div>
+                                    </th>
+                                    <td class="py-5">Big Banana</td>
+                                    <td class="py-5">$69.00</td>
+                                    <td class="py-5">2</td>
+                                    <td class="py-5">$138.00</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                    </th>
+                                    <td class="py-5"></td>
+                                    <td class="py-5"></td>
+                                    <td class="py-5">
+                                        <p class="mb-0 text-dark py-3">Subtotal</p>
+                                    </td>
+                                    <td class="py-5">
+                                        <div class="py-3 border-bottom border-top">
+                                            <p class="mb-0 text-dark">$414.00</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                    </th>
+                                    <td class="py-5"></td>
+                                    <td class="py-5"></td>
+                                    <td class="py-5">
+                                        <p class="mb-0 text-dark py-3">Voucher</p>
+                                    </td>
+                                    <td class="py-5">
+                                        <div class="py-3 border-bottom border-top">
+                                            <p class="mb-0 text-dark">$414.00</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">
+                                    </th>
+                                    <td class="py-5">
+                                        <p class="mb-0 text-dark text-uppercase py-3">TOTAL</p>
+                                    </td>
+                                    <td class="py-5"></td>
+                                    <td class="py-5"></td>
+                                    <td class="py-5">
+                                        <div class="py-3 border-bottom border-top">
+                                            <p class="mb-0 text-dark">$135.00</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <p class="text-start text-dark font-weight-bolder">Choose payment method</p>
+                        </div>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <div class="form-check text-start my-3">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Payments-1" name="Payments" value="COD">
+                                <label class="form-check-label" for="Payments-1">Cash On Delivery</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <div class="form-check text-start my-3">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" name="Payments" value="VNPAY">
+                                <label class="form-check-label" for="Delivery-1">VNPAY</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                        <div class="col-12">
+                            <div class="form-check text-start my-3">
+                                <input type="radio" class="form-check-input bg-primary border-0" id="Paypal-1" name="Payments" value="Paypal">
+                                <label class="form-check-label" for="Paypal-1">Paypal</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-4 text-center align-items-center justify-content-center pt-4">
+                        <button type="button" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Checkout Page End -->
+
+<script>
+
+// URL của JSON dữ liệu
+    const dataUrl = "https://raw.githubusercontent.com/ThangLeQuoc/vietnamese-provinces-database/master/json/full_json_generated_data_vn_units.json";
+
+    // Lấy các thẻ select
+    const citySelect = document.getElementById('city-select');
+    const districtSelect = document.getElementById('district-select');
+    const wardSelect = document.getElementById('ward-select');
+
+    // Hàm tải dữ liệu từ JSON
+    fetch(dataUrl)
+        .then(response => response.json())
+        .then(data => {
+            populateCitySelect(data);
+        });
+
+    // Hàm điền dữ liệu cho select City
+    function populateCitySelect(data) {
+        data.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city.Code;
+            option.textContent = city.FullName;
+            citySelect.appendChild(option);
+        });
+
+        citySelect.addEventListener('change', function () {
+            const selectedCityCode = this.value;
+            populateDistrictSelect(data, selectedCityCode);
+        });
+    }
+
+    // Hàm điền dữ liệu cho select District
+    function populateDistrictSelect(data, cityCode) {
+        districtSelect.innerHTML = '<option value="">Select District</option>';
+        wardSelect.innerHTML = '<option value="">Select Ward</option>';
+        districtSelect.disabled = true;
+        wardSelect.disabled = true;
+
+        const selectedCity = data.find(city => city.Code == cityCode);
+        if (selectedCity) {
+
+            selectedCity.District.forEach(district => {
+                const option = document.createElement('option');
+                option.value = district.Code;
+                option.textContent = district.FullName;
+                districtSelect.appendChild(option);
+            });
+            districtSelect.disabled = false;
+        }
+
+        districtSelect.addEventListener('change', function () {
+            const selectedDistrictCode = this.value;
+            populateWardSelect(selectedCity, selectedDistrictCode);
+        });
+    }
+
+    // Hàm điền dữ liệu cho select Ward
+    function populateWardSelect(city, districtCode) {
+        wardSelect.innerHTML = '<option value="">Select Ward</option>';
+        wardSelect.disabled = true;
+
+        const selectedDistrict = city.District.find(district => district.Code === districtCode);
+        if (selectedDistrict) {
+            selectedDistrict.Ward.forEach(ward => {
+                const option = document.createElement('option');
+                option.value = ward.Code;
+                option.textContent = ward.FullName;
+                wardSelect.appendChild(option);
+            });
+            wardSelect.disabled = false;
+        }
+    }
+</script>

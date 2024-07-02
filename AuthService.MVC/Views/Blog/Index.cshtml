@@ -1,0 +1,38 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<div class="container-fluid fruite py-5">
+    <div class="container py-5">
+        <h1 class="mb-4">Blogs</h1>
+        <form class="input-group w-25 d-flex mb-4 mx-3">
+            <input name="title" type="search" class="form-control p-3" placeholder="search" aria-describedby="search-icon-1">
+            <button id="search-icon-1" class="input-group-text p-3"><i class="fa fa-search"></i></button>
+        </form>
+        <div class="container-fluid" style="font-family: 'Roboto', sans-serif; display: flex; flex-wrap: wrap">
+            <div style="max-width: 22rem; margin-right: 10px; margin-bottom: 20px;">
+                <a asp-controller="Blog" asp-action="Detail" asp-route-slug="the-fruit" class="card">
+                    <img src="~/img/baner-1.png" class="card-img-top" alt="A person holding a bouquet of roses, wearing a coat, outside on a snowy day">
+                    <div class="card-body">
+                        <div class="d-flex text-muted mb-2">
+                            <span>by shufflehound</span>
+                            <span class="mx-2">&bull;</span>
+                            <span>February 18, 2016</span>
+                        </div>
+                        <h5 class="card-title">The smell of roses</h5>
+                        <p class="card-text text-black-50">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus ultrices diam lorem, sit amet ullamcorper elit vulputate...</p>
+                        <div class="d-flex justify-content-between text-muted">
+                            <div class="d-flex align-items-center">
+                                <i class="far fa-comment me-2"></i>
+                                <span>0</span>
+                            </div>
+                            <div class="text-small">NEWS, FRUIT</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

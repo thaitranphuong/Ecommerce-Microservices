@@ -1,0 +1,76 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+
+<div class="container-fluid">
+    <h1 class="h3 mb-2 text-gray-800">Orders</h1>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+
+            <ul class="nav nav-tabs nav-justified">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Pending</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Delivering</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Received</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Cancelled</a>
+                </li>
+            </ul>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>No.</th>
+                            <th>Customer name</th>
+                            <th>Phone number</th>
+                            <th>Order date</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>System Architect</td>
+                            <td>0123456789</td>
+                            <td>01/01/2022</td>
+                            <td>Pending</td>
+                            <td>
+                                <form style="display: inline" method="get" action="/admin/order/edit/1">
+                                    <button class="btn btn-info">Detail</button>
+                                </form>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <div class="col-12">
+                    <div class="pagination d-flex justify-content-center mt-5">
+                        <a href="#" class="btn btn-dark rounded" style="margin-right: 10px">&laquo;</a>
+                        <a href="#" class="btn btn-primary active rounded" style="border: 1px solid #0072ff; margin-right: 10px">1</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">2</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">3</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">4</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">5</a>
+                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">6</a>
+                        <a href="#" class="btn btn-primary rounded" style="border: 1px solid #0072ff; margin-right: 10px">&raquo;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
