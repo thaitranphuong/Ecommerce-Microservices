@@ -1,5 +1,6 @@
 ﻿using AuthService.MVC.Models;
 using AuthService.MVC.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,7 @@ namespace AuthService.MVC.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UserAvatarController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;

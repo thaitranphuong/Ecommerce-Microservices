@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace AuthService.MVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class BlogController : Controller
     {
         public IActionResult Index()

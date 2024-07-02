@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace AuthService.MVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class MessageController : Controller
     {
         private readonly UserManager<AppUser> _userManager;

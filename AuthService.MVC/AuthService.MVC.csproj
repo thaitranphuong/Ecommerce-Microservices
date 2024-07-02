@@ -33,12 +33,12 @@
 	  </PackageReference>
 	  <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
 	  <PackageReference Include="MimeKit" Version="4.6.0" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 	  <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.4" />
 	  <PackageReference Include="CloudinaryDotNet" Version="1.26.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 

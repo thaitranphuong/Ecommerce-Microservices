@@ -3,20 +3,20 @@
 *@
 @{
 }
-
+<partial name="_StatusMessage" model="@TempData["Result"]" />
 <h1 class="h3 mb-2 text-gray-800">Add category</h1>
 
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-body">
-        <form>
+        <form method="post" action="/admin/category/add">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Category name">
+                <input name="name" type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Category name">
             </div>
             <div class="form-group">
                 <label for="code">Code</label>
-                <input type="text" class="form-control" id="code" placeholder="Category code">
+                <input name="code" type="text" class="form-control" id="code" placeholder="Category code">
             </div>
             <button type="submit" class="btn btn-primary">Add</button>
         </form>
