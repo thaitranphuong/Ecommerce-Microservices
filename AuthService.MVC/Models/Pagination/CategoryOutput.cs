@@ -7,6 +7,5 @@ namespace AuthService.MVC.Models.Pagination
 {
     public class CategoryOutput : AbtractOutput<CategoryViewModel>
     {
-        public string Name { get; set; }
     }
 }

@@ -5,11 +5,10 @@ using System.Threading.Tasks;
 
 namespace AuthService.MVC.Models.Pagination
 {
-    public class AbtractOutput<T>
+    public class Pagination
     {
         public int Page { get; set; }
         public int TotalPage { get; set; }
         public string Name { get; set; }
-        public List<T> ListResult { get; set; } = new List<T>();
     }
 }

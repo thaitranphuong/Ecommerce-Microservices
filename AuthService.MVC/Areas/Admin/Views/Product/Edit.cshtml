@@ -1,5 +1,9 @@
-﻿
-@{
+﻿@using Newtonsoft.Json
+@if (TempData["result"] != null)
+{
+    var statusJson = TempData["result"].ToString();
+    var Status = JsonConvert.DeserializeObject<AuthService.MVC.Models.ToastifyModel>(statusJson);
+    <partial name="_Toastify" model="@Status" />
 }
 
 <h1 class="h3 mb-2 text-gray-800">Edit product</h1>

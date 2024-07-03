@@ -61,21 +61,105 @@ namespace AuthService.MVC.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["Result"] = "Create success!";
-                
-                return RedirectToRoute("/Admin/Category/Index");
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "success",
+                    Message = "Creating cartegory successfully!"
+                });
+
+                return Redirect("/admin/category");
             }
             else
             {
-                TempData["Result"] = "Error!";
-                return View("Add");
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "error",
+                    Message = "Creating cartegory failed!"
+                });
+
+                return Redirect("/admin/category/add");
             }
             
         }
 
-        public IActionResult Edit()
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
         {
-            return View();
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.GetAsync($"{_configuration["Host"]}/category/get/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var viewModel = JsonConvert.DeserializeObject<CategoryViewModel>(content);
+                return View(viewModel);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(CategoryViewModel viewModel)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var jsonData = new StringContent(
+                JsonConvert.SerializeObject(viewModel),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PutAsync($"{_configuration["Host"]}/category/update", jsonData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "success",
+                    Message = "Editing cartegory successfully!"
+                });
+
+                return Redirect("/admin/category");
+            }
+            else
+            {
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "error",
+                    Message = "Editing cartegory failed!"
+                });
+
+                return Redirect("/admin/category");
+            }
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var response = await client.DeleteAsync($"{_configuration["Host"]}/category/delete/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "success",
+                    Message = "Deleting cartegory successfully!"
+                });
+
+                return Redirect("/admin/category");
+            }
+            else
+            {
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "error",
+                    Message = "Deleting cartegory failed!"
+                });
+
+                return Redirect("/admin/category");
+            }
+
         }
     }
 }

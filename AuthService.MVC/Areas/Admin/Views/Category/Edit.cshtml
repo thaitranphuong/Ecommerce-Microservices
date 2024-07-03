@@ -1,7 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@model AuthService.MVC.Models.CategoryViewModel
+
+@using Newtonsoft.Json
+@if (TempData["result"] != null)
+{
+    var statusJson = TempData["result"].ToString();
+    var Status = JsonConvert.DeserializeObject<AuthService.MVC.Models.ToastifyModel>(statusJson);
+    <partial name="_Toastify" model="@Status" />
 }
 
 <h1 class="h3 mb-2 text-gray-800">Edit category</h1>
@@ -9,14 +13,15 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-body">
-        <form>
+        <form method="post">
+            <input name="id" value="@Model.Id" hidden />
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Category name">
+                <input name="name" value="@Model.Name" type="text" class="form-control" id="name" placeholder="Category name">
             </div>
             <div class="form-group">
                 <label for="code">Code</label>
-                <input type="text" class="form-control" id="code" placeholder="Category code">
+                <input name="code" value="@Model.Code" type="text" class="form-control" id="code" placeholder="Category code">
             </div>
             <button type="submit" class="btn btn-primary">Add</button>
         </form>

@@ -1,5 +1,11 @@
-﻿
-@{
+﻿@model IEnumerable<AuthService.MVC.Models.CategoryViewModel>
+
+@using Newtonsoft.Json
+@if (TempData["result"] != null)
+{
+    var statusJson = TempData["result"].ToString();
+    var Status = JsonConvert.DeserializeObject<AuthService.MVC.Models.ToastifyModel>(statusJson);
+    <partial name="_Toastify" model="@Status" />
 }
 
 <h1 class="h3 mb-2 text-gray-800">Add product</h1>
@@ -7,15 +13,15 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-body">
-        <form>
+        <form method="post" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Product name">
+                    <input name="name" type="text" class="form-control" id="name" placeholder="Product name">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="code">Thumbnail</label>
-                    <input onchange="handleChangeThumbnail(event)" name="thumbnail" type="file" class="form-control" placeholder="Category code">
+                    <input name="image" onchange="handleChangeThumbnail(event)" type="file" class="form-control" placeholder="Category code">
                 </div>
                 <div class="form-group col-md-2" style="height: 100px">
                     <img id="thumbnail" src="~/img/best-product-3.jpg" class="w-100 h-100" style="object-fit: cover; border: 1px solid #ccc" />
@@ -23,29 +29,37 @@
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="code">Detail images</label>
-                    <input onchange="handleChangeThumbnails(event)" name="thumbnails" id="thumbnails" type="file" class="form-control" multiple>
+                    <label for="productdetail">Detail images</label>
+                    <input onchange="handleChangeThumbnails(event)" name="productdetail" id="thumbnails" type="file" class="form-control" multiple>
                 </div>
                 <div id="thumbnail_container" class="form-group col-md-8" style="display: flex; flex-wrap: wrap;">
-                    <!-- Thumbnails will be displayed here -->
+                    @*Thumbnails will be displayed here*@ 
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="code">Short description</label>
-                    <input type="text" class="form-control" id="code" placeholder="Short description">
+                    <label for="categoryid">Category</label>
+                    <select name="categoryid" id="categoryid" class="w-100" style="height: 40px !important; cursor: pointer">
+                        @foreach (var category in Model)
+                        {
+                            <option value="@category.Id">@category.Name</option>
+                        }
+                    </select>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="code">Price</label>
-                    <input type="text" class="form-control" id="code" placeholder="Price">
+                    <label for="price">Price</label>
+                    <input name="price" type="number" class="form-control" id="price" placeholder="Price">
                 </div>
             </div>
             <div class="form-group">
-                <label for="code">Full description</label>
-                <textarea name="FullDescription" id="FullDescription" type="text" class="form-control" placeholder="Category code"></textarea>
+                <label for="short_description">Short description</label>
+                <input name="shortdescription" type="text" class="form-control" id="short_description" placeholder="Short description">
+            </div>
+            <div class="form-group">
+                <label for="fullDescription">Full description</label>
+                <textarea name="fulldescription" id="FullDescription" type="text" class="form-control"></textarea>
             </div>
             <button type="submit" class="btn btn-primary">Add</button>
-
         </form>
     </div>
 </div>

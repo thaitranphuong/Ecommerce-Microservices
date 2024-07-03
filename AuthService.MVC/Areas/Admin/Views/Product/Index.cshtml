@@ -1,9 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model AuthService.MVC.Models.Pagination.ProductOutput
 
+@using Newtonsoft.Json
+@if (TempData["result"] != null)
+{
+    var statusJson = TempData["result"].ToString();
+    var Status = JsonConvert.DeserializeObject<AuthService.MVC.Models.ToastifyModel>(statusJson);
+    <partial name="_Toastify" model="@Status" />
+}
 
 <div class="container-fluid">
     <h1 class="h3 mb-2 text-gray-800">Products</h1>
@@ -11,10 +14,10 @@
         <div class="card-header py-3">
             <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search " style="border: 1px solid #ccc; border-radius: 6px ">
                 <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for name"
+                    <input name="name" value="@Model.Name" type="text" class="form-control bg-light border-0 small" placeholder="Search for name"
                            aria-label="Search" aria-describedby="basic-addon2">
                     <div class="input-group-append">
-                        <button class="btn btn-primary" type="button">
+                        <button class="btn btn-primary" type="submit">
                             <i class="fas fa-search fa-sm"></i>
                         </button>
                     </div>
@@ -34,38 +37,49 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>1</td>
-                            <td>System Architect</td>
-                            <td>
-                                <img style="width: 70px; height: 70px; object-fit: cover; border: 1px solid #ccc" src="~/img/best-product-1.jpg" />
-                            </td>
-                            <td>System Architect</td>
-                            <td>
-                                <form style="display: inline" method="get" action="/admin/product/edit/1">
-                                    <button class="btn btn-success">Edit</button>
-                                </form>
-                                <form style="display: inline" method="get" action="/admin/product/edit/1">
-                                    <button class="btn btn-danger">Hide</button>
-                                    <button class="btn btn-info">Show</button>
-                                </form>
-                            </td>
-                        </tr>
-
+                        @{
+                            var i = (Model.Page - 1) * Model.ListResult.Count + 1;
+                            foreach (var item in Model.ListResult)
+                            {
+                                <tr>
+                                    <td>@i</td>
+                                    <td>@item.Name</td>
+                                    <td>
+                                        <img style="width: 70px; height: 70px; object-fit: cover; border: 1px solid #ccc" src="@item.Thumbnail" />
+                                    </td>
+                                    <td>@item.Price</td>
+                                    <td>
+                                        <form style="display: inline" method="get" action="/admin/product/edit/@item.Id">
+                                            <button class="btn btn-success">Edit</button>
+                                        </form>
+                                        <form style="display: inline" method="post" action="/admin/product/showhide/@item.Id">
+                                            @if (item.Enabled)
+                                            {
+                                                <input name="enabled" value="false" hidden/>
+                                                <button class="btn btn-danger">Hide</button>
+                                            }
+                                            else
+                                            {
+                                                <input name="enabled" value="true" hidden/>
+                                                <button class="btn btn-info">Show</button>
+                                            }
+                                        </form>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        }
                     </tbody>
                 </table>
-                <div class="col-12">
-                    <div class="pagination d-flex justify-content-center mt-5">
-                        <a href="#" class="btn btn-dark rounded" style="margin-right: 10px">&laquo;</a>
-                        <a href="#" class="btn btn-primary active rounded" style="border: 1px solid #0072ff; margin-right: 10px">1</a>
-                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">2</a>
-                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">3</a>
-                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">4</a>
-                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">5</a>
-                        <a href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">6</a>
-                        <a href="#" class="btn btn-primary rounded" style="border: 1px solid #0072ff; margin-right: 10px">&raquo;</a>
-                    </div>
-                </div>
+                @{
+                    var paginationData = new AuthService.MVC.Models.Pagination.Pagination()
+                    {
+                        Page = Model.Page,
+                        TotalPage = Model.TotalPage,
+                        Name = Model.Name
+                    };
+                }
+                <partial name="_Pagination" model="@paginationData" />
             </div>
         </div>
     </div>

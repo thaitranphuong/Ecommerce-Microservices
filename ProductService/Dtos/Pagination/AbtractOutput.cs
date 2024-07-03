@@ -9,6 +9,7 @@ namespace ProductService.Dtos.Pagination
     {
         public int Page { get; set; }
         public int TotalPage { get; set; }
+        public string Name { get; set; }
         public List<T> ListResult { get; set; } = new List<T>();
     }
 }

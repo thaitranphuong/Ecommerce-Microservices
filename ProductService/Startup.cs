@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using ProductService.Models;
 using ProductService.Repositories;
@@ -45,8 +47,21 @@ namespace ProductService
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.Configure<CloudinarySetting>(Configuration.GetSection("Cloudinary"));
+            services.AddSingleton<Cloudinary>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<CloudinarySetting>>().Value;
+                return new Cloudinary(new Account(
+                    settings.CloudName,
+                    settings.ApiKey,
+                    settings.ApiSecret));
+            });
+
+            services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductService, ProductServices>();
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
