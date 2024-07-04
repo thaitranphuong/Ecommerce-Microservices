@@ -22,5 +22,9 @@ namespace ProductService.Dtos
         public bool Enabled { get; set; }
 
         public int CategoryId { get; set; }
+
+        public int CategoryName { get; set; }
+
+        public ICollection<ProductDetailDto> ProductDetails { get; set; }
     }
 }

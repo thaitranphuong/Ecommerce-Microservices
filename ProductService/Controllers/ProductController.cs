@@ -31,8 +31,11 @@ namespace ProductService.Controllers
             var json = formData["product"];
 
             var product = JsonConvert.DeserializeObject<ProductDto>(json);
-            var filePath = await _fileStorageService.Upload("product", image);
-            product.Thumbnail = filePath;
+            if (image != null)
+            {
+                var filePath = await _fileStorageService.Upload("product", image);
+                product.Thumbnail = filePath;
+            }
             int result = await _productService.Save(product);
             if (result > 0) return Ok(result);
             else return StatusCode(500);
@@ -58,10 +61,30 @@ namespace ProductService.Controllers
 
         [HttpPut]
         [Route("update")]
-        public async Task<IActionResult> Update(ProductDto dto)
+        public async Task<IActionResult> Update(IFormFile image)
         {
-            int result = await _productService.Save(dto);
-            if (result > 0) return Ok(dto);
+            var formData = await Request.ReadFormAsync();
+            var json = formData["product"];
+            var product = JsonConvert.DeserializeObject<ProductDto>(json);
+            if (image != null)
+            {
+                var filePath = await _fileStorageService.Upload("product", image);
+                product.Thumbnail = filePath;
+            }
+            int result = await _productService.Save(product);
+            if (result > 0) return Ok(result);
+            else return StatusCode(500);
+        }
+
+        [HttpPut]
+        [Route("showhide")]
+        public async Task<IActionResult> ShowHide()
+        {
+            var formData = await Request.ReadFormAsync();
+            var json = formData["product"];
+            var product = JsonConvert.DeserializeObject<ProductDto>(json);
+            int result = await _productService.SaveShowHide(product);
+            if (result > 0) return Ok(result);
             else return StatusCode(500);
         }
     }

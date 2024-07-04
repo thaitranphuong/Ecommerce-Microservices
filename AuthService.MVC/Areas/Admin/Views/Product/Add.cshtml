@@ -24,13 +24,13 @@
                     <input name="image" onchange="handleChangeThumbnail(event)" type="file" class="form-control" placeholder="Category code">
                 </div>
                 <div class="form-group col-md-2" style="height: 100px">
-                    <img id="thumbnail" src="~/img/best-product-3.jpg" class="w-100 h-100" style="object-fit: cover; border: 1px solid #ccc" />
+                    <img id="thumbnail" src="" class="w-100 h-100" style="object-fit: cover; border: 1px solid #ccc" />
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="productdetail">Detail images</label>
-                    <input onchange="handleChangeThumbnails(event)" name="productdetail" id="thumbnails" type="file" class="form-control" multiple>
+                    <label for="productdetails">Detail images</label>
+                    <input name="productdetails" onchange="handleChangeThumbnails(event)" id="thumbnails" type="file" class="form-control" multiple>
                 </div>
                 <div id="thumbnail_container" class="form-group col-md-8" style="display: flex; flex-wrap: wrap;">
                     @*Thumbnails will be displayed here*@ 
@@ -151,7 +151,7 @@
             // integration to choose the right communication channel. This example uses
             // a POST request with JSON as a data structure but your configuration
             // could be different.
-            xhr.open('POST', 'https://localhost:44395/cloud-upload', true);
+            xhr.open('POST', 'https://localhost:5003/editor-upload', true);
             xhr.responseType = 'json';
         }
         // Initializes XMLHttpRequest listeners.

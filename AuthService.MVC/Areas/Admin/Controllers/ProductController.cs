@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
@@ -61,7 +62,8 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Add([FromForm] ProductViewModel viewModel, [FromForm] IFormFile image)
+        public async Task<IActionResult> Add([FromForm] ProductViewModel viewModel, [FromForm] IFormFile image,
+                                                [FromForm] IFormFile[] productDetails)
         {
             var client = _httpClientFactory.CreateClient();
             var formData = new MultipartFormDataContent();
@@ -80,6 +82,29 @@ namespace AuthService.MVC.Areas.Admin.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+                var content = await response.Content.ReadAsStringAsync();
+                int productId = JsonConvert.DeserializeObject<int>(content);
+                var productDetailViewModels = new List<ProductDetailViewModel>();
+
+                for (int i = 0; i < productDetails.Length; i++)
+                {
+                    var productDetailViewModel = new ProductDetailViewModel() { ProductId = productId };
+                    productDetailViewModels.Add(productDetailViewModel);
+                }
+
+                formData = new MultipartFormDataContent();
+                jsonContent = JsonContent.Create(productDetailViewModels);
+                formData.Add(jsonContent, "productDetails");
+
+                foreach (var productDetail in productDetails)
+                {
+                    var fileContent = new StreamContent(productDetail.OpenReadStream());
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(productDetail.ContentType);
+                    formData.Add(fileContent, "productDetailImages", productDetail.FileName);
+                }
+
+                await client.PostAsync($"{_configuration["Host"]}/productdetail/create", formData);
+
                 TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
                 {
                     Status = "success",
@@ -104,8 +129,8 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         public async Task<IActionResult> ShowHide([FromRoute] int id, [FromForm] bool enabled)
         {
             var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_configuration["Host"]}/product/get/{id}");
             var message = enabled ? "Show" : "Hide";
+            var response = await client.GetAsync($"{_configuration["Host"]}/product/get/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -113,12 +138,12 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                 ProductViewModel viewModel = JsonConvert.DeserializeObject<ProductViewModel>(content);
                 viewModel.Enabled = enabled;
 
-                var jsonData = new StringContent(
-                JsonConvert.SerializeObject(viewModel),
-                Encoding.UTF8,
-                "application/json");
+                var formData = new MultipartFormDataContent();
 
-                response = await client.PutAsync($"{_configuration["Host"]}/product/update", jsonData);
+                var jsonContent = JsonContent.Create(viewModel);
+                formData.Add(jsonContent, "product");
+
+                response = await client.PutAsync($"{_configuration["Host"]}/product/showhide", formData);
 
                 if (response.IsSuccessStatusCode)
                 {
@@ -153,9 +178,104 @@ namespace AuthService.MVC.Areas.Admin.Controllers
             }
         }
 
-        public IActionResult Edit()
+        [HttpGet]
+        public async Task<IActionResult> Edit([FromRoute] int id)
         {
-            return View();
+            var client = _httpClientFactory.CreateClient();
+
+            var response = await client.GetAsync($"{_configuration["Host"]}/category/get-all?name=&page=1&limit=100");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var categories = JsonConvert.DeserializeObject<CategoryOutput>(content).ListResult;
+                ViewData["categories"] = categories;
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+
+            response = await client.GetAsync($"{_configuration["Host"]}/product/get/{id}");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                var viewModel = JsonConvert.DeserializeObject<ProductViewModel>(content);
+                return View(viewModel);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProductViewModel viewModel, [FromForm] IFormFile image,
+                                                [FromForm] IFormFile[] newProductDetails,
+                                                [FromForm] int[] removedProductDetailIds)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var formData = new MultipartFormDataContent();
+
+            var jsonContent = JsonContent.Create(viewModel);
+            formData.Add(jsonContent, "product");
+
+            if (image != null)
+            {
+                var fileContent = new StreamContent(image.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(image.ContentType);
+                formData.Add(fileContent, "image", image.FileName);
+            }
+
+            var response1 = await client.PutAsync($"{_configuration["Host"]}/product/update", formData);
+
+            var productDetailViewModels = new List<ProductDetailViewModel>();
+
+            for (int i = 0; i < newProductDetails.Length; i++)
+            {
+                var productDetailViewModel = new ProductDetailViewModel() { ProductId = viewModel.Id };
+                productDetailViewModels.Add(productDetailViewModel);
+            }
+
+            formData = new MultipartFormDataContent();
+            jsonContent = JsonContent.Create(productDetailViewModels);
+            formData.Add(jsonContent, "productDetails");
+
+            foreach (var productDetail in newProductDetails)
+            {
+                var fileContent = new StreamContent(productDetail.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(productDetail.ContentType);
+                formData.Add(fileContent, "productDetailImages", productDetail.FileName);
+            }
+
+            var response2 = await client.PostAsync($"{_configuration["Host"]}/productdetail/create", formData);
+
+            var jsonData = new StringContent(
+                JsonConvert.SerializeObject(removedProductDetailIds),
+                Encoding.UTF8,
+                "application/json");
+
+            var response3 = await client.PostAsync($"{_configuration["Host"]}/productdetail/delete", jsonData);
+
+            if (response1.IsSuccessStatusCode || response2.IsSuccessStatusCode || response3.IsSuccessStatusCode)
+            {
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "success",
+                    Message = "Editing product successfully!"
+                });
+
+                return Redirect("/admin/product");
+            }
+            else
+            {
+                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
+                {
+                    Status = "error",
+                    Message = "Editing product failed!"
+                });
+
+                return Redirect("/admin/product");
+            }
         }
     }
 }

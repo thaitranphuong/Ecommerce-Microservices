@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using ProductService.AsyncServices;
 using ProductService.Models;
 using ProductService.Repositories;
 using ProductService.Repositories.Implements;
@@ -57,11 +58,15 @@ namespace ProductService
                     settings.ApiSecret));
             });
 
+            services.AddHostedService<MessageConsumer>();
+
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductService, ProductServices>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IProductDetailService, ProductDetailService>();
+            services.AddScoped<IProductDetailRepository, ProductDetailRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

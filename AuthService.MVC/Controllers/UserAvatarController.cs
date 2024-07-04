@@ -57,6 +57,23 @@ namespace AuthService.MVC.Controllers
 
             return Ok(new { FilePath = filePath });
         }
+
+        [HttpPost]
+        [Route("/editor-upload")]
+        public async Task<IActionResult> CloudUpload()
+        {
+            var filePath = ""; ;
+            foreach (IFormFile file in Request.Form.Files)
+            {
+                filePath = await _cloudinaryService.UploadFileAsync(file, "editor");
+
+                if (string.IsNullOrEmpty(filePath))
+                {
+                    return StatusCode(500, "An error occurred while uploading the file.");
+                }
+            }
+            return Ok(new { url = filePath });
+        }
     }
 
 }

@@ -1,4 +1,10 @@
-﻿@using Newtonsoft.Json
+﻿@model AuthService.MVC.Models.ProductViewModel
+
+@{ 
+    var categories = ViewData["categories"] as IEnumerable<AuthService.MVC.Models.CategoryViewModel>;
+}
+
+@using Newtonsoft.Json
 @if (TempData["result"] != null)
 {
     var statusJson = TempData["result"].ToString();
@@ -11,45 +17,69 @@
 <!-- DataTales Example -->
 <div class="card shadow mb-4">
     <div class="card-body">
-        <form>
+        <form method="post" enctype="multipart/form-data">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="name">Name</label>
-                    <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Product name">
+                    <input name="name" value="@Model.Name" type="text" class="form-control" id="name" placeholder="Product name">
                 </div>
                 <div class="form-group col-md-4">
                     <label for="code">Thumbnail</label>
-                    <input onchange="handleChangeThumbnail(event)" name="thumbnail" type="file" class="form-control" placeholder="Category code">
+                    <input name="image" value="@Model.Thumbnail" onchange="handleChangeThumbnail(event)" type="file" class="form-control" placeholder="Category code">
                 </div>
                 <div class="form-group col-md-2" style="height: 100px">
-                    <img id="thumbnail" src="~/img/best-product-3.jpg" class="w-100 h-100" style="object-fit: cover; border: 1px solid #ccc" />
+                    <img id="thumbnail" src="@Model.Thumbnail" class="w-100 h-100" style="object-fit: cover; border: 1px solid #ccc" />
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-4">
-                    <label for="code">Detail images</label>
-                    <input onchange="handleChangeThumbnails(event)" name="thumbnails" id="thumbnails" type="file" class="form-control" multiple>
+                    <label for="newproductdetails">Detail images</label>
+                    <input name="newproductdetails" onchange="handleChangeThumbnails(event)" id="thumbnails" type="file" class="form-control" multiple>
                 </div>
+                <div id="old_thumbnail_container" class="form-group col-md-8" style="display: flex; flex-wrap: wrap;">
+                    @foreach (var productDetail in Model.ProductDetails)
+                    {
+                        <img src="@productDetail.Image" data-product-detail-id="@productDetail.Id"
+                             style="object-fit: cover; width: 100px; height: 100px; margin: 5px; cursor: pointer; margin-right: 10px; border: 1px solid #ccc" />
+                    }
+                </div>
+
                 <div id="thumbnail_container" class="form-group col-md-8" style="display: flex; flex-wrap: wrap;">
-                    <!-- Thumbnails will be displayed here -->
+                    @*Thumbnails will be displayed here*@
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="code">Short description</label>
-                    <input type="text" class="form-control" id="code" placeholder="Short description">
+                    <label for="categoryid">Category</label>
+                    <select name="categoryid" id="categoryid" class="w-100" style="height: 40px !important; cursor: pointer">
+                        @foreach (var category in categories)
+                        {
+                            if (Model.CategoryId == category.Id)
+                            {
+                                <option selected value="@category.Id">@category.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        }
+                    </select>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="code">Price</label>
-                    <input type="text" class="form-control" id="code" placeholder="Price">
+                    <label for="price">Price</label>
+                    <input name="price" value="@Model.Price" type="number" class="form-control" id="price" placeholder="Price">
                 </div>
             </div>
             <div class="form-group">
-                <label for="code">Full description</label>
-                <textarea name="FullDescription" id="FullDescription" type="text" class="form-control" placeholder="Category code"></textarea>
+                <label for="short_description">Short description</label>
+                <input name="shortdescription" value="@Model.ShortDescription" type="text" class="form-control" id="short_description" placeholder="Short description">
             </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-
+            <div class="form-group">
+                <label for="fullDescription">Full description</label>
+                <textarea name="fulldescription" id="FullDescription" type="text" class="form-control">@Html.Raw(Model.FullDescription)</textarea>
+            </div>
+            <input name="thumbnail" value="@Model.Thumbnail" hidden />
+            <button type="submit" class="btn btn-primary">Edit</button>
         </form>
     </div>
 </div>
@@ -107,6 +137,29 @@
         });
         input.files = dataTransfer.files;
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        var images = document.querySelectorAll('#old_thumbnail_container img');
+        images.forEach(function (image) {
+            image.addEventListener('click', function () {
+                // Lấy ID từ thuộc tính data-product-detail-id
+                var productId = image.getAttribute('data-product-detail-id');
+
+                // Tạo một thẻ input ẩn với giá trị là ID của ảnh
+                var input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'removedProductDetailIds';
+                input.value = productId;
+
+                // Thêm input vào form
+                var form = image.closest('form');
+                form.appendChild(input);
+
+                // Ẩn ảnh
+                image.style.display = 'none';
+            });
+        });
+    });
 </script>
 
 
@@ -141,7 +194,7 @@
             // integration to choose the right communication channel. This example uses
             // a POST request with JSON as a data structure but your configuration
             // could be different.
-            xhr.open('POST', 'https://localhost:44395/cloud-upload', true);
+            xhr.open('POST', 'https://localhost:5003/editor-upload', true);
             xhr.responseType = 'json';
         }
         // Initializes XMLHttpRequest listeners.

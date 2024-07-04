@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductService.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +25,7 @@ namespace ProductService.Repositories.Implements
 
         public async Task<Product> FindById(int id)
         {
-            return await _context.Products.FindAsync(id);
+            return await _context.Products.Include(p => p.ProductDetails).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Product>> FindAll(string name, int page, int limit)

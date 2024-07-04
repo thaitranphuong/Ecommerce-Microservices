@@ -1,4 +1,5 @@
-﻿using AuthService.MVC.Hubs;
+﻿using AuthService.MVC.AsyncServices;
+using AuthService.MVC.Hubs;
 using AuthService.MVC.Models;
 using AuthService.MVC.Services;
 using CloudinaryDotNet;
@@ -119,6 +120,8 @@ namespace AuthService.MVC
             services.AddSignalR();
 
             services.AddHttpClient();
+
+            services.AddTransient<IMessageProducer, MessageProducer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

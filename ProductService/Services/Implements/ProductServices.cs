@@ -31,15 +31,31 @@ namespace ProductService.Services.Implements
             else
             {
                 Product product = await _productRepository.FindById(dto.Id);
-                _mapper.Map(dto, product);
+                product.Name = dto.Name;
+                product.ShortDescription = dto.ShortDescription;
+                product.FullDescription = dto.FullDescription;
+                product.Price = dto.Price;
+                product.Thumbnail = dto.Thumbnail;
+                product.CategoryId = dto.CategoryId;
                 result = await _productRepository.SaveChange();
             }
             return result;
         }
 
+        public async Task<int> SaveShowHide(ProductDto dto)
+        {
+            Product product = await _productRepository.FindById(dto.Id);
+            var enabled = product.Enabled;
+            _mapper.Map(dto, product);
+            product.Enabled = !enabled;
+            return await _productRepository.SaveChange();
+        }
+
         public async Task<ProductDto> FindById(int id)
         {
-            return _mapper.Map<ProductDto>(await _productRepository.FindById(id));
+            var product = await _productRepository.FindById(id);
+            var productDto = _mapper.Map<ProductDto>(product);
+            return productDto;
         }
 
         public async Task<ProductOutput> FindAll(string name, int page, int limit)
