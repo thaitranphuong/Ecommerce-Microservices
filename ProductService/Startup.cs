@@ -58,6 +58,7 @@ namespace ProductService
                     settings.ApiSecret));
             });
 
+            services.AddSingleton<IEventProcessor, EventProcessor>();
             services.AddHostedService<MessageConsumer>();
 
             services.AddScoped<IFileStorageService, FileStorageService>();
@@ -67,6 +68,10 @@ namespace ProductService
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductDetailService, ProductDetailService>();
             services.AddScoped<IProductDetailRepository, ProductDetailRepository>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ICommentService, CommentService>();
+            services.AddScoped<ICommentRepository, CommentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

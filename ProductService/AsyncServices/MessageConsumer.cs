@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using AuthService.MVC.Dtos;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using ProductService.Dtos;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System;
@@ -15,15 +17,18 @@ namespace ProductService.AsyncServices
     public class MessageConsumer : BackgroundService
     {
         private readonly IConfiguration _configuration;
+        private readonly IEventProcessor _eventProcessor;
         private IConnection _connection;
         private IModel _channel;
+
         private string _queueName = "product-service-queue";
 
         private string _authServiceExchangeName = "AuthServiceExchange";
 
-        public MessageConsumer(IConfiguration configuration)
+        public MessageConsumer(IConfiguration configuration, IEventProcessor eventProcessor)
         {
             _configuration = configuration;
+            _eventProcessor = eventProcessor;
             InitializeRabbitMQ();
         }
 
@@ -36,8 +41,7 @@ namespace ProductService.AsyncServices
                 Console.WriteLine("---> Event Recieved");
                 var body = ea.Body;
                 var json = Encoding.UTF8.GetString(body.ToArray());
-                var message = JsonSerializer.Deserialize<string>(json);
-                Console.WriteLine(message);
+                _eventProcessor.ProcessEvent(json);
             };
             _channel.BasicConsume(queue: _queueName, autoAck: true, consumer: consumer);
             return Task.CompletedTask;
@@ -66,14 +70,17 @@ namespace ProductService.AsyncServices
             _channel.QueueBind(queue: _queueName, 
                                exchange: _authServiceExchangeName, 
                                routingKey: "product-service");
-            Console.WriteLine("--> Listening on message bus");
-            _connection.ConnectionShutdown += RabbitMQ_ConnectionShutdown;
 
         }
 
-        private void RabbitMQ_ConnectionShutdown(object sender, ShutdownEventArgs e)
+        public override void Dispose()
         {
-            Console.WriteLine("---> RabbitMQ Connection Shutdown");
+            if (_channel.IsOpen)
+            {
+                _channel.Close();
+                _connection.Close();
+            }
+            base.Dispose();
         }
     }
 }

@@ -58,5 +58,37 @@ namespace ProductService.Repositories.Implements
                 .Where(c => c.Name.Contains(name))
                 .ToListAsync();
         }
+
+        public async Task<List<Product>> FindByNameAndCategoryIdAndPrice(string name, int categoryId, float price)
+        {
+            IQueryable<Product> result1;
+            if (string.IsNullOrEmpty(name))
+                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true);
+            else
+                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true);
+
+            List<Product> result2;
+            if (categoryId == 0)
+                result2 = await result1.ToListAsync();
+            else
+                result2 = await result1.Where(p => p.CategoryId == categoryId).ToListAsync();
+            return result2;
+        }
+
+        public async Task<List<Product>> FindAll(string name, int categoryId, float price, int page, int limit)
+        {
+            IQueryable<Product> result1;
+            if (string.IsNullOrEmpty(name))
+                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true);
+            else
+                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true);
+
+            List<Product> result2;
+            if (categoryId == 0)
+                result2 = await result1.Skip((page - 1) * limit).Take(limit).ToListAsync();
+            else
+                result2 = await result1.Where(p => p.CategoryId == categoryId).Skip((page - 1) * limit).Take(limit).ToListAsync();
+            return result2;
+        }
     }
 }

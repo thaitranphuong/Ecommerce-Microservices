@@ -1,4 +1,5 @@
-﻿using AuthService.MVC.Models;
+﻿using AuthService.MVC.Constants;
+using AuthService.MVC.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,7 @@ namespace AuthService.MVC.Services
 
         private static async Task SeedRoles(RoleManager<IdentityRole> roleManager)
         {
-            string[] roleNames = { "Admin", "Customer" };
+            string[] roleNames = { RoleType.Admin, RoleType.Customer };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)

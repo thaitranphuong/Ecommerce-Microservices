@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using AuthService.MVC.Constants;
 
 namespace AuthService.MVC.AsyncServices
 {
     public interface IMessageProducer
     {
-        void SendMessage<T>(T message);
+        void SendMessage<T>(EventType eventType, T data);
     }
 }

@@ -59,6 +59,18 @@ namespace ProductService.Controllers
             return Ok(dtos);
         }
 
+        [HttpGet]
+        [Route("get-all-customer")]
+        public async Task<IActionResult> GetAll([FromQuery] int page,
+                                                [FromQuery] int limit,
+                                                [FromQuery] string name,
+                                                [FromQuery] int categoryId,
+                                                [FromQuery] float price)
+        {
+            var dtos = await _productService.FindAll(name, categoryId, price, page, limit);
+            return Ok(dtos);
+        }
+
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> Update(IFormFile image)

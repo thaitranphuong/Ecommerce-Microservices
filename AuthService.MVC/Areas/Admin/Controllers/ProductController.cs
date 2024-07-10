@@ -1,11 +1,12 @@
-﻿using AuthService.MVC.Models;
+﻿using AuthService.MVC.Constants;
+using AuthService.MVC.Helpers;
+using AuthService.MVC.Models;
 using AuthService.MVC.Models.Pagination;
+using AuthService.MVC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,19 +20,16 @@ namespace AuthService.MVC.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
+        private readonly IApiService _apiService;
 
-        public ProductController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public ProductController(IApiService apiService)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
+            _apiService = apiService;
         }
 
         public async Task<IActionResult> Index(string name = "", int page = 1, int limit = 4)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_configuration["Host"]}/product/get-all?name={name}&page={page}&limit={limit}");
+            var response = await _apiService.GetAsync($"/product/get-all?name={name}&page={page}&limit={limit}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -47,8 +45,7 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Add()
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_configuration["Host"]}/category/get-all?name=&page=1&limit=100");
+            var response = await _apiService.GetAsync($"/category/get-all?name=&page=1&limit=100");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -65,7 +62,6 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         public async Task<IActionResult> Add([FromForm] ProductViewModel viewModel, [FromForm] IFormFile image,
                                                 [FromForm] IFormFile[] productDetails)
         {
-            var client = _httpClientFactory.CreateClient();
             var formData = new MultipartFormDataContent();
 
             var jsonContent = JsonContent.Create(viewModel);
@@ -78,7 +74,7 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                 formData.Add(fileContent, "image", image.FileName);
             }
 
-            var response = await client.PostAsync($"{_configuration["Host"]}/product/create", formData);
+            var response = await _apiService.PostFormDataAsync($"/product/create", formData);
 
             if (response.IsSuccessStatusCode)
             {
@@ -103,24 +99,14 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                     formData.Add(fileContent, "productDetailImages", productDetail.FileName);
                 }
 
-                await client.PostAsync($"{_configuration["Host"]}/productdetail/create", formData);
+                await _apiService.PostFormDataAsync($"/productdetail/create", formData);
 
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "success",
-                    Message = "Creating product successfully!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Success, "Creating product successfully!");
                 return Redirect("/admin/product");
             }
             else
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "error",
-                    Message = "Creating product failed!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, "Creating product failed!");
                 return Redirect("/admin/product/add");
             }
         }
@@ -128,9 +114,8 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> ShowHide([FromRoute] int id, [FromForm] bool enabled)
         {
-            var client = _httpClientFactory.CreateClient();
             var message = enabled ? "Show" : "Hide";
-            var response = await client.GetAsync($"{_configuration["Host"]}/product/get/{id}");
+            var response = await _apiService.GetAsync($"/product/get/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -143,37 +128,22 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                 var jsonContent = JsonContent.Create(viewModel);
                 formData.Add(jsonContent, "product");
 
-                response = await client.PutAsync($"{_configuration["Host"]}/product/showhide", formData);
+                response = await _apiService.PutFormDataAsync($"/product/showhide", formData);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                    {
-                        Status = "success",
-                        Message = $"{message} product successfully!"
-                    });
-
+                    TempData["result"] = TempDataGenerator.Generate(NotificationType.Success, $"{message} product successfully!");
                     return Redirect("/admin/product");
                 }
                 else
                 {
-                    TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                    {
-                        Status = "error",
-                        Message = $"{message} product failed!"
-                    });
-
+                    TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, $"{message} product failed!");
                     return Redirect("/admin/product");
                 }
             }
             else
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "error",
-                    Message = $"{message} product failed!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, $"{message} product failed!");
                 return Redirect("/admin/product");
             }
         }
@@ -181,9 +151,7 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
-            var client = _httpClientFactory.CreateClient();
-
-            var response = await client.GetAsync($"{_configuration["Host"]}/category/get-all?name=&page=1&limit=100");
+            var response = await _apiService.GetAsync($"/category/get-all?name=&page=1&limit=100");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -195,7 +163,7 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                 return StatusCode(500);
             }
 
-            response = await client.GetAsync($"{_configuration["Host"]}/product/get/{id}");
+            response = await _apiService.GetAsync($"/product/get/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -213,7 +181,6 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                                                 [FromForm] IFormFile[] newProductDetails,
                                                 [FromForm] int[] removedProductDetailIds)
         {
-            var client = _httpClientFactory.CreateClient();
             var formData = new MultipartFormDataContent();
 
             var jsonContent = JsonContent.Create(viewModel);
@@ -226,7 +193,7 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                 formData.Add(fileContent, "image", image.FileName);
             }
 
-            var response1 = await client.PutAsync($"{_configuration["Host"]}/product/update", formData);
+            var response1 = await _apiService.PutFormDataAsync($"/product/update", formData);
 
             var productDetailViewModels = new List<ProductDetailViewModel>();
 
@@ -247,33 +214,18 @@ namespace AuthService.MVC.Areas.Admin.Controllers
                 formData.Add(fileContent, "productDetailImages", productDetail.FileName);
             }
 
-            var response2 = await client.PostAsync($"{_configuration["Host"]}/productdetail/create", formData);
+            var response2 = await _apiService.PostFormDataAsync($"/productdetail/create", formData);
 
-            var jsonData = new StringContent(
-                JsonConvert.SerializeObject(removedProductDetailIds),
-                Encoding.UTF8,
-                "application/json");
-
-            var response3 = await client.PostAsync($"{_configuration["Host"]}/productdetail/delete", jsonData);
+            var response3 = await _apiService.PostAsync($"/productdetail/delete", removedProductDetailIds);
 
             if (response1.IsSuccessStatusCode || response2.IsSuccessStatusCode || response3.IsSuccessStatusCode)
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "success",
-                    Message = "Editing product successfully!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Success, "Editing product successfullly!");
                 return Redirect("/admin/product");
             }
             else
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "error",
-                    Message = "Editing product failed!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, "Editing product failed!");
                 return Redirect("/admin/product");
             }
         }

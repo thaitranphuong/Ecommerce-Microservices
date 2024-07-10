@@ -5,7 +5,6 @@ using AuthService.MVC.Services;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +14,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace AuthService.MVC
 {
@@ -121,7 +117,8 @@ namespace AuthService.MVC
 
             services.AddHttpClient();
 
-            services.AddTransient<IMessageProducer, MessageProducer>();
+            services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddScoped<IApiService, ApiService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

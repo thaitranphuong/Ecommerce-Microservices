@@ -13,5 +13,6 @@ namespace ProductService.Services
         Task<int> SaveShowHide(ProductDto product);
         Task<ProductDto> FindById(int id);
         Task<ProductOutput> FindAll(string name, int page, int limit);
+        Task<ProductOutput> FindAll(string name, int categoryId, float price,  int page, int limit);
     }
 }

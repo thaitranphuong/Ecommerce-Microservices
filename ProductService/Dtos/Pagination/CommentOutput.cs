@@ -5,9 +5,7 @@ using System.Threading.Tasks;
 
 namespace ProductService.Dtos.Pagination
 {
-    public class ProductOutput : AbtractOutput<ProductDto>
+    public class CommentOutput : AbtractOutput<CommentDto>
     {
-        public int CategoryId { get; set; }
-        public float Price { get; set; }
     }
 }

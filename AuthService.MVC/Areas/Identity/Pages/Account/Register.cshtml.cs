@@ -14,6 +14,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using AuthService.MVC.AsyncServices;
+using AuthService.MVC.Constants;
+using AuthService.MVC.Dtos;
 
 namespace AuthService.MVC.Areas.Identity.Pages.Account
 {
@@ -25,19 +28,22 @@ namespace AuthService.MVC.Areas.Identity.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IMessageProducer _messageProducer;
 
         public RegisterModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
             RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMessageProducer messageProducer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
             _emailSender = emailSender;
+            _messageProducer = messageProducer;
         }
 
         [BindProperty]
@@ -88,10 +94,17 @@ namespace AuthService.MVC.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
-                    var defaultRoles = _roleManager.Roles.Where(r => r.Name.Equals("Customer")).FirstOrDefault();
+                    var defaultRoles = _roleManager.Roles.Where(r => r.Name.Equals(RoleType.Customer)).FirstOrDefault();
                     if(defaultRoles != null)
                     {
                         await _userManager.AddToRolesAsync(user, new string[] { defaultRoles.Name });
+                        _messageProducer.SendMessage<UserPublishDto>(
+                                       EventType.CreateUser, new UserPublishDto()
+                                                            {
+                                                                Id = user.Id,
+                                                                Avatar = null,
+                                                                UserName = user.UserName
+                                                            });
                     }
 
                     //Phát sinh token để xác nhận email

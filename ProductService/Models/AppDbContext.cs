@@ -45,6 +45,10 @@ namespace ProductService.Models
                 .WithMany(p => p.ProductDetails)
                 .HasForeignKey(pd => pd.ProductId);
             });
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Id)
+                .ValueGeneratedNever();
         }
     }
 }

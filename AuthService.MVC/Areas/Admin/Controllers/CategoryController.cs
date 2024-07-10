@@ -1,14 +1,11 @@
-﻿using AuthService.MVC.Models;
+﻿using AuthService.MVC.Constants;
+using AuthService.MVC.Helpers;
+using AuthService.MVC.Models;
 using AuthService.MVC.Models.Pagination;
+using AuthService.MVC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthService.MVC.Areas.Admin.Controllers
@@ -17,19 +14,16 @@ namespace AuthService.MVC.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {
-        private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IConfiguration _configuration;
+        private readonly IApiService _apiService;
 
-        public CategoryController(IHttpClientFactory httpClientFactory, IConfiguration configuration)
+        public CategoryController(IApiService apiService)
         {
-            _httpClientFactory = httpClientFactory;
-            _configuration = configuration;
+            _apiService = apiService;
         }
 
         public async Task<IActionResult> Index(string name = "", int page = 1, int limit = 4)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_configuration["Host"]}/category/get-all?name={name}&page={page}&limit={limit}");
+            var response = await _apiService.GetAsync($"/category/get-all?name={name}&page={page}&limit={limit}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -51,32 +45,16 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(CategoryViewModel viewModel)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = new StringContent(
-                JsonConvert.SerializeObject(viewModel),
-                Encoding.UTF8,
-                "application/json");
-
-            var response = await client.PostAsync($"{_configuration["Host"]}/category/create", jsonData);
+            var response = await _apiService.PostAsync("/category/create", viewModel);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "success",
-                    Message = "Creating cartegory successfully!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Success, "Creating cartegory successfully!");
                 return Redirect("/admin/category");
             }
             else
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "error",
-                    Message = "Creating cartegory failed!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, "Creating cartegory failed!");
                 return Redirect("/admin/category/add");
             }
             
@@ -85,8 +63,7 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit([FromRoute] int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.GetAsync($"{_configuration["Host"]}/category/get/{id}");
+            var response = await _apiService.GetAsync($"/category/get/{id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
@@ -102,32 +79,16 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(CategoryViewModel viewModel)
         {
-            var client = _httpClientFactory.CreateClient();
-            var jsonData = new StringContent(
-                JsonConvert.SerializeObject(viewModel),
-                Encoding.UTF8,
-                "application/json");
-
-            var response = await client.PutAsync($"{_configuration["Host"]}/category/update", jsonData);
+            var response = await _apiService.PutAsync("/category/update", viewModel);
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "success",
-                    Message = "Editing cartegory successfully!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Success, "Editing cartegory successfully!");
                 return Redirect("/admin/category");
             }
             else
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "error",
-                    Message = "Editing cartegory failed!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, "Creating cartegory failed!");
                 return Redirect("/admin/category");
             }
 
@@ -136,27 +97,16 @@ namespace AuthService.MVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var client = _httpClientFactory.CreateClient();
-            var response = await client.DeleteAsync($"{_configuration["Host"]}/category/delete/{id}");
+            var response = await _apiService.DeleteAsync($"/category/delete/{id}");
 
             if (response.IsSuccessStatusCode)
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "success",
-                    Message = "Deleting cartegory successfully!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Success, "Deleting cartegory successfully!");
                 return Redirect("/admin/category");
             }
             else
             {
-                TempData["result"] = JsonConvert.SerializeObject(new ToastifyModel()
-                {
-                    Status = "error",
-                    Message = "Deleting cartegory failed!"
-                });
-
+                TempData["result"] = TempDataGenerator.Generate(NotificationType.Error, "Deleting cartegory failed!");
                 return Redirect("/admin/category");
             }
 

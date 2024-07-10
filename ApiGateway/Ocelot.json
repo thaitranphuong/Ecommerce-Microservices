@@ -99,6 +99,18 @@
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
+      "DownstreamPathTemplate": "/api/product/get-all-customer",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/product/get-all-customer",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/product/update",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [

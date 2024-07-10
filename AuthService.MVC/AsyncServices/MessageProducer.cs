@@ -1,20 +1,23 @@
-﻿using RabbitMQ.Client;
+﻿using AuthService.MVC.Constants;
+using AuthService.MVC.Dtos;
+using RabbitMQ.Client;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
-using System.Threading.Tasks;
 
 namespace AuthService.MVC.AsyncServices
 {
     public class MessageProducer : IMessageProducer
     {
+        private readonly ConnectionFactory _factory;
+        private readonly IConnection _connection;
+        private readonly IModel _channel;
+
         private string _authServiceExchangeName = "AuthServiceExchange";
 
-        public void SendMessage<T>(T message)
+        public MessageProducer ()
         {
-            var factory = new ConnectionFactory
+            _factory = new ConnectionFactory
             {
                 HostName = "armadillo-01.rmq.cloudamqp.com",
                 UserName = "ktsxxpei",
@@ -22,23 +25,27 @@ namespace AuthService.MVC.AsyncServices
                 VirtualHost = "ktsxxpei",
                 Port = 5672
             };
-            using var connection = factory.CreateConnection();
-            using var channel = connection.CreateModel();
+            _connection = _factory.CreateConnection();
+            _channel = _connection.CreateModel();
+            _channel.ExchangeDeclare(exchange: _authServiceExchangeName, type: ExchangeType.Direct);
+        }
 
-            channel.ExchangeDeclare(exchange: _authServiceExchangeName, type: ExchangeType.Direct);
-
+        public void SendMessage<T>(EventType eventType, T data)
+        {
+            var Event = EventGenerator.GenerateEvent(eventType);
+            var message = new AsyncMessageDto<T>() { EventType = Event, Data = data };
             var json = JsonSerializer.Serialize(message);
             var body = Encoding.UTF8.GetBytes(json);
 
-            var properties = channel.CreateBasicProperties();
+            var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 
-            channel.BasicPublish(exchange: "AuthServiceExchange",
+            _channel.BasicPublish(exchange: "AuthServiceExchange",
                                  routingKey: "product-service",
                                  basicProperties: null,
                                  body: body);
 
-            Console.WriteLine($"---> We have sent message: {message}");
+            Console.WriteLine($"---> We have sent the message");
         }
     }
 }

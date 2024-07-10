@@ -45,9 +45,7 @@ namespace ProductService.Services.Implements
         public async Task<int> SaveShowHide(ProductDto dto)
         {
             Product product = await _productRepository.FindById(dto.Id);
-            var enabled = product.Enabled;
-            _mapper.Map(dto, product);
-            product.Enabled = !enabled;
+            product.Enabled = !product.Enabled;
             return await _productRepository.SaveChange();
         }
 
@@ -70,6 +68,25 @@ namespace ProductService.Services.Implements
             output.Name = name;
             output.Page = page;
             output.TotalPage = (int) Math.Ceiling((double)(await _productRepository.FindByName(name)).Count / limit);
+            output.ListResult = productDtos;
+            return output;
+        }
+
+        public async Task<ProductOutput> FindAll(string name, int categoryId, float price, int page, int limit)
+        {
+            if (float.IsNaN(price)) price = 0;
+            var products = await _productRepository.FindAll(name, categoryId, price, page, limit);
+            var productDtos = new List<ProductDto>();
+            foreach (var product in products)
+            {
+                productDtos.Add(_mapper.Map<ProductDto>(product));
+            }
+            ProductOutput output = new ProductOutput();
+            output.Name = name;
+            output.Page = page;
+            output.Price = price;
+            output.CategoryId = categoryId;
+            output.TotalPage = (int)Math.Ceiling((double)(await _productRepository.FindByNameAndCategoryIdAndPrice(name, categoryId, price)).Count / limit);
             output.ListResult = productDtos;
             return output;
         }
