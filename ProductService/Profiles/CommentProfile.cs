@@ -13,7 +13,10 @@ namespace ProductService.Profiles
         public CommentProfile()
         {
             CreateMap<CommentDto, Comment>();
-            CreateMap<Comment, CommentDto>();
+
+            CreateMap<Comment, CommentDto>()
+                .ForMember(dest => dest.UserName, src => src.MapFrom(x => x.User.UserName))
+                .ForMember(dest => dest.UserAvatar, src => src.MapFrom(x => x.User.Avatar));
         } 
     }
 }

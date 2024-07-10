@@ -25,7 +25,12 @@ namespace ProductService.Repositories.Implements
 
         public async Task<Product> FindById(int id)
         {
-            return await _context.Products.Include(p => p.ProductDetails).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.ProductDetails)
+                .Include(p => p.Comments)
+                .ThenInclude(c => c.User)
+                .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Product>> FindAll(string name, int page, int limit)
@@ -63,9 +68,9 @@ namespace ProductService.Repositories.Implements
         {
             IQueryable<Product> result1;
             if (string.IsNullOrEmpty(name))
-                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true);
+                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true).Include(p => p.Category);
             else
-                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true);
+                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true).Include(p => p.Category);
 
             List<Product> result2;
             if (categoryId == 0)
@@ -79,9 +84,9 @@ namespace ProductService.Repositories.Implements
         {
             IQueryable<Product> result1;
             if (string.IsNullOrEmpty(name))
-                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true);
+                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true).Include(p => p.Category);
             else
-                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true);
+                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true).Include(p => p.Category);
 
             List<Product> result2;
             if (categoryId == 0)

@@ -1,0 +1,35 @@
+﻿@model AuthService.MVC.Models.Pagination.CommentOutput
+
+@foreach (var comment in Model.ListResult)
+{
+    <div class="d-flex">
+
+        @if (!string.IsNullOrEmpty(comment.UserAvatar))
+        {
+            <img src="@comment.UserAvatar" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
+        }
+        else
+        {
+            <img src="~/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
+        }
+        <div class="w-100">
+            <p class="mb-2" style="font-size: 14px;">@comment.CreatedTime</p>
+            <div class="d-flex justify-content-between w-100">
+                <h5>@comment.UserName</h5>
+                <div class="d-flex mb-3">
+                    @for (int i = 1; i <= comment.Star; i++)
+                    {
+                        <i class="fa fa-star text-secondary"></i>
+                    }
+                    @for (int i = 1; i <= 5 - comment.Star; i++)
+                    {
+                        <i class="fa fa-star"></i>
+                    }
+                </div>
+            </div>
+            <p>
+                @comment.Content
+            </p>
+        </div>
+    </div>
+}

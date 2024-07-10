@@ -31,7 +31,8 @@ namespace ProductService.Services.Implements
             else
             {
                 Category category = await _categoryRepository.FindById(dto.Id);
-                _mapper.Map(dto, category);
+                category.Name = dto.Name;
+                category.Code = dto.Code;
                 result = await _categoryRepository.SaveChange() > 0;
             }
             return result;

@@ -10,6 +10,6 @@ namespace ProductService.Services
     public interface ICommentService
     {
         Task<bool> Save(CommentDto comment);
-        Task<CommentOutput> FindAll(string userId, int productId, int page, int limit);
+        Task<CommentOutput> FindAll(int productId, int page, int limit);
     }
 }

@@ -9,7 +9,7 @@ namespace ProductService.Repositories
     public interface ICommentRepository
     {
         Task<int> CreateOne(Comment comment);
-        Task<List<Comment>> FindAll(string userId, int productId, int page, int limit);
-        Task<List<Comment>> FindByUserIdAndProductId(string userId, int productId);
+        Task<List<Comment>> FindAll(int productId, int page, int limit);
+        Task<List<Comment>> FindByProductId(int productId);
     }
 }

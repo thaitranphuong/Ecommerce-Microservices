@@ -22,19 +22,19 @@ namespace ProductService.Repositories.Implements
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Comment>> FindAll(string userId, int productId, int page, int limit)
+        public async Task<List<Comment>> FindAll(int productId, int page, int limit)
         {
-            return await _context.Comments
-               .Where(c => c.UserId == userId && c.ProductId == productId)
+            return await _context.Comments.Include(c => c.User)
+               .Where(c => c.ProductId == productId)
                .Skip((page - 1) * limit)
                .Take(limit)
                .ToListAsync();
         }
 
-        public async Task<List<Comment>> FindByUserIdAndProductId(string userId, int productId)
+        public async Task<List<Comment>> FindByProductId(int productId)
         {
-            return await _context.Comments
-                .Where(c => c.UserId == userId && c.ProductId == productId)
+            return await _context.Comments.Include(c => c.User)
+                .Where(c => c.ProductId == productId)
                 .ToListAsync();
         }
     }

@@ -1,0 +1,65 @@
+﻿@model AuthService.MVC.Models.Pagination.Pagination
+
+@{ 
+    var i = 0;
+}
+<div class="col-12">
+    <div class="pagination d-flex justify-content-center mt-5">
+        <form>
+            <input name="name" value="@Model.Name" hidden />
+            <input name="categoryId" value="@Model.CategoryId" hidden />
+            <input name="Price" value="@Model.Price" hidden />
+            <input name="page" value="@(Model.Page - 1)" hidden />
+            @if (Model.Page == 1)
+            {
+                <div href="#" class="btn btn-dark rounded" style="margin-right: 10px; cursor: auto">&laquo;</div>
+            }
+            else
+            {
+                <button href="#" class="btn btn-primary rounded" style="margin-right: 10px">&laquo;</button>
+            }
+        </form>
+        @if (Model.Page > 3)
+        {
+            <button href="#" class="btn" style="margin-right: 5px; margin-left: -10px; margin-top: 10px"><b>...</b></button>
+        }
+        @for (i = 1; i <= Model.TotalPage; i++)
+        {
+            if (i >= Model.Page - 2 && i <= Model.Page + 2)
+            {
+                <form>
+                    <input name="categoryId" value="@Model.CategoryId" hidden />
+                    <input name="Price" value="@Model.Price" hidden />
+                    <input name="name" value="@Model.Name" hidden />
+                    <input name="page" value="@i" hidden />
+                    @if (Model.Page == i)
+                    {
+                        <button href="#" class="btn btn-primary active rounded" style="border: 1px solid #0072ff; margin-right: 10px">@i</button>
+                    }
+                    else
+                    {
+                        <button href="#" class="btn rounded" style="border: 1px solid #0072ff; margin-right: 10px">@i</button>
+                    }
+                </form>
+            }
+        }
+        @if (Model.Page < Model.TotalPage - 2)
+        {
+            <button href="#" class="btn" style="margin-right: 5px; margin-left: -10px; margin-top: 10px"><b>...</b></button>
+        }
+        <form>
+            <input name="name" value="@Model.Name" hidden />
+            <input name="categoryId" value="@Model.CategoryId" hidden />
+            <input name="Price" value="@Model.Price" hidden />
+            <input name="page" value="@(Model.Page + 1)" hidden />
+            @if (Model.Page == Model.TotalPage)
+            {
+                <div href="#" class="btn btn-dark rounded" style="margin-right: 10px; cursor: auto">&raquo;</div>
+            }
+            else
+            {
+                <button href="#" class="btn btn-primary rounded" style="margin-right: 10px">&raquo;</button>
+            }
+        </form>
+    </div>
+</div>

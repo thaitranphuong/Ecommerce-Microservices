@@ -17,13 +17,12 @@ namespace ProductService.Controllers
         }
 
         [HttpGet]
-        [Route("get-all/{userId}/{productId}")]
-        public async Task<IActionResult> GetAll([FromRoute] string userId,
-                                                [FromRoute] int productId,
+        [Route("get-all/{productId}")]
+        public async Task<IActionResult> GetAll([FromRoute] int productId,
                                                 [FromQuery] int page,
                                                 [FromQuery] int limit)
         {
-            var dtos = await _commentService.FindAll(userId, productId, page, limit);
+            var dtos = await _commentService.FindAll(productId, page, limit);
             return Ok(dtos);
         }
 

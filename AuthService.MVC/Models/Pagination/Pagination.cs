@@ -10,5 +10,7 @@ namespace AuthService.MVC.Models.Pagination
         public int Page { get; set; }
         public int TotalPage { get; set; }
         public string Name { get; set; }
+        public int CategoryId { get; set; }
+        public float Price { get; set; }
     }
 }

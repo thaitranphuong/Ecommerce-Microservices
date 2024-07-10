@@ -25,7 +25,9 @@ namespace ProductService.Profiles
                .ForMember(dest => dest.Thumbnail, src => src.MapFrom(x => x.Thumbnail))
                .ForMember(dest => dest.Price, src => src.MapFrom(x => x.Price))
                .ForMember(dest => dest.Enabled, src => src.MapFrom(x => x.Enabled))
-               .ForMember(dest => dest.CategoryId, src => src.MapFrom(x => x.CategoryId));
+               .ForMember(dest => dest.CategoryId, src => src.MapFrom(x => x.CategoryId))
+               .ForMember(dest => dest.CategoryName, src => src.MapFrom(x => x.Category.Name))
+               .ForMember(dest => dest.Comments, src => src.MapFrom(x => x.Comments));
         }
     }
 }

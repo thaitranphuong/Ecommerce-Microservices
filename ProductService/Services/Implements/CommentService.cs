@@ -20,9 +20,9 @@ namespace ProductService.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task<CommentOutput> FindAll(string userId, int productId, int page, int limit)
+        public async Task<CommentOutput> FindAll(int productId, int page, int limit)
         {
-            var comments = await _commentRepository.FindAll(userId, productId, page, limit);
+            var comments = await _commentRepository.FindAll(productId, page, limit);
             var commentDtos = new List<CommentDto>();
             foreach (var comment in comments)
             {
@@ -31,7 +31,7 @@ namespace ProductService.Services.Implements
             CommentOutput output = new CommentOutput();
             output.Page = page;
             output.TotalPage = (int)Math.Ceiling(
-                (double)(await _commentRepository.FindByUserIdAndProductId(userId, productId)).Count / limit);
+                (double)(await _commentRepository.FindByProductId(productId)).Count / limit);
             output.ListResult = commentDtos;
             return output;
         }

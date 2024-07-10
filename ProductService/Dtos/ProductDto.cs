@@ -23,8 +23,10 @@ namespace ProductService.Dtos
 
         public int CategoryId { get; set; }
 
-        public int CategoryName { get; set; }
+        public string CategoryName { get; set; }
 
         public ICollection<ProductDetailDto> ProductDetails { get; set; }
+
+        public ICollection<CommentDto> Comments { get; set; }
     }
 }
