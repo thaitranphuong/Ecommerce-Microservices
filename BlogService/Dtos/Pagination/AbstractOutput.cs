@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AuthService.MVC.Models.Pagination
+namespace BlogService.Dtos.Pagination
 {
-    public class Pagination
+    public class AbtractOutput<T>
     {
         public int Page { get; set; }
         public int TotalPage { get; set; }
-        public string Name { get; set; }
         public string Title { get; set; }
-        public int CategoryId { get; set; }
-        public float Price { get; set; }
+        public List<T> ListResult { get; set; } = new List<T>();
     }
 }

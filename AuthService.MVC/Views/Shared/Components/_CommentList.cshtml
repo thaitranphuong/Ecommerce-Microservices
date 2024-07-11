@@ -13,7 +13,7 @@
             <img src="~/img/avatar.jpg" class="img-fluid rounded-circle p-3" style="width: 100px; height: 100px;" alt="">
         }
         <div class="w-100">
-            <p class="mb-2" style="font-size: 14px;">@comment.CreatedTime</p>
+            <p class="mb-2" style="font-size: 14px;">@comment.CreatedTime.ToString("MMMM dd, yyyy")</p>
             <div class="d-flex justify-content-between w-100">
                 <h5>@comment.UserName</h5>
                 <div class="d-flex mb-3">

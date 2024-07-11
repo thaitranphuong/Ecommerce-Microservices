@@ -8,6 +8,7 @@
         <form>
             <input name="name" value="@Model.Name" hidden />
             <input name="page" value="@(Model.Page - 1)" hidden />
+            <input name="title" value="@Model.Title" hidden />
             @if (Model.Page == 1)
             {
                 <div href="#" class="btn btn-dark rounded" style="margin-right: 10px; cursor: auto">&laquo;</div>
@@ -28,6 +29,7 @@
                 <form>
                     <input name="name" value="@Model.Name" hidden />
                     <input name="page" value="@i" hidden />
+                    <input name="title" value="@Model.Title" hidden />
                     @if (Model.Page == i)
                     {
                         <button href="#" class="btn btn-primary active rounded" style="border: 1px solid #0072ff; margin-right: 10px">@i</button>
@@ -46,6 +48,7 @@
         <form>
             <input name="name" value="@Model.Name" hidden />
             <input name="page" value="@(Model.Page + 1)" hidden />
+            <input name="title" value="@Model.Title" hidden />
             @if (Model.Page == Model.TotalPage)
             {
                 <div href="#" class="btn btn-dark rounded" style="margin-right: 10px; cursor: auto">&raquo;</div>
