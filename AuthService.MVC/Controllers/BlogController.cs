@@ -1,11 +1,10 @@
 ﻿using AuthService.MVC.Models;
 using AuthService.MVC.Models.Pagination;
-using AuthService.MVC.Services;
+using AuthService.MVC.SyncServices;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace AuthService.MVC.Controllers
@@ -67,6 +66,7 @@ namespace AuthService.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Comment(BlogCommentViewModel comment)
         {
+            Console.WriteLine(comment.UserId);
             var response = await _apiService.PostAsync("/blog/comment/create", comment);
             if (response.IsSuccessStatusCode)
             {

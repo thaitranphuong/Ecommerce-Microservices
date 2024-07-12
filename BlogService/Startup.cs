@@ -3,6 +3,7 @@ using BlogService.Repositories;
 using BlogService.Repositories.Implements;
 using BlogService.Services;
 using BlogService.Services.Implements;
+using BlogService.SyncServices;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,6 +62,7 @@ namespace BlogService
             services.AddScoped<ICommentRepository, CommentRepository>();
             services.AddScoped<ICommentService, CommentService>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<IGrpcUserService, GrpcUserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

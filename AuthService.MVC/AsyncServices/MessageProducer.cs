@@ -1,5 +1,6 @@
 ﻿using AuthService.MVC.Constants;
 using AuthService.MVC.Dtos;
+using Microsoft.Extensions.Configuration;
 using RabbitMQ.Client;
 using System;
 using System.Text;
@@ -12,18 +13,20 @@ namespace AuthService.MVC.AsyncServices
         private readonly ConnectionFactory _factory;
         private readonly IConnection _connection;
         private readonly IModel _channel;
+        private readonly IConfiguration _configuration;
 
         private string _authServiceExchangeName = "AuthServiceExchange";
 
-        public MessageProducer ()
+        public MessageProducer (IConfiguration configuration)
         {
+            _configuration = configuration;
             _factory = new ConnectionFactory
             {
-                HostName = "armadillo-01.rmq.cloudamqp.com",
-                UserName = "ktsxxpei",
-                Password = "NICIxab_JSihP4QQnfkJWZjqnCFFD8s9",
-                VirtualHost = "ktsxxpei",
-                Port = 5672
+                HostName = _configuration["RabbitMQ:HostName"],
+                UserName = _configuration["RabbitMQ:UserName"],
+                Password = _configuration["RabbitMQ:Password"],
+                VirtualHost = _configuration["RabbitMQ:VirtualHost"],
+                Port = int.Parse(_configuration["RabbitMQ:Port"])
             };
             _connection = _factory.CreateConnection();
             _channel = _connection.CreateModel();

@@ -2,7 +2,7 @@
 using AuthService.MVC.Helpers;
 using AuthService.MVC.Models;
 using AuthService.MVC.Models.Pagination;
-using AuthService.MVC.Services;
+using AuthService.MVC.SyncServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthService.MVC.Areas.Admin.Controllers

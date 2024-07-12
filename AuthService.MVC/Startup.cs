@@ -2,6 +2,7 @@
 using AuthService.MVC.Hubs;
 using AuthService.MVC.Models;
 using AuthService.MVC.Services;
+using AuthService.MVC.SyncServices;
 using CloudinaryDotNet;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -117,6 +118,8 @@ namespace AuthService.MVC
 
             services.AddHttpClient();
 
+            services.AddGrpc();
+
             services.AddScoped<IMessageProducer, MessageProducer>();
             services.AddScoped<IApiService, ApiService>();
         }
@@ -147,6 +150,7 @@ namespace AuthService.MVC
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/chatHub");
+                endpoints.MapGrpcService<GrpcUserService>();
 
                 endpoints.MapControllerRoute(
                     name: "default",

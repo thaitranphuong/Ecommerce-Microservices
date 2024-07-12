@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AuthService.MVC.Services
+namespace AuthService.MVC.SyncServices
 {
     public class ApiService : IApiService
     {

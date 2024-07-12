@@ -37,13 +37,13 @@
                     <h4 class="mb-5 fw-bold">Comment</h4>
                     @if (SignInManager.IsSignedIn(User))
                     {
-                        var user = UserManager.GetUserAsync(User);
-                        <input id="blog-id" name="blogId" value="@Model.ExternalId" hidden />
+                        var user = await UserManager.GetUserAsync(User);
                         <input id="user-id" name="userId" value="@user.Id" hidden />
+                        <input id="blog-id" name="blogId" value="@Model.ExternalId" hidden />
                         <div class="row g-4">
                             <div class="col-lg-12">
                                 <div class="border-bottom rounded my-4">
-                                    <textarea name="content" id="" class="form-control border-0" cols="30" rows="4" placeholder="Leave your comment..." spellcheck="false"></textarea>
+                                    <textarea name="content" id="content" class="form-control border-0" cols="30" rows="4" placeholder="Leave your comment..." spellcheck="false"></textarea>
                                 </div>
                             </div>
                             <div class="col-lg-12">
@@ -75,7 +75,6 @@
             formData.append('content', content);
             formData.append('blogId', blogId);
             formData.append('userId', userId);
-
             $.ajax({
                 url: '/Blog/Comment',
                 type: 'POST',
@@ -87,7 +86,6 @@
                         url: '/Blog/GetComments/@Model.ExternalId',
                         type: 'GET',
                         success: function (data) {
-                            alert('Ok');
                             $('#comment-list').html(data);
                             document.getElementById("content").value = "";
                         },

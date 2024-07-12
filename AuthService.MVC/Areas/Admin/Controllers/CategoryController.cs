@@ -2,7 +2,7 @@
 using AuthService.MVC.Helpers;
 using AuthService.MVC.Models;
 using AuthService.MVC.Models.Pagination;
-using AuthService.MVC.Services;
+using AuthService.MVC.SyncServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;

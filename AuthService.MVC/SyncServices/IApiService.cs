@@ -4,7 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace AuthService.MVC.Services
+namespace AuthService.MVC.SyncServices
 {
     public interface IApiService
     {

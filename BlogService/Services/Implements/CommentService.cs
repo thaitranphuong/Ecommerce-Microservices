@@ -2,9 +2,10 @@
 using BlogService.Dtos;
 using BlogService.Models;
 using BlogService.Repositories;
+using BlogService.SyncServices;
+using Grpc.Net.Client;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace BlogService.Services.Implements
@@ -13,11 +14,13 @@ namespace BlogService.Services.Implements
     {
         private readonly IMapper _mapper;
         private readonly ICommentRepository _commentRepository;
+        private readonly IGrpcUserService _grpcUserService;
 
-        public CommentService(ICommentRepository commentRepository, IMapper mapper)
+        public CommentService(ICommentRepository commentRepository, IMapper mapper, IGrpcUserService grpcUserService)
         {
             _commentRepository = commentRepository;
             _mapper = mapper;
+            _grpcUserService = grpcUserService;
         }
 
         public async Task<List<CommentDto>> FindByBlogId(string blogId)
@@ -27,6 +30,9 @@ namespace BlogService.Services.Implements
             foreach (var comment in comments)
             {
                 var commentDto = _mapper.Map<CommentDto>(comment);
+                var reply = await _grpcUserService.GetUser(comment.UserId);
+                commentDto.UserName = reply.UserName;
+                commentDto.UserAvatar = reply.Avatar;
                 commentDtos.Add(commentDto);
             }
             return commentDtos;

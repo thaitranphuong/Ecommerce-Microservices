@@ -49,13 +49,13 @@ namespace ProductService.AsyncServices
 
         private void InitializeRabbitMQ()
         {
-            var factory = new ConnectionFactory()
+            var factory = new ConnectionFactory
             {
-                HostName = "armadillo-01.rmq.cloudamqp.com",
-                UserName = "ktsxxpei",
-                Password = "NICIxab_JSihP4QQnfkJWZjqnCFFD8s9",
-                VirtualHost = "ktsxxpei",
-                Port = 5672
+                HostName = _configuration["RabbitMQ:HostName"],
+                UserName = _configuration["RabbitMQ:UserName"],
+                Password = _configuration["RabbitMQ:Password"],
+                VirtualHost = _configuration["RabbitMQ:VirtualHost"],
+                Port = int.Parse(_configuration["RabbitMQ:Port"])
             };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
