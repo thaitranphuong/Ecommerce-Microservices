@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiGateway", "ApiGateway\Ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "ProductService\ProductService.csproj", "{834A4AE9-40B7-44A3-B79F-D7F562E27407}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogService", "BlogService\BlogService.csproj", "{D390F536-9A1D-4A72-A56F-17A0F179E0FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogService", "BlogService\BlogService.csproj", "{D390F536-9A1D-4A72-A56F-17A0F179E0FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService", "CartService\CartService.csproj", "{74207A85-06E9-4978-A9FF-227C3A07C57E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{D390F536-9A1D-4A72-A56F-17A0F179E0FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D390F536-9A1D-4A72-A56F-17A0F179E0FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D390F536-9A1D-4A72-A56F-17A0F179E0FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
