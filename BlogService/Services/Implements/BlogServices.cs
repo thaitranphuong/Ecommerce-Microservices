@@ -51,11 +51,22 @@ namespace BlogService.Services.Implements
             return _mapper.Map<BlogDto>(await _blogRepository.FindById(id));
         }
 
+        public async Task<bool> UpdateViewNumber(string id)
+        {
+            return await _blogRepository.UpdateViewNumber(id) > 0;
+        }
+
+        public async Task<BlogDto> FindBySlug(string slug)
+        {
+            return _mapper.Map<BlogDto>(await _blogRepository.FindBySlug(slug));
+        }
+
         public async Task<bool> Save(BlogDto dto)
         {
             if (string.IsNullOrEmpty(dto.ExternalId))
             {
                 dto.ExternalId = Guid.NewGuid().ToString();
+                dto.Slug += "#" + dto.ExternalId;
                 dto.ViewNumber = 0;
                 dto.CreatedTime = DateTime.Now;
                 dto.UpdatedTime = DateTime.Now;
@@ -64,6 +75,7 @@ namespace BlogService.Services.Implements
             }
             else
             {
+                dto.Slug += "#" + dto.ExternalId;
                 dto.UpdatedTime = DateTime.Now;
                 return await _blogRepository.Update(_mapper.Map<Blog>(dto)) > 0;
             }

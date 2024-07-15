@@ -37,6 +37,8 @@ namespace AuthService.MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> Detail([FromRoute] string id)
         {
+            id = id.Substring(id.LastIndexOf('#') + 1);
+            await _apiService.GetAsync($"/blog/update-view-number/{id}");
             var response = await _apiService.GetAsync($"/blog/get/{id}");
             if (response.IsSuccessStatusCode)
             {
@@ -66,7 +68,6 @@ namespace AuthService.MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Comment(BlogCommentViewModel comment)
         {
-            Console.WriteLine(comment.UserId);
             var response = await _apiService.PostAsync("/blog/comment/create", comment);
             if (response.IsSuccessStatusCode)
             {

@@ -12,7 +12,7 @@
             @foreach (var blog in Model.ListResult)
             {
                 <div style="max-width: 22rem; margin-right: 10px; margin-bottom: 20px;">
-                    <a asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.ExternalId" class="card">
+                    <a asp-controller="Blog" asp-action="Detail" asp-route-id="@blog.Slug" class="card">
                         <img src="@blog.Thumbnail" class="card-img-top" alt="A person holding a bouquet of roses, wearing a coat, outside on a snowy day">
                         <div class="card-body">
                             <div class="d-flex text-muted mb-2">

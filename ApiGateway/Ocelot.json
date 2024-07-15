@@ -197,6 +197,18 @@
       "UpstreamHttpMethod": [ "Post" ]
     },
     {
+      "DownstreamPathTemplate": "/api/blog/update-view-number/{blogId}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5007
+        }
+      ],
+      "UpstreamPathTemplate": "/blog/update-view-number/{blogId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/blog/get/{blogId}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -206,6 +218,18 @@
         }
       ],
       "UpstreamPathTemplate": "/blog/get/{blogId}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/blog/get-by-slug/{slug}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5007
+        }
+      ],
+      "UpstreamPathTemplate": "/blog/get-by-slug/{slug}",
       "UpstreamHttpMethod": [ "Get" ]
     },
     {

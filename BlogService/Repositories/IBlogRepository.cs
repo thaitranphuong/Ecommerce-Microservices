@@ -10,9 +10,11 @@ namespace BlogService.Repositories
     {
         Task<int> CreateOne(Blog blog);
         Task<Blog> FindById(string id);
+        Task<Blog> FindBySlug(string slug);
         Task<List<Blog>> FindByTitle(string title);
         Task<List<Blog>> FindAll(string title, int page, int limit);
         Task<int> Update(Blog blog);
+        Task<int> UpdateViewNumber(string id);
         Task<int> Remove(string id);
     }
 }

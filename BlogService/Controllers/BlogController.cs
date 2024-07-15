@@ -48,12 +48,29 @@ namespace BlogService.Controllers
         }
 
         [HttpGet]
+        [Route("get-by-slug/{slug}")]
+        public async Task<IActionResult> GetBySlug(string slug)
+        {
+            BlogDto dto = await _blogService.FindBySlug(slug);
+            if (dto != null) return Ok(dto);
+            else return StatusCode(404);
+        }
+
+        [HttpGet]
         [Route("get-all")]
         public async Task<IActionResult> GetAll([FromQuery] int page,
                                                 [FromQuery] int limit, [FromQuery] string title)
         {
             var dtos = await _blogService.FindAll(title, page, limit);
             return Ok(dtos);
+        }
+
+        [HttpGet]
+        [Route("update-view-number/{blogId}")]
+        public async Task<IActionResult> UpdateViewNumber(string blogId)
+        {
+            await _blogService.UpdateViewNumber(blogId);
+            return Ok();
         }
 
         [HttpPut]

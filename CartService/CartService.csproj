@@ -22,6 +22,18 @@
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	</PackageReference>
 	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="5.0.4" />
+	<PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.6" />
+	<PackageReference Include="StackExchange.Redis" Version="2.7.33" />
+	<PackageReference Include="Google.Protobuf" Version="3.27.1" />
+	<PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
+	<PackageReference Include="Grpc.Tools" Version="2.64.0">
+		<PrivateAssets>all</PrivateAssets>
+		<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	</PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+	<Protobuf Include="Protos\product.proto" GrpcServices="Client" />
   </ItemGroup>
 
 </Project>

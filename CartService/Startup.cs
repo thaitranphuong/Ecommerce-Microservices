@@ -1,6 +1,7 @@
 using CartService.Models;
 using CartService.Repositories;
 using CartService.Services;
+using CartService.SyncServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -37,15 +38,23 @@ namespace CartService
              options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
              new MySqlServerVersion(new Version(8, 0, 0))));
 
+            services.AddStackExchangeRedisCache(options =>
+            {
+                options.Configuration = Configuration.GetSection("Redis:ConnectionString").Value;
+            });
+
             services.AddTransient<IDbConnection>((sp) =>
             {
                 return new MySqlConnection(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<ICartItemService, CartItemService>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICacheService, CacheService>();
+            services.AddScoped<IGrpcProductService, GrpcProductService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -28,6 +28,12 @@ namespace BlogService.Repositories.Implements
             return await _context.Blogs.Find(filter).FirstOrDefaultAsync();
         }
 
+        public async Task<Blog> FindBySlug(string slug)
+        {
+            var filter = Builders<Blog>.Filter.Eq(b => b.Slug, slug);
+            return await _context.Blogs.Find(filter).FirstOrDefaultAsync();
+        }
+
         public async Task<List<Blog>> FindAll(string title, int page, int limit)
         {
             var filter = Builders<Blog>.Filter.Empty;
@@ -53,6 +59,15 @@ namespace BlogService.Repositories.Implements
                                             .Set(b => b.Content, blog.Content)
                                             .Set(b => b.Slug, blog.Slug)
                                             .Set(b => b.UpdatedTime, blog.UpdatedTime);
+
+            return (int)(await _context.Blogs.UpdateOneAsync(filter, update)).ModifiedCount;
+        }
+
+        public async Task<int> UpdateViewNumber(string id)
+        {
+            var blog = await FindById(id);
+            var filter = Builders<Blog>.Filter.Eq(b => b.ExternalId, id);
+            var update = Builders<Blog>.Update.Set(b => b.ViewNumber, blog.ViewNumber + 1);
 
             return (int)(await _context.Blogs.UpdateOneAsync(filter, update)).ModifiedCount;
         }

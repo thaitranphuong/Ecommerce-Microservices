@@ -58,6 +58,8 @@ namespace ProductService
                     settings.ApiSecret));
             });
 
+            services.AddGrpc();
+
             services.AddSingleton<IEventProcessor, EventProcessor>();
             services.AddHostedService<MessageConsumer>();
 
@@ -92,6 +94,7 @@ namespace ProductService
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcService<GrpcProductService>();
                 endpoints.MapControllers();
             });
         }
