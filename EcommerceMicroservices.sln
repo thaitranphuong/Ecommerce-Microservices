@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "ProductSe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogService", "BlogService\BlogService.csproj", "{D390F536-9A1D-4A72-A56F-17A0F179E0FA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CartService", "CartService\CartService.csproj", "{74207A85-06E9-4978-A9FF-227C3A07C57E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CartService", "CartService\CartService.csproj", "{74207A85-06E9-4978-A9FF-227C3A07C57E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OrderService", "OrderService\OrderService.csproj", "{3D84D865-1A08-4985-9E26-06C76438CB35}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74207A85-06E9-4978-A9FF-227C3A07C57E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D84D865-1A08-4985-9E26-06C76438CB35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D84D865-1A08-4985-9E26-06C76438CB35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D84D865-1A08-4985-9E26-06C76438CB35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D84D865-1A08-4985-9E26-06C76438CB35}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

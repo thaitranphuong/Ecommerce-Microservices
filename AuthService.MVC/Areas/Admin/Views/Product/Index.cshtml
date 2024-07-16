@@ -38,7 +38,7 @@
                     </thead>
                     <tbody>
                         @{
-                            var i = (Model.Page - 1) * Model.ListResult.Count + 1;
+                            var i = (Model.Page - 1) * 4 + 1;
                             foreach (var item in Model.ListResult)
                             {
                                 <tr>

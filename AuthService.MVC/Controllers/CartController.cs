@@ -1,6 +1,7 @@
 ﻿using AuthService.MVC.Constants;
 using AuthService.MVC.Helpers;
 using AuthService.MVC.Models;
+using AuthService.MVC.Models.Pagination;
 using AuthService.MVC.SyncServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -26,12 +27,25 @@ namespace AuthService.MVC.Controllers
 
         public async Task<IActionResult> Index()
         {
+            var voucher = new VoucherOutput();
+            var response = await _apiService.GetAsync($"/voucher/get-all-of-customer-page?name=&page=1&limit=100");
+            if (response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+                voucher = JsonConvert.DeserializeObject<VoucherOutput>(content);
+            }
+            else
+            {
+                voucher.ListResult = new List<VoucherViewModel>();
+            }
+            ViewData["VoucherList"] = voucher.ListResult;
+
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
                 return NotFound("User not found");
             }
-            var response = await _apiService.GetAsync($"/cart/get-all/{user.Id}");
+            response = await _apiService.GetAsync($"/cart/get-all/{user.Id}");
             if (response.IsSuccessStatusCode)
             {
                 var content = await response.Content.ReadAsStringAsync();
