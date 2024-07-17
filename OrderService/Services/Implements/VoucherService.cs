@@ -30,9 +30,9 @@ namespace OrderService.Services.Implements
         {
             var vouchers = await _voucherRepository.FindAll(name, page, limit);
             var voucherDtos = new List<VoucherDto>();
-            foreach (var category in vouchers)
+            foreach (var voucher in vouchers)
             {
-                voucherDtos.Add(_mapper.Map<VoucherDto>(category));
+                voucherDtos.Add(_mapper.Map<VoucherDto>(voucher));
             }
             VoucherOutput output = new VoucherOutput();
             output.Name = name;

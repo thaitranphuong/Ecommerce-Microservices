@@ -47,6 +47,8 @@ namespace OrderService
 
             services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
+            services.AddScoped<IOrderService, OrderServices>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

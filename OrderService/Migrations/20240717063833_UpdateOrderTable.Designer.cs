@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderService.Models;
 
 namespace OrderService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240717063833_UpdateOrderTable")]
+    partial class UpdateOrderTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +49,7 @@ namespace OrderService.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");
 
-                    b.Property<int?>("VoucherId")
+                    b.Property<int>("VoucherId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -109,7 +111,9 @@ namespace OrderService.Migrations
                 {
                     b.HasOne("OrderService.Models.Voucher", "Voucher")
                         .WithMany("Orders")
-                        .HasForeignKey("VoucherId");
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Voucher");
                 });

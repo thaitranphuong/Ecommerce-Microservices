@@ -79,4 +79,20 @@
     </div>
 </div>
 
+<script>
+    var vouchers = [];
+</script>
 
+@foreach (var voucher in Model)
+{
+    <script>
+        vouchers = [
+                ...vouchers,
+                {
+                    id: '@(voucher.Id)',
+                    discountPercent: '@(voucher.DiscountPercent)',
+                    name: '@(voucher.Name)'
+                }
+            ]
+    </script>
+}

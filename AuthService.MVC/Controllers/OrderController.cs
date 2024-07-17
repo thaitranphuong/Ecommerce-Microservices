@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using AuthService.MVC.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,19 @@ namespace AuthService.MVC.Controllers
             return View();
         }
 
+        [HttpGet]
         public IActionResult Checkout()
         {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Checkout([FromForm] CheckoutViewModel checkoutViewModel)
+        {
+            var orderViewModel = checkoutViewModel.Order;
+            var orderDetailsViewModel = checkoutViewModel.OrderDetails;
+            orderViewModel.OrderDetails = orderDetailsViewModel;
+            
             return View();
         }
     }

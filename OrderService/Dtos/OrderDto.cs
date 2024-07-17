@@ -1,10 +1,12 @@
 ﻿using OrderService.Constants;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace OrderService.Models
+namespace OrderService.Dtos
 {
-    public class Order
+    public class OrderDto
     {
         public int Id { get; set; }
 
@@ -22,12 +24,14 @@ namespace OrderService.Models
 
         public PaymentMethod PaymentMethod { get; set; }
 
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public int VoucherId { get; set; }
 
-        public int? VoucherId { get; set; }
+        public string VoucherName { get; set; }
 
-        public Voucher Voucher { get; set; }
+        public float VoucherDiscountPercent { get; set; }
 
         public string UserId { get; set; }
+
+        public ICollection<OrderDetailDto> OrderDetails { get; set; }
     }
 }

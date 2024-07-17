@@ -23,7 +23,8 @@ namespace OrderService.Models
             modelBuilder.Entity<Order>(entity => {
                 entity.HasOne(o => o.Voucher)
                         .WithMany(v => v.Orders)
-                        .HasForeignKey(o => o.VoucherId);
+                        .HasForeignKey(o => o.VoucherId)
+                        .IsRequired(false);
             });
 
             modelBuilder.Entity<OrderDetail>(entity => {

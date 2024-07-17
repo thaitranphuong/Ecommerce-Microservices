@@ -1,50 +1,70 @@
 ﻿@model IEnumerable<AuthService.MVC.Models.CartItemViewModel>
 
-    @foreach (var cartItem in Model)
-    {
-        <tr>
-             <td>
-                <input type="checkbox" class="cart-item" value="@cartItem.ProductId"/>
-            </td>
-            <th scope="row">
-                <div class="d-flex align-items-center">
-                    <img src="@cartItem.Thumbnail" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+@foreach (var cartItem in Model)
+{
+    <tr>
+        <td>
+            <input onclick="handleChooseCartItem(event.target)" type="checkbox" class="cart-item" value="@cartItem.ProductId" />
+        </td>
+        <th scope="row">
+            <div class="d-flex align-items-center">
+                <img src="@cartItem.Thumbnail" class="img-fluid me-5 rounded-circle" style="width: 80px; height: 80px;" alt="">
+            </div>
+        </th>
+        <td>
+            <p class="mb-0 mt-4">@cartItem.Name</p>
+        </td>
+        <td>
+            <p class="mb-0 mt-4">$@Math.Round(cartItem.Price, 2) / kg</p>
+        </td>
+        <td>
+            <div class="input-group quantity mt-4" style="width: 120px;">
+                <div class="input-group-btn">
+                    <button onclick="handleUpdateCartItem('@cartItem.UserId', '@cartItem.ProductId', '@(cartItem.Quantity - 1)')" class="btn btn-sm btn-minus rounded-circle bg-light border">
+                        <i class="fa fa-minus"></i>
+                    </button>
                 </div>
-            </th>
-            <td>
-                <p class="mb-0 mt-4">@cartItem.Name</p>
-            </td>
-            <td>
-                <p class="mb-0 mt-4">$@cartItem.Price / kg</p>
-            </td>
-            <td>
-                <div class="input-group quantity mt-4" style="width: 120px;">
-                    <div class="input-group-btn">
-                        <button onclick="handleUpdateCartItem('@cartItem.UserId', '@cartItem.ProductId', '@(cartItem.Quantity - 1)')" class="btn btn-sm btn-minus rounded-circle bg-light border">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                    <input onchange="handleUpdateCartItem('@cartItem.UserId', '@cartItem.ProductId', event.target.value)" type="text" class="form-control form-control-sm text-center border-0" value="@(cartItem.Quantity)">
-                    <div class="input-group-btn">
-                        <button onclick="handleUpdateCartItem('@cartItem.UserId', '@cartItem.ProductId', '@(cartItem.Quantity + 1)')" class="btn btn-sm btn-plus rounded-circle bg-light border">
-                            <i class="fa fa-plus"></i>
-                        </button>
-                    </div>
+                <input onchange="handleUpdateCartItem('@cartItem.UserId', '@cartItem.ProductId', event.target.value)" type="text" class="form-control form-control-sm text-center border-0" value="@(cartItem.Quantity)">
+                <div class="input-group-btn">
+                    <button onclick="handleUpdateCartItem('@cartItem.UserId', '@cartItem.ProductId', '@(cartItem.Quantity + 1)')" class="btn btn-sm btn-plus rounded-circle bg-light border">
+                        <i class="fa fa-plus"></i>
+                    </button>
                 </div>
-            </td>
-            <td>
-                <p class="mb-0 mt-4">$@(cartItem.Price * cartItem.Quantity)</p>
-            </td>
-            <td>
-                <button onclick="handleDeleteCartItem('@cartItem.UserId', '@cartItem.ProductId')" class="btn btn-md rounded-circle bg-light border mt-4">
-                    <i class="fa fa-times text-danger"></i>
-                </button>
-            </td>
+            </div>
+        </td>
+        <td>
+            <p class="mb-0 mt-4">$@Math.Round(cartItem.Price * cartItem.Quantity, 2)</p>
+        </td>
+        <td>
+            <button onclick="handleDeleteCartItem('@cartItem.UserId', '@cartItem.ProductId')" class="btn btn-md rounded-circle bg-light border mt-4">
+                <i class="fa fa-times text-danger"></i>
+            </button>
+        </td>
 
-        </tr>
-    }
+    </tr>
+}
+
+<script>
+    var cartItemElements = document.querySelectorAll(".cart-item");
+    var cartItems = [];
+</script>
+
+@foreach (var cartItem in Model)
+{
+<script>
+        cartItems = [
+            ...cartItems,
+            {
+                userId: '@(cartItem.UserId)',
+                productId: '@(cartItem.ProductId)',
+                price: '@(cartItem.Price)',
+                quantity: '@(cartItem.Quantity)',
+                total: '@(cartItem.Price * cartItem.Quantity)',
+                name: '@(cartItem.Name)',
+                thumbnail: '@(cartItem.Thumbnail)',
+            }
+        ]
+</script>
+}
 
 
-
-
-   
