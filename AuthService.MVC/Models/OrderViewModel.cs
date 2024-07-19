@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AuthService.MVC.Constants;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,9 +20,9 @@ namespace AuthService.MVC.Models
 
         public string PhoneNumber { get; set; }
 
-        public int Status { get; set; }
+        public OrderStatus Status { get; set; }
 
-        public int PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
 
         public int VoucherId { get; set; }
 

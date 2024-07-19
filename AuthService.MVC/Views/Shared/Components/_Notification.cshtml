@@ -1,0 +1,227 @@
+﻿
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+<ul class="notificationss"></ul>
+<div class="buttons body">
+    <button class="btn1" id="success">Success</button>
+    <button class="btn1" id="error">Error</button>
+</div>
+
+<style>
+
+    /* Import Google font - Poppins */
+    @@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+
+    .body {
+        display: none;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+    }
+
+    .notificationss {
+        position: fixed;
+        top: 200px;
+        right: 20px;
+        z-index: 10;
+    }
+
+        .notificationss :where(.toasts, .column) {
+            display: flex;
+            align-items: center;
+        }
+
+        .notificationss .toasts {
+            width: 400px;
+            position: relative;
+            overflow: hidden;
+            list-style: none;
+            border-radius: 4px;
+            padding: 16px 17px;
+            margin-bottom: 10px;
+            background: #ffffff;
+            justify-content: space-between;
+            animation: show_toast 0.3s ease forwards;
+            box-shadow: 1px 1px 5px 1px #ccc
+        }
+
+    @@keyframes show_toast {
+        0% {
+            transform: translateX(100%);
+        }
+
+        40% {
+            transform: translateX(-5%);
+        }
+
+        80% {
+            transform: translateX(0%);
+        }
+
+        100% {
+            transform: translateX(-10px);
+        }
+    }
+
+    .notificationss .toasts.hide {
+        animation: hide_toast 0.3s ease forwards;
+    }
+
+    @@keyframes hide_toast {
+        0% {
+            transform: translateX(-10px);
+        }
+
+        40% {
+            transform: translateX(0%);
+        }
+
+        80% {
+            transform: translateX(-5%);
+        }
+
+        100% {
+            transform: translateX(calc(100% + 20px));
+        }
+    }
+
+    .toasts::before {
+        position: absolute;
+        content: "";
+        height: 3px;
+        width: 100%;
+        bottom: 0px;
+        left: 0px;
+        animation: progress 5s linear forwards;
+    }
+
+    @@keyframes progress {
+        100% {
+            width: 0%;
+        }
+    }
+
+    .toasts.success::before, .btn1#success {
+        background: #0ABF30;
+    }
+
+    .toasts.error::before, .btn1#error {
+        background: #E24D4C;
+    }
+
+    .toasts.warning::before, .btn1#warning {
+        background: #E24D4C;
+    }
+
+    .toasts.info::before, .btn1#info {
+        background: #3498DB;
+    }
+
+    .toasts .column i {
+        font-size: 1.75rem;
+    }
+
+    .toasts.success .column i {
+        color: #0ABF30;
+    }
+
+    .toasts.error .column i {
+        color: #E24D4C;
+    }
+
+    .toasts.warning .column i {
+        color: #E24D4C;
+    }
+
+    .toasts.info .column i {
+        color: #3498DB;
+    }
+
+    .toasts .column span {
+        font-size: 1.07rem;
+        margin-left: 12px;
+    }
+
+    .toasts i:last-child {
+        color: #aeb0d7;
+        cursor: pointer;
+    }
+
+        .toasts i:last-child:hover {
+            color: #000000;
+        }
+
+    .buttons .btn1 {
+        border: none;
+        outline: none;
+        cursor: pointer;
+        margin: 0 5px;
+        color: #fff;
+        font-size: 1.2rem;
+        padding: 10px 20px;
+        border-radius: 4px;
+    }
+
+    @@media screen and (max-width: 530px) {
+        .notificationss {
+            width: 95%;
+        }
+
+            .notificationss .toasts {
+                width: 100%;
+                font-size: 1rem;
+                margin-left: 20px;
+            }
+
+        .buttons .btn1 {
+            margin: 0 1px;
+            font-size: 1.1rem;
+            padding: 8px 15px;
+        }
+    }
+</style>
+
+<script>
+    const notificationss = document.querySelector(".notificationss"),
+        buttons = document.querySelectorAll(".buttons .btn1");
+
+    // Object containing details for different types of toasts
+    const toastDetails = {
+        timer: 5000,
+        success: {
+            icon: 'fa-circle-check',
+            text: 'Add product to cart successfully',
+        },
+        error: {
+            icon: 'fa-circle-xmark',
+            text: 'Add product to cart failed',
+        }
+    }
+
+    const removeToast = (toast) => {
+        toast.classList.add("hide");
+        if (toast.timeoutId) clearTimeout(toast.timeoutId); // Clearing the timeout for the toast
+        setTimeout(() => toast.remove(), 500); // Removing the toast after 500ms
+    }
+
+    const createToast = (id) => {
+        // Getting the icon and text for the toast based on the id passed
+        const { icon, text } = toastDetails[id];
+        const toast = document.createElement("li"); // Creating a new 'li' element for the toast
+        toast.className = `toasts ${id}`; // Setting the classes for the toast
+        // Setting the inner HTML for the toast
+        toast.innerHTML = `<div #ccc" class="column">
+                         <i class="fa-solid ${icon}"></i>
+                         <span>${text}</span>
+                      </div>`;
+        notificationss.appendChild(toast); // Append the toast to the notification ul
+        // Setting a timeout to remove the toast after the specified duration
+        toast.timeoutId = setTimeout(() => removeToast(toast), toastDetails.timer);
+    }
+
+    // Adding a click event listener to each button to create a toast when clicked
+    buttons.forEach(btn1 => {
+        btn1.addEventListener("click", () => createToast(btn1.id));
+    });
+</script>

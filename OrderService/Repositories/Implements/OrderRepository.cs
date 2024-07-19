@@ -27,29 +27,46 @@ namespace OrderService.Repositories.Implements
 
         public async Task<List<Order>> FindAll(int page, int limit, OrderStatus status = OrderStatus.ALL)
         {
-            return await _context.Orders
-                    .Where(o => o.Status == status)
+            if (status != OrderStatus.ALL)
+                return await _context.Orders.Include(o => o.OrderDetails)
+                   .Where(o => o.Status == status)
+                   .Skip((page - 1) * limit)
+                   .Take(limit)
+                   .ToListAsync();
+
+            return await _context.Orders.Include(o => o.OrderDetails)
                     .Skip((page - 1) * limit)
                     .Take(limit)
                     .ToListAsync();
+
+           
 
         }
 
         public async Task<Order> FindById(int id)
         {
-            return await _context.Orders.FindAsync(id);
+            return await _context.Orders.Include(o => o.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
         }
 
-        public async Task<List<Order>> FindByStatus(OrderStatus status)
+        public async Task<List<Order>> FindByStatus(OrderStatus status = OrderStatus.ALL)
         {
-            return await _context.Orders
+            if (status == OrderStatus.ALL)
+                return await _context.Orders.Include(o => o.OrderDetails)
+                    .ToListAsync();
+
+            return await _context.Orders.Include(o => o.OrderDetails)
                     .Where(o => o.Status == status)
                     .ToListAsync();
         }
 
         public async Task<List<Order>> FindByUserIdAndStatus(string userId, OrderStatus status = OrderStatus.ALL)
         {
-            return await _context.Orders
+            if (status == OrderStatus.ALL)
+                return await _context.Orders.Include(o => o.OrderDetails)
+                    .Where(o => o.UserId == userId)
+                    .ToListAsync();
+
+            return await _context.Orders.Include(o => o.OrderDetails)
                     .Where(o => o.Status == status && o.UserId == userId)
                     .ToListAsync();
         }

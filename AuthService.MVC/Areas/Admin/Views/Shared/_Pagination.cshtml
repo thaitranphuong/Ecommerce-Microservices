@@ -49,13 +49,13 @@
             <input name="name" value="@Model.Name" hidden />
             <input name="page" value="@(Model.Page + 1)" hidden />
             <input name="title" value="@Model.Title" hidden />
-            @if (Model.Page == Model.TotalPage)
+            @if (Model.Page < Model.TotalPage)
             {
-                <div href="#" class="btn btn-dark rounded" style="margin-right: 10px; cursor: auto">&raquo;</div>
+                <button href="#" class="btn btn-primary rounded" style="margin-right: 10px">&raquo;</button>
             }
             else
             {
-                <button href="#" class="btn btn-primary rounded" style="margin-right: 10px">&raquo;</button>
+                <div href="#" class="btn btn-dark rounded" style="margin-right: 10px; cursor: auto">&raquo;</div>
             }
         </form>
     </div>

@@ -8,11 +8,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using OrderService.AsyncServices;
 using OrderService.Models;
 using OrderService.Repositories;
 using OrderService.Repositories.Implements;
 using OrderService.Services;
 using OrderService.Services.Implements;
+using OrderService.SyncServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,6 +51,8 @@ namespace OrderService
             services.AddScoped<IVoucherRepository, VoucherRepository>();
             services.AddScoped<IOrderService, OrderServices>();
             services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IGrpcProductService, GrpcProductService>();
+            services.AddScoped<IMessageProducer, MessageProducer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

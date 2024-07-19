@@ -29,4 +29,7 @@
 	  </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+	  <Protobuf Include="Protos\product.proto" GrpcServices="Client" />
+  </ItemGroup>
 </Project>

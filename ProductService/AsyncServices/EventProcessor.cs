@@ -1,7 +1,6 @@
-﻿using AuthService.MVC.Dtos;
+﻿using ProductService.Dtos;
 using Microsoft.Extensions.DependencyInjection;
 using ProductService.Constants;
-using ProductService.Dtos;
 using ProductService.Services;
 using System;
 using System.Text.Json;

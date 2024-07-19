@@ -27,10 +27,10 @@ namespace OrderService.Controllers
         }
 
         [HttpGet]
-        [Route("get/{userId}")]
-        public async Task<IActionResult> Get(int userId)
+        [Route("get/{id}")]
+        public async Task<IActionResult> Get(int id)
         {
-            OrderDto dto = await _orderService.FindById(userId);
+            OrderDto dto = await _orderService.FindById(id);
             if (dto != null) return Ok(dto);
             else return StatusCode(404);
         }

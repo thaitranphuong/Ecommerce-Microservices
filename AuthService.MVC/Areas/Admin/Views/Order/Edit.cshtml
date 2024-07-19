@@ -1,8 +1,11 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model AuthService.MVC.Models.OrderViewModel
+
+
 @{
+    var Status = new AuthService.MVC.Models.ToastifyModel() { Status = AuthService.MVC.Constants.NotificationType.Undefied, Message = "" };
 }
+
+<partial name="_Toastify" model="@Status" />
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -10,8 +13,8 @@
 <hr />
 <h5 class="font-weight-bolder text-success"><i class="fa fa-location-dot"></i> Delivery address</h5>
 <div class="form-row font-weight-bold mb-4">
-    <div class="col-md-4">Trần Phương Thái (0235456561)</div>
-    <div class="col-md-8">123 đường Nguyễn Văn Linh, Phường Trung Kiên, Quận Thốt Nốt, Thành Phố Cần Thơ</div>
+    <div class="col-md-4">@Model.CustomerName (@Model.PhoneNumber)</div>
+    <div class="col-md-8">@Model.Address</div>
 </div>
 <div>
     <div class="table-responsive">
@@ -21,53 +24,55 @@
                     <th scope="col">Products</th>
                     <th scope="col">Name</th>
                     <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Weight</th>
                     <th scope="col">Total</th>
                 </tr>
             </thead>
             <tbody>
+                @foreach (var orderDetail in Model.OrderDetails)
+                {
+                    <tr>
+                        <th scope="row">
+                            <div class="d-flex align-items-center mt-2">
+                                <img src="@orderDetail.Thumbnail" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
+                            </div>
+                        </th>
+                        <td class="py-5">@orderDetail.Name</td>
+                        <td class="py-5">$@Math.Round(orderDetail.Price, 2)</td>
+                        <td class="py-5">@orderDetail.Quantity kg</td>
+                        <td class="py-5">$@Math.Round(orderDetail.Price * orderDetail.Quantity, 2)</td>
+                    </tr>
+                }
                 <tr>
-                    <th scope="row">
-                        <div class="d-flex align-items-center mt-2">
-                            <img src="~/img/vegetable-item-2.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                        </div>
-                    </th>
-                    <td class="py-5">Awesome Brocoli</td>
-                    <td class="py-5">$69.00</td>
-                    <td class="py-5">2</td>
-                    <td class="py-5">$138.00</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <div class="d-flex align-items-center mt-2">
-                            <img src="~/img/vegetable-item-5.jpg" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                        </div>
-                    </th>
-                    <td class="py-5">Potatoes</td>
-                    <td class="py-5">$69.00</td>
-                    <td class="py-5">2</td>
-                    <td class="py-5">$138.00</td>
-                </tr>
-                <tr>
-                    <th scope="row">
-                        <div class="d-flex align-items-center mt-2">
-                            <img src="~/img/vegetable-item-3.png" class="img-fluid rounded-circle" style="width: 90px; height: 90px;" alt="">
-                        </div>
-                    </th>
-                    <td class="py-5">Big Banana</td>
-                    <td class="py-5">$69.00</td>
-                    <td class="py-5">2</td>
-                    <td class="py-5">$138.00</td>
-                </tr>
-                <tr>
-                    <td class="py-5">
-                        <span class="text-danger" style="padding: 10px; border: 1px solid red; font-size: 20px">Pending</span>
-                        @*<span class="text-info" style="padding: 10px; border: 1px solid #00d8ff; font-size: 20px">Delivering</span>
-                        <span class="text-success" style="padding: 10px; border: 1px solid #00a522; font-size: 20px">Received</span>
-                        <span class="text-dark" style="padding: 10px; border: 1px solid gray; font-size: 20px">Canceled</span>*@
+                    <td class="py-5" id="status">
+                        @{
+                            if (Model.Status == AuthService.MVC.Constants.OrderStatus.PENDING)
+                            {
+                                <span class="text-danger" style="padding: 10px; border: 1px solid red; font-size: 20px">Pending</span>
+                            }
+                            if (Model.Status == AuthService.MVC.Constants.OrderStatus.DELIVERING)
+                            {
+                                <span class="text-info" style="padding: 10px; border: 1px solid #00d8ff; font-size: 20px">Delivering</span>
+                            }
+                            if (Model.Status == AuthService.MVC.Constants.OrderStatus.RECEIVED)
+                            {
+                                <span class="text-success" style="padding: 10px; border: 1px solid #00a522; font-size: 20px">Received</span>
+                            }
+                            if (Model.Status == AuthService.MVC.Constants.OrderStatus.CANCELED)
+                            {
+                                <span class="text-dark" style="padding: 10px; border: 1px solid gray; font-size: 20px">Canceled</span>
+                            }
+                        }
                     </td>
                     <td class="py-5">
-                        <span class="text-info" style="padding: 10px; border: 1px solid green; font-size: 20px">VNPAY</span>
+                        @{
+                            var paymentMethod = "COD";
+                            if (Model.PaymentMethod == AuthService.MVC.Constants.PaymentMethod.VNPAY)
+                                paymentMethod = "VNPAY";
+                            if (Model.PaymentMethod == AuthService.MVC.Constants.PaymentMethod.PAYPAL)
+                                paymentMethod = "PAYPAL";
+                        }
+                        <span class="text-info" style="padding: 10px; border: 1px solid green; font-size: 20px">@paymentMethod</span>
                     </td>
                     <td class="py-5"></td>
                     <td class="py-5">
@@ -86,26 +91,57 @@
                     </td>
                     <td class="py-5"></td>
                     <td class="py-5"></td>
-                    <td class="py-5">
-                        @*<div class="d-inline-block row g-4 text-center align-items-center justify-content-center pt-4">
-                            <form>
-                                <button type="button" class="btn btn-info py-3 px-4 w-100 text-white">Deliver</button>
-                            </form>
-                        </div>*@
-                        <div class="d-inline-block row g-4 text-center align-items-center justify-content-center pt-4">
-                            <form>
-                                <button type="button" class="btn btn-danger py-3 px-4 w-100 text-white">Cancle</button>
-                            </form>
-                        </div>
-                        <div class="d-inline-block row g-4 text-center align-items-center justify-content-center pt-4 ml-3" style="margin-right: -100px">
-                            <form>
-                                <button type="button" class="btn btn-success py-3 px-4 w-100 text-white">Brow</button>
-                            </form>
-                        </div>
+                    <td class="py-5" id="btn-action">
+                        @if (Model.Status == AuthService.MVC.Constants.OrderStatus.PENDING)
+                        {
+                            <div class="d-inline-block row g-4 text-center align-items-center justify-content-center pt-4">
+                                <button onclick="handleOrder('@AuthService.MVC.Constants.OrderStatus.CANCELED')" type="button" class="btn btn-danger py-3 px-4 w-100 text-white">Cancle</button>
+                            </div>
+                            <div class="d-inline-block row g-4 text-center align-items-center justify-content-center pt-4 ml-3" style="margin-right: -100px">
+                                <button onclick="handleOrder('@AuthService.MVC.Constants.OrderStatus.DELIVERING')" type="button" class="btn btn-success py-3 px-4 w-100 text-white">Browse</button>
+                            </div>
+                        }
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
-
 </div>
+
+<script>
+
+
+    const handleOrder = (action) => {
+        var orderId = '@Model.Id';
+        var actionMessage = action === 'CANCELED' ? 'Cancel' : 'Browse';
+        var formData = new FormData();
+        formData.append("Id", orderId);
+        formData.append("Status", action);
+        $.ajax({
+            url: "/Admin/Order/Update",
+            type: "PUT",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: (response) => {
+                toastDetails.success = {
+                    icon: 'fa-circle-check',
+                    text: `${actionMessage} the order successfully!`,
+                }
+                btnSuccess.click();
+                var html = action === 'CANCELED' ? `<span class="text-dark" style="padding: 10px; border: 1px solid gray; font-size: 20px">Canceled</span>` : `<span class="text-info" style="padding: 10px; border: 1px solid #00d8ff; font-size: 20px">Delivering</span>`;
+                document.getElementById('status').innerHTML = html;
+                document.getElementById('btn-action').innerHTML = '';
+            },
+            error: (xhr, status, error) => {
+                toastDetails.success = {
+                    icon: 'fa-circle-xmart',
+                    text: `${actionMessage} the order failed`,
+                }
+                btnError.click();
+            }
+        })
+    }
+
+
+</script>

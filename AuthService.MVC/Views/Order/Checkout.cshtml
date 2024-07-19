@@ -1,10 +1,8 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
+﻿@{
+    var isNoCheckout = ViewBag.IsNoCheckout != null ? ViewBag.IsNoCheckout : "";
 }
 
-
+<partial name="Components/_Notification" />
 <br />
 <!-- Checkout Page Start -->
 <div class="container-fluid py-5">
@@ -326,9 +324,24 @@
                 `;
             })
 
-            console.log(userIdInput.value);
+            paymentMethodInputs.forEach(item => {
+                if (item.checked && `${item.value}` !== '0') {
+                    alert(item.value)
+                    event.preventDefault();
+                }
+            })
             
-           /* event.preventDefault();*/
         });
+
+
+    var btnError = document.getElementById("error");
+    const isCheckout = '@isNoCheckout';
+    if (!!isCheckout) {
+        toastDetails.error =  {
+                icon: 'fa-circle-xmark',
+                text: 'Place order failed',
+            }
+        btnError.click();
+    }
     </script>
 }

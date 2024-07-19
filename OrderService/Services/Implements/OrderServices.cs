@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using OrderService.AsyncServices;
 using OrderService.Constants;
 using OrderService.Dtos;
 using OrderService.Dtos.Paginations;
 using OrderService.Models;
 using OrderService.Repositories;
+using OrderService.SyncServices;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -14,11 +16,15 @@ namespace OrderService.Services.Implements
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IMapper _mapper;
+        private readonly IGrpcProductService _grpcProductService;
+        private readonly IMessageProducer _messageProducer;
 
-        public OrderServices(IOrderRepository orderRepository, IMapper mapper)
+        public OrderServices(IOrderRepository orderRepository, IMapper mapper, IGrpcProductService grpcProductService, IMessageProducer messageProducer)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
+            _grpcProductService = grpcProductService;
+            _messageProducer = messageProducer;
         }
 
         public async Task<OrderOutput> FindAll(OrderStatus status, int page, int limit)
@@ -31,7 +37,12 @@ namespace OrderService.Services.Implements
                 var orderDetailDtos = new List<OrderDetailDto>();
                 foreach(var orderDetail in order.OrderDetails)
                 {
-                    orderDetailDtos.Add(_mapper.Map<OrderDetailDto>(orderDetail));
+                    var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
+                    orderDetailDto.Thumbnail = product.Thumbnail;
+                    orderDetailDto.Name = product.Name;
+                    orderDetailDto.Price = product.Price;
+                    orderDetailDtos.Add(orderDetailDto);
                 }
                 orderDto.OrderDetails = orderDetailDtos;
                 orderDtos.Add(orderDto);
@@ -54,7 +65,13 @@ namespace OrderService.Services.Implements
                 var orderDetailDtos = new List<OrderDetailDto>();
                 foreach (var orderDetail in order.OrderDetails)
                 {
-                    orderDetailDtos.Add(_mapper.Map<OrderDetailDto>(orderDetail));
+                    var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
+                    Console.WriteLine(product.Thumbnail);
+                    orderDetailDto.Thumbnail = product.Thumbnail;
+                    orderDetailDto.Name = product.Name;
+                    orderDetailDto.Price = product.Price;
+                    orderDetailDtos.Add(orderDetailDto);
                 }
                 orderDto.OrderDetails = orderDetailDtos;
                 orderDtos.Add(orderDto);
@@ -64,7 +81,21 @@ namespace OrderService.Services.Implements
 
         public async Task<OrderDto> FindById(int id)
         {
-            return _mapper.Map<OrderDto>(await _orderRepository.FindById(id));
+            var order = await _orderRepository.FindById(id);
+            var orderDto = _mapper.Map<OrderDto>(order);
+            var orderDetailDtos = new List<OrderDetailDto>();
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
+                Console.WriteLine(product.Thumbnail);
+                orderDetailDto.Thumbnail = product.Thumbnail;
+                orderDetailDto.Name = product.Name;
+                orderDetailDto.Price = product.Price;
+                orderDetailDtos.Add(orderDetailDto);
+            }
+            orderDto.OrderDetails = orderDetailDtos;
+            return orderDto;
         }
 
         public async Task<bool> Save(OrderDto dto)
@@ -73,18 +104,30 @@ namespace OrderService.Services.Implements
             if (dto.Id == 0)
             {
                 var order = _mapper.Map<Order>(dto);
+                order.CreatedTime = DateTime.Now;
+                order.UpdatedTime = DateTime.Now;
                 if (order.VoucherId == 0) order.VoucherId = null;
                 var orderDetails = new List<OrderDetail>();
                 foreach(var detail in dto.OrderDetails)
                 {
                     orderDetails.Add(_mapper.Map<OrderDetail>(detail));
                 }
-                return await _orderRepository.CreateOne(order) > 0;
+                result = await _orderRepository.CreateOne(order) > 0;
+                if (result)
+                {
+                    foreach (var orderDetail in order.OrderDetails)
+                    {
+                        var publishDto = new CartItemPublishDto() { UserId = order.UserId, ProductId = orderDetail.ProductId };
+                        _messageProducer.SendMessage<CartItemPublishDto>(EventType.RemoveCartItem, publishDto);
+                    }
+                }
+                return result;
             }
             else
             {
                 Order order = await _orderRepository.FindById(dto.Id);
                 order.Status = dto.Status;
+                order.UpdatedTime = DateTime.Now;
                 result = await _orderRepository.SaveChange() > 0;
             }
             return result;

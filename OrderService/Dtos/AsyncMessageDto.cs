@@ -1,10 +1,10 @@
-﻿using ProductService.Constants;
+﻿using OrderService.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ProductService.Dtos
+namespace OrderService.Dtos
 {
     public class AsyncMessageDto<T>
     {
