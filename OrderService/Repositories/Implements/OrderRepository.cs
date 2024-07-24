@@ -30,11 +30,13 @@ namespace OrderService.Repositories.Implements
             if (status != OrderStatus.ALL)
                 return await _context.Orders.Include(o => o.OrderDetails)
                    .Where(o => o.Status == status)
+                   .OrderByDescending(o => o.CreatedTime)
                    .Skip((page - 1) * limit)
                    .Take(limit)
                    .ToListAsync();
 
             return await _context.Orders.Include(o => o.OrderDetails)
+                    .OrderByDescending(o => o.CreatedTime)
                     .Skip((page - 1) * limit)
                     .Take(limit)
                     .ToListAsync();
@@ -64,10 +66,12 @@ namespace OrderService.Repositories.Implements
             if (status == OrderStatus.ALL)
                 return await _context.Orders.Include(o => o.OrderDetails)
                     .Where(o => o.UserId == userId)
+                    .OrderByDescending(o => o.CreatedTime)
                     .ToListAsync();
 
             return await _context.Orders.Include(o => o.OrderDetails)
                     .Where(o => o.Status == status && o.UserId == userId)
+                    .OrderByDescending(o => o.CreatedTime)
                     .ToListAsync();
         }
 

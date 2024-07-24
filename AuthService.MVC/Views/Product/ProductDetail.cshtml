@@ -34,9 +34,6 @@
                         </div>
                     </div>
                     <div class="col-lg-8">
-                        <h4 class="fw-bold mb-3">@Model.Name</h4>
-                        <p class="mb-3">Category: @Model.CategoryName</p>
-                        <h5 class="fw-bold mb-3">@Model.Price $</h5>
                         <div class="d-flex mb-4">
                             @{
                                 var totalStar = 0;
@@ -46,7 +43,8 @@
                                     totalStar += comment.Star;
                                     count++;
                                 }
-                                var averageStar = (int)Math.Floor((float)totalStar / count);
+                                var averageStar = (int)Math.Ceiling((float)totalStar / count);
+                                if (count == 0) averageStar = 5;
                             }
                             @for (int i = 1; i <= averageStar; i++)
                             {
@@ -57,7 +55,10 @@
                                 <i class="fa fa-star"></i>
                             }
                         </div>
-                        <p class="mb-4">@Model.ShortDescription</p>
+                        <h4 class="fw-bold mb-3">@Model.Name</h4>
+                        <h5 class="fw-bold mb-3">$@Model.Price</h5>
+                        <p class="mb-4"><i>📃 Category: @Model.CategoryName.ToUpper()</i></p>
+                        <p class="mb-3">🔦 @Model.ShortDescription</p>
                         <div class="input-group quantity mb-5" style="width: 100px;">
                             <div class="input-group-btn">
                                 <button class="btn btn-sm btn-minus rounded-circle bg-light border">

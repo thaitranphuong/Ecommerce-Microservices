@@ -1,3 +1,4 @@
+using CartService.AsyncServices;
 using CartService.Models;
 using CartService.Repositories;
 using CartService.Services;
@@ -48,6 +49,8 @@ namespace CartService
                 return new MySqlConnection(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddSingleton<IEventProcessor, EventProcessor>();
+            services.AddHostedService<MessageConsumer>();
 
             services.AddAutoMapper(typeof(Startup));
 

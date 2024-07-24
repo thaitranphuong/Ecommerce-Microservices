@@ -101,6 +101,7 @@
                 </div>
             </div>
         </form>
+        <button id="paypal-button-container"></button>
     </div>
 </div>
 <!-- Checkout Page End -->
@@ -334,14 +335,32 @@
         });
 
 
-    var btnError = document.getElementById("error");
-    const isCheckout = '@isNoCheckout';
-    if (!!isCheckout) {
-        toastDetails.error =  {
-                icon: 'fa-circle-xmark',
-                text: 'Place order failed',
+        var btnError = document.getElementById("error");
+        const isCheckout = '@isNoCheckout';
+        if (!!isCheckout) {
+            toastDetails.error =  {
+                    icon: 'fa-circle-xmark',
+                    text: 'Place order failed',
+                }
+            btnError.click();
+        }
+    </script>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=AXtuXtSehx-tNWqVAfQIttso_Gb4RgIAJCQc1M4SajMzkYLFilh6zCmJ9zCo0zjCBR4AmAcV2iGLEqzl"></script>
+    <script>
+        paypal.Buttons({    
+            style: {
+                layout: 'vertical',
+                color: 'blue',
+                shape: 'rect',
+                label: 'paypal'
             }
-        btnError.click();
-    }
+        }).render('#paypal-button-container');
     </script>
 }
+
+@*
+    PayPal
+    tranphuongthai000@gmail.com
+    Tranphuongthai000@
+*@

@@ -15,16 +15,18 @@ namespace OrderService.Services.Implements
     public class OrderServices : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IVoucherService _voucherService;
         private readonly IMapper _mapper;
         private readonly IGrpcProductService _grpcProductService;
         private readonly IMessageProducer _messageProducer;
 
-        public OrderServices(IOrderRepository orderRepository, IMapper mapper, IGrpcProductService grpcProductService, IMessageProducer messageProducer)
+        public OrderServices(IOrderRepository orderRepository, IMapper mapper, IGrpcProductService grpcProductService, IMessageProducer messageProducer, IVoucherService voucherService)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
             _grpcProductService = grpcProductService;
             _messageProducer = messageProducer;
+            _voucherService = voucherService;
         }
 
         public async Task<OrderOutput> FindAll(OrderStatus status, int page, int limit)
@@ -67,7 +69,6 @@ namespace OrderService.Services.Implements
                 {
                     var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
-                    Console.WriteLine(product.Thumbnail);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
                     orderDetailDto.Price = product.Price;
@@ -88,7 +89,6 @@ namespace OrderService.Services.Implements
             {
                 var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
                 ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
-                Console.WriteLine(product.Thumbnail);
                 orderDetailDto.Thumbnail = product.Thumbnail;
                 orderDetailDto.Name = product.Name;
                 orderDetailDto.Price = product.Price;
@@ -106,6 +106,7 @@ namespace OrderService.Services.Implements
                 var order = _mapper.Map<Order>(dto);
                 order.CreatedTime = DateTime.Now;
                 order.UpdatedTime = DateTime.Now;
+                order.Status = OrderStatus.PENDING;
                 if (order.VoucherId == 0) order.VoucherId = null;
                 var orderDetails = new List<OrderDetail>();
                 foreach(var detail in dto.OrderDetails)
@@ -120,6 +121,13 @@ namespace OrderService.Services.Implements
                         var publishDto = new CartItemPublishDto() { UserId = order.UserId, ProductId = orderDetail.ProductId };
                         _messageProducer.SendMessage<CartItemPublishDto>(EventType.RemoveCartItem, publishDto);
                     }
+                    if (order.VoucherId != null)
+                    {
+                        var voucher = await _voucherService.FindById((int)order.VoucherId);
+                        voucher.UsedQuantity += 1;
+                        await _voucherService.Save(voucher);
+                    }
+
                 }
                 return result;
             }

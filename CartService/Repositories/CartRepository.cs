@@ -1,5 +1,6 @@
 ﻿using CartService.Models;
 using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
@@ -47,8 +48,9 @@ namespace CartService.Repositories
 
         public async Task<int> DeleteCartItem(string userId, int productId)
         {
+            Console.WriteLine(productId);
             var sql = "DELETE FROM CartItems WHERE UserId = @UserId AND ProductId = @ProductId";
-            return await _dbConnection.ExecuteAsync(sql, new { UserId = userId, ProductId = productId });
+            return await _dbConnection.ExecuteAsync(sql, new { userId, productId });
         }
     }
 }
