@@ -25,7 +25,8 @@ namespace AuthService.MVC.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Index(OrderStatus status = OrderStatus.ALL)
+        public async Task<IActionResult> Index(OrderStatus status = OrderStatus.ALL,
+                                                [FromQuery] bool isCheckout = false)
         {
             var user = await _userManager.GetUserAsync(User);
             var response = await _apiService.GetAsync($"/order/get-all-of-customer-page?status={status}&userId={user.Id}");
@@ -33,6 +34,7 @@ namespace AuthService.MVC.Controllers
             {
                 var content = await response.Content.ReadAsStringAsync();
                 var viewModel = JsonConvert.DeserializeObject<List<OrderViewModel>>(content);
+                if (isCheckout) ViewBag.IsCheckout = isCheckout;
                 return View(viewModel);
             }
             else
@@ -56,8 +58,7 @@ namespace AuthService.MVC.Controllers
             var response = await _apiService.PostAsync($"/order/create", orderViewModel);
             if (response.IsSuccessStatusCode)
             {
-                ViewBag.IsCheckout = true;
-                return Redirect("/Order/Index");
+                return Redirect("/Order/Index?isCheckout=true");
             }
             ViewBag.IsNoCheckout = true;
             return View();

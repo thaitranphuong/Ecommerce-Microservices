@@ -8,19 +8,21 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Web;
+
 namespace OrderService.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
     public class VnpayController : ControllerBase
     {
-        [HttpGet("create_payment")] //https://localhost:5011/api/Vnpay/create_payment?amount=1000&bankCode=NCB&locale=vn
-        public IActionResult CreatePayment([FromQuery] string amount, [FromQuery] string bankCode, [FromQuery] string locale)
+        [HttpGet("create_payment")] //https://localhost:5011/api/Vnpay/create_payment?amount=1000000&bankCode=NCB&locale=vn
+        public IActionResult CreatePayment([FromQuery] long amount, [FromQuery] string bankCode, [FromQuery] string locale)
         {
             try
             {
                 string orderType = "other";
-                long amountInCents = long.Parse(amount) * 100;
+                long amountInCents = amount * 100;
                 string vnpTxnRef = VnpayConfig.GetRandomNumber(8);
                 string vnpIpAddr = VnpayConfig.GetIpAddress(HttpContext.Request);
                 string vnpTmnCode = VnpayConfig.VnpTmnCode;
@@ -50,22 +52,36 @@ namespace OrderService.Controllers
                 vnpParams["vnp_ExpireDate"] = vnpExpireDate;
 
                 var sortedParams = vnpParams.OrderBy(p => p.Key);
-                var queryBuilder = new StringBuilder();
-                var hashDataBuilder = new StringBuilder();
-                foreach (var kvp in sortedParams)
+
+                List<string> fieldNames = vnpParams.Keys.Cast<string>().ToList();
+                fieldNames.Sort();
+                StringBuilder hashData = new StringBuilder();
+                StringBuilder query = new StringBuilder();
+                foreach (string fieldName in fieldNames)
                 {
-                    queryBuilder.Append(WebUtility.UrlEncode(kvp.Key)).Append('=').Append(WebUtility.UrlEncode(kvp.Value));
-                    hashDataBuilder.Append(kvp.Key).Append('=').Append(kvp.Value);
-                    if (!kvp.Equals(sortedParams.Last()))
+                    string fieldValue = vnpParams[fieldName]?.ToString();
+                    if (!string.IsNullOrEmpty(fieldValue))
                     {
-                        queryBuilder.Append('&');
-                        hashDataBuilder.Append('&');
+                        // Build hash data
+                        hashData.Append(fieldName);
+                        hashData.Append('=');
+                        hashData.Append(HttpUtility.UrlEncode(fieldValue, Encoding.ASCII));
+
+                        // Build query
+                        query.Append(HttpUtility.UrlEncode(fieldName, Encoding.ASCII));
+                        query.Append('=');
+                        query.Append(HttpUtility.UrlEncode(fieldValue, Encoding.ASCII));
+                        if (fieldName != fieldNames.Last())
+                        {
+                            query.Append('&');
+                            hashData.Append('&');
+                        }
                     }
                 }
 
-                string queryUrl = queryBuilder.ToString();
-                string vnpSecureHash = VnpayConfig.HmacSHA512(VnpayConfig.SecretKey, hashDataBuilder.ToString());
-                queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
+                string queryUrl = query.ToString();
+                string vnp_SecureHash = VnpayConfig.HmacSHA512(VnpayConfig.SecretKey, hashData.ToString());
+                queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
                 string paymentUrl = VnpayConfig.VnpPayUrl + "?" + queryUrl;
 
                 var dto = new VnpayDto

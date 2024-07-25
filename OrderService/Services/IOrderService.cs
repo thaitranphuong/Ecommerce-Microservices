@@ -12,5 +12,6 @@ namespace OrderService.Services
         Task<OrderDto> FindById(int id);
         Task<OrderOutput> FindAll(OrderStatus status, int page, int limit);
         Task<List<OrderDto>> FindAllByUserId(string userId, OrderStatus status);
+        Task<List<OrderDto>> FindAllByYear(int year);
     }
 }

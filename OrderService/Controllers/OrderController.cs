@@ -45,6 +45,14 @@ namespace OrderService.Controllers
         }
 
         [HttpGet]
+        [Route("get-all-by-year")]
+        public async Task<IActionResult> GetAllByYear([FromQuery] int year)
+        {
+            var dtos = await _orderService.FindAllByYear(year);
+            return Ok(dtos);
+        }
+
+        [HttpGet]
         [Route("get-all-of-customer-page")]
         public async Task<IActionResult> GetAllOfCustomerPage([FromQuery] OrderStatus status, [FromQuery] string userId)
         {

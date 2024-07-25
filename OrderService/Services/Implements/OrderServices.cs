@@ -80,6 +80,33 @@ namespace OrderService.Services.Implements
             return orderDtos;
         }
 
+        public async Task<List<OrderDto>> FindAllByYear(int year)
+        {
+            var orders = await _orderRepository.FindAllByYear(year);
+            var orderDtos = new List<OrderDto>();
+            foreach (var order in orders)
+            {
+                var orderDto = _mapper.Map<OrderDto>(order);
+                var orderDetailDtos = new List<OrderDetailDto>();
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
+                    orderDetailDto.Thumbnail = product.Thumbnail;
+                    orderDetailDto.Name = product.Name;
+                    orderDetailDto.Price = product.Price;
+                    orderDetailDtos.Add(orderDetailDto);
+                }
+                orderDto.OrderDetails = orderDetailDtos;
+                if (order.Voucher != null)
+                    orderDto.VoucherDiscountPercent = order.Voucher.DiscountPercent;
+                else
+                    orderDto.VoucherDiscountPercent = 0;
+                orderDtos.Add(orderDto);
+            }
+            return orderDtos;
+        }
+
         public async Task<OrderDto> FindById(int id)
         {
             var order = await _orderRepository.FindById(id);

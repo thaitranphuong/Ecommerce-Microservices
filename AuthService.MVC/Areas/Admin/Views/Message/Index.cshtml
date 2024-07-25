@@ -17,29 +17,34 @@
                 <div class="card mb-sm-3 mb-md-0 contacts_card">
                     <div class="card-body contacts_body">
                         <ui class="contacts">
-                            >
+                            @{ 
+                                var currentUser = await UserManager.GetUserAsync(User);
+                            }
                             @foreach (var user in Model)
                             {
-                                <li onclick="handleChooseUser(event)" class="list-user" data-user-id="@user.Id" data-user-avatar="@user.Avatar" data-user-name="@user.UserName">
-                                    <div class="d-flex bd-highlight">
-                                        <div class="img_cont">
-                                            @if (!string.IsNullOrEmpty(user.Avatar))
-                                            {
-                                                <img src="@user.Avatar" class="rounded-circle user_img">
-                                            }
-                                            else
-                                            {
-                                                <img src="~/img/avatar.jpg" class="rounded-circle user_img">
-                                            }
+                                if (user.Id != currentUser.Id)
+                                {
+                                    <li onclick="handleChooseUser(event)" class="list-user" data-user-id="@user.Id" data-user-avatar="@user.Avatar" data-user-name="@user.UserName">
+                                        <div class="d-flex bd-highlight">
+                                            <div class="img_cont">
+                                                @if (!string.IsNullOrEmpty(user.Avatar))
+                                                {
+                                                    <img src="@user.Avatar" class="rounded-circle user_img">
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/img/avatar.jpg" class="rounded-circle user_img">
+                                                }
+                                            </div>
+                                            <div class="user_info">
+                                                <span>@user.UserName</span>
+                                            </div>
                                         </div>
-                                        <div class="user_info">
-                                            <span>@user.UserName</span>
-                                        </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                }
                             }
                             </ul>
-                    </div>
+</div>
                     <div class="card-footer"></div>
                 </div>
             </div>

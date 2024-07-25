@@ -65,48 +65,40 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
-                            <p class="text-start text-dark font-weight-bolder">Choose payment method</p>
-                        </div>
-                    </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
-                            <div class="form-check text-start my-3">
-                                <input name="Order.PaymentMethod" type="radio" class="form-check-input bg-primary border-0" id="Payments-1" value="0">
-                                <label class="form-check-label" for="Payments-1">Cash On Delivery</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
-                            <div class="form-check text-start my-3">
-                                <input name="Order.PaymentMethod" type="radio" class="form-check-input bg-primary border-0" id="Delivery-1" value="1">
-                                <label class="form-check-label" for="Delivery-1">VNPAY</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
-                        <div class="col-12">
-                            <div class="form-check text-start my-3">
-                                <input name="Order.PaymentMethod" type="radio" class="form-check-input bg-primary border-0" id="Paypal-1" value="2">
-                                <label class="form-check-label" for="Paypal-1">Paypal</label>
-                            </div>
-                        </div>
-                    </div>
+                    <input name="Order.PaymentMethod" id="payment-method-input" type="text" value="0" hidden>
+
                     <div id="order-details"></div>
-                    <div class="row g-4 text-center align-items-center justify-content-center pt-4">
-                        <button type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+                    <div id="btn-submit-container" style="display: none">
+                        <div class="row g-4 text-center align-items-center justify-content-center border-bottom py-3">
+                            <div class="col-12">
+                                <p class="text-start text-dark font-weight-bolder">Choose payment method</p>
+                            </div>
+                        </div>
+                        <div class="order row g-4 text-center align-items-center justify-content-center pt-4">
+                            <button id="btn-submit" type="submit" class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Cash On Delevery</button>
+                        </div>
+                        <div class="order row g-4 text-center align-items-center justify-content-center pt-4">
+                            <button style="height: 55px; border-radius: 10px; background-color: #fff" class="border-secondary py-3 px-4 text-uppercase w-100 text-primary">
+                                <img src="~/img/vnpay.jfif" style="height: 150%; object-fit: cover" />
+                            </button>
+                        </div>
+                        <div class="order row g-4 text-center align-items-center justify-content-center pt-4">
+                            <div id="paypal-button-container"></div>
+                        </div>
                     </div>
                 </div>
             </div>
         </form>
-        <button id="paypal-button-container"></button>
+        <div id="btn-checkout-container" class="row g-4 text-center align-items-center justify-content-center pt-4">
+            <button class="btn border-secondary py-3 px-4 text-uppercase w-100 text-primary">Place Order</button>
+        </div>
     </div>
 </div>
+
 <!-- Checkout Page End -->
 
 @section Scripts {
+
     <script>
         const voucher = JSON.parse(localStorage.getItem('selectedVoucherItem'));
         const selectedCartItems = JSON.parse(localStorage.getItem('selectedCartItems'));
@@ -191,7 +183,7 @@
         const phoneInput = document.getElementById('phone');
         const voucherIdInput = document.getElementById('voucherId');
         const userIdInput = document.getElementById('userId');
-        const paymentMethodInputs = document.getElementsByName('Order.PaymentMethod');
+        const paymentMethodInput = document.getElementById('payment-method-input');
         const orderDetailsElement = document.getElementById('order-details');
 
         // Hàm tải dữ liệu từ JSON
@@ -265,7 +257,7 @@
             });
         }
 
-        form.addEventListener('submit', function (event) {
+        document.getElementById("btn-checkout-container").addEventListener('click', function (event) {
             if (streetInput.value === '') {
                 alert('Please enter street name!')
                 event.preventDefault();
@@ -302,17 +294,6 @@
                 return;
             }
 
-            let isCheck = false;
-            paymentMethodInputs.forEach(item => {
-                item.checked && (isCheck = true)
-            })
-
-            if (!isCheck) {
-                alert('Please choose payment method!')
-                event.preventDefault();
-                return;
-            }
-
             userIdInput.value = userId;
             voucherIdInput.value = !!voucher ? voucher.id : '';
             addressInput.value = streetInput.value + ', ' + wardInput.value + ', ' + districtInput.value + ', ' + cityInput.value;
@@ -325,13 +306,8 @@
                 `;
             })
 
-            paymentMethodInputs.forEach(item => {
-                if (item.checked && `${item.value}` !== '0') {
-                    alert(item.value)
-                    event.preventDefault();
-                }
-            })
-            
+            document.getElementById("btn-submit-container").style = "display: block";
+            this.style = "display: none";
         });
 
 
@@ -346,21 +322,44 @@
         }
     </script>
 
-    <script src="https://www.paypal.com/sdk/js?client-id=AXtuXtSehx-tNWqVAfQIttso_Gb4RgIAJCQc1M4SajMzkYLFilh6zCmJ9zCo0zjCBR4AmAcV2iGLEqzl"></script>
+
+    <script src="https://www.paypal.com/sdk/js?client-id=ASfT2VKSmgjDVHDjRoCrZ7pFLf7REl3Wgp8AkwpwlPsQ81d8uJ5dGRl8PswkO6y9-Mc7nUoKvBu5xxni&disable-funding=card"></script>
+
+
     <script>
-        paypal.Buttons({    
-            style: {
-                layout: 'vertical',
-                color: 'blue',
-                shape: 'rect',
-                label: 'paypal'
+        paypal.Buttons({
+            createOrder: function (data, actions) {
+                return actions.order.create({
+                    purchase_units: [{
+                        amount: {
+                            currency_code: "USD",
+                            value: (subtotal - (voucher ? voucher.discountPercent * subtotal / 100 : 0)).toFixed(2)
+                        },
+                        items: []
+                    }]
+                })
+            },
+            onApprove: function (data, action) {
+                return action.order.capture().then(function (response) {
+                    if (response.status === 'COMPLETED') {
+                        paymentMethodInput.value = '2';
+                        document.getElementById("btn-submit").click();
+                    }
+                })
             }
         }).render('#paypal-button-container');
+
     </script>
 }
 
 @*
     PayPal
     tranphuongthai000@gmail.com
-    Tranphuongthai000@
+    Tranphuongthai000@@
+
+    admin: sb-wlypv31874952@business.example.com
+            ,r#AlvK6
+
+    customer: sb-qpfl031287359@personal.example.com
+            PW'&}0Xk
 *@

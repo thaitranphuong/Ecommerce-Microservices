@@ -40,9 +40,15 @@ namespace OrderService.Repositories.Implements
                     .Skip((page - 1) * limit)
                     .Take(limit)
                     .ToListAsync();
+        }
 
-           
-
+        public async Task<List<Order>> FindAllByYear(int year)
+        {
+            return await _context.Orders
+                    .Include(o => o.OrderDetails)
+                    .Include(o => o.Voucher)
+                    .Where(o => o.CreatedTime.Year == year)
+                    .ToListAsync();
         }
 
         public async Task<Order> FindById(int id)
