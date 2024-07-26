@@ -20,18 +20,25 @@ namespace OrderService.AsyncServices
 
         public MessageProducer (IConfiguration configuration)
         {
-            _configuration = configuration;
-            _factory = new ConnectionFactory
+            try
             {
-                HostName = _configuration["RabbitMQ:HostName"],
-                UserName = _configuration["RabbitMQ:UserName"],
-                Password = _configuration["RabbitMQ:Password"],
-                VirtualHost = _configuration["RabbitMQ:VirtualHost"],
-                Port = int.Parse(_configuration["RabbitMQ:Port"])
-            };
-            _connection = _factory.CreateConnection();
-            _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: _orderServiceExchangeName, type: ExchangeType.Direct);
+                _configuration = configuration;
+                _factory = new ConnectionFactory
+                {
+                    HostName = _configuration["RabbitMQ:HostName"],
+                    UserName = _configuration["RabbitMQ:UserName"],
+                    Password = _configuration["RabbitMQ:Password"],
+                    VirtualHost = _configuration["RabbitMQ:VirtualHost"],
+                    Port = int.Parse(_configuration["RabbitMQ:Port"])
+                };
+                _connection = _factory.CreateConnection();
+                _channel = _connection.CreateModel();
+                _channel.ExchangeDeclare(exchange: _orderServiceExchangeName, type: ExchangeType.Direct);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public void SendMessage<T>(EventType eventType, T data)

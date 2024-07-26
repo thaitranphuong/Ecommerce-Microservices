@@ -93,7 +93,13 @@
                                             @if (order.Status == AuthService.MVC.Constants.OrderStatus.PENDING)
                                             {
                                                 <div id="@order.Id" style="position: absolute; left: 120px; top: 18px">
-                                                    <button onclick="handleCancelOrder('@order.Id')" id="btn-submit" class="btn btn-danger">Cancel</button>
+                                                    <button onclick="handleUpdateOrder('@order.Id', 4)" id="btn-submit" class="btn btn-danger">Cancel</button>
+                                                </div>
+                                            }
+                                            @if (order.Status == AuthService.MVC.Constants.OrderStatus.DELIVERING)
+                                            {
+                                                <div id="@order.Id" style="position: absolute; left: 120px; top: 18px">
+                                                    <button onclick="handleUpdateOrder('@order.Id', 3)" id="btn-submit" class="btn btn-success">Received</button>
                                                 </div>
                                             }
                                         </td>
@@ -111,21 +117,21 @@
 @section Scripts {
 
     <script>
-    var btnError = document.getElementById("error");
-    var btnSuccess = document.getElementById("success");
-    const isCheckout = '@isCheckout';
-    if (!!isCheckout) {
-        toastDetails.success =  {
-                icon: 'fa-circle-check',
-                text: 'Place order successfully',
-            }
-        btnSuccess.click();
-    }
+        var btnError = document.getElementById("error");
+        var btnSuccess = document.getElementById("success");
+        const isCheckout = '@isCheckout';
+        if (!!isCheckout) {
+            toastDetails.success =  {
+                    icon: 'fa-circle-check',
+                    text: 'Place order successfully',
+                }
+            btnSuccess.click();
+        }
 
-    const handleCancelOrder = (orderId) => {
+        const handleUpdateOrder = (orderId, status) => {
         var formData = new FormData();
         formData.append("Id", orderId);
-        formData.append("Status", 4);
+        formData.append("Status", status);
         $.ajax({
             url: "/Order/Update",
             type: "PUT",
@@ -135,17 +141,22 @@
             success: (response) => {
                 toastDetails.success = {
                     icon: 'fa-circle-check',
-                    text: 'Cancel order successfully',
+                    text: (status === 3 ? 'Receive': 'Cancel') + ' order successfully',
                 }
                 document.getElementById(orderId).style = "display: none";
-                document.getElementById('status-' + orderId).textContent = 'CANCEL';
-                document.getElementById('status-' + orderId).classList.add('text-dark');
+                if (status === 4) {
+                    document.getElementById('status-' + orderId).textContent = 'CANCEL';
+                    document.getElementById('status-' + orderId).classList.add('text-dark');
+                } else {
+                    document.getElementById('status-' + orderId).textContent = 'RECEIVED';
+                    document.getElementById('status-' + orderId).classList.add('text-success');
+                }
                 btnSuccess.click();
             },
             error: (xhr, status, error) => {
                 toastDetails.success = {
                     icon: 'fa-circle-xmart',
-                    text: 'Cancel order failed',
+                    text: (status === 3 ? 'Receive' : 'Cancel') + ' order failed',
                 }
                 btnError.click();
             }

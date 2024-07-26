@@ -6,6 +6,7 @@
     var orders = ViewData["orders"] != null ? ViewData["orders"] as List<AuthService.MVC.Models.OrderViewModel> : new List<AuthService.MVC.Models.OrderViewModel>();
     var total = ViewData["total"] != null ? ViewData["total"] : 0f;
     var monthlyRevenue = ViewData["monthlyRevenue"] != null ? ViewData["monthlyRevenue"] as List<float> : new List<float>();
+    var monthlyOrders = ViewData["monthlyOrders"] != null ? ViewData["monthlyOrders"] as Dictionary<AuthService.MVC.Constants.OrderStatus, int> : new Dictionary<AuthService.MVC.Constants.OrderStatus, int>();
 }
 
 <div class="container-fluid">
@@ -109,10 +110,16 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                    <select onchange="handleChangeBarChart(this)" value="2024">
+                        @for (int i = DateTime.Now.Year; i >= 2015; i--)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    </select>
                 </div>
                 <!-- Card Body -->
                 <div class="card-body">
-                    <div class="chart-area">
+                    <div id="barChartContainer" class="chart-area">
                         <canvas id="barChart"></canvas>
                     </div>
                 </div>
@@ -125,9 +132,10 @@
                 <!-- Card Header - Dropdown -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Number of orders</h6>
+                    <input onchange="handleChangPieChart(this)" type="month" id="month" name="month" value='@(DateTime.Now.Year.ToString() + "-" + (@DateTime.Now.Month >= 10 ? @DateTime.Now.Month.ToString() : ("0" + @DateTime.Now.Month.ToString())))'>
                 </div>
                 <!-- Card Body -->
-                <div class="card-body">
+                <div id="pieChartContainer" class="card-body">
                     <div class="chart-pie pt-4 pb-2">
                         <canvas id="pieChart"></canvas>
                     </div>
@@ -147,15 +155,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const bar = document.getElementById('barChart');
-    const pie = document.getElementById('pieChart');
+    const pie = document.getElementById('pieChart').getContext('2d');
 
-    new Chart(bar, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                label: 'Monthly revenue ($)',
-                data: ['@(monthlyRevenue[0])',
+    var monthlyRevenue = ['@(monthlyRevenue[0])',
                         '@(monthlyRevenue[1])',
                         '@(monthlyRevenue[2])',
                         '@(monthlyRevenue[3])',
@@ -166,27 +168,41 @@
                         '@(monthlyRevenue[8])',
                         '@(monthlyRevenue[9])',
                         '@(monthlyRevenue[10])',
-                        '@(monthlyRevenue[11])'],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+                        '@(monthlyRevenue[11])']
+    const initBarChart = (bar, monthlyRevenue) => {
+        new Chart(bar, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Monthly revenue ($)',
+                    data: monthlyRevenue,
+                    borderWidth: 1,
+                    backgroundColor: 'rgb(54, 162, 235)',
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 
-    var ctx = document.getElementById('pieChart').getContext('2d');
-    var myPieChart = new Chart(ctx, {
+    var data = ['@monthlyOrders[AuthService.MVC.Constants.OrderStatus.PENDING]',
+                '@monthlyOrders[AuthService.MVC.Constants.OrderStatus.DELIVERING]',
+                '@monthlyOrders[AuthService.MVC.Constants.OrderStatus.RECEIVED]',
+                '@monthlyOrders[AuthService.MVC.Constants.OrderStatus.CANCELED]'];
+    const initPieChart = (pie, data) => {
+        new Chart(pie, {
         type: 'pie',
         data: {
             labels: ['Pending', 'Delevering', 'Received', 'Cancelled'],
             datasets: [{
                 label: 'Quantity',
-                data: [12, 19, 3, 5],
+                data: data,
                 backgroundColor: [
                     'rgb(255, 99, 132)',
                     'rgb(54, 162, 235)',
@@ -214,4 +230,38 @@
             }
         }
     });
+    }
+
+    initBarChart(bar, monthlyRevenue);
+    initPieChart(pie, data);
+
+    const handleChangeBarChart = (element) => {
+        $.ajax({
+            url: `/Admin/GetMonthlyRevenue?year=${element.value}`,
+            type: 'GET',
+            success: (response) => {
+                const barContainer = document.getElementById('barChartContainer');
+                barContainer.innerHTML = `<canvas id="barChart"></canvas>`;
+                const bar = document.getElementById('barChart');
+                initBarChart(bar, response);
+            },
+            error: (xhr, status, error) => {
+
+            }
+        })
+    }
+
+    const handleChangPieChart = (element) => {
+        var [year, month] = element.value.split("-");
+        $.ajax({
+            url: `/Admin/GetMonthlyOrders?year=${year}&month=${month}`,
+            type: 'GET',
+            success: (response) => {
+                initPieChart(pie, [response.PENDING, response.DELIVERING, response.RECEIVED, response.CANCELED]);
+            },
+            error: (xhr, status, error) => {
+
+            }
+        })
+    }
 </script>
