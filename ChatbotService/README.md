@@ -36,6 +36,7 @@ For Installation of PyTorch see [official website](https://pytorch.org/).
 You also need `nltk`:
  ```console
 pip install nltk
+pip install numpy==1.26.1
  ```
 
 If you get an error during the first run, you also need to install `nltk.tokenize.punkt`:
