@@ -87,9 +87,11 @@
                                 <i class="fa-brands fa-rocketchat fa-2x"></i>
                             </a>
                         }
+                        @{
+                            var user = await UserManager.GetUserAsync(User);
+                        }
                         @if (SignInManager.IsSignedIn(User))
                         {
-                            var user = await UserManager.GetUserAsync(User);
                             <a asp-area="Identity" asp-page="/Account/Manage/Index">
                                 @if (!string.IsNullOrEmpty(user.Avatar))
                                 {
@@ -110,7 +112,6 @@
 
     <br /><br /><br />
     @RenderBody()
-
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
@@ -203,6 +204,8 @@
         </div>
     </div>
     <!-- Copyright End -->
+
+    <partial name="Components/_Chatbot" model="user"/>
 
 
 
