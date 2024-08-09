@@ -55,7 +55,7 @@
 
 
 # Chatting with administrators
-![image](https://github.com/user-attachments/assets/8edaa7b3-7346-4d3a-8f37-85222b77ad6c)
+![image](https://github.com/user-attachments/assets/f823183c-1ef9-414c-be68-f04e82943442)
 
 
 # Admin dashboard
