@@ -1,9 +1,12 @@
-
+# Home page
 ![image](https://github.com/user-attachments/assets/7605cc18-0742-4c2c-a5e4-58125d3f974a)
 
+# List of products
+![image](https://github.com/user-attachments/assets/ac2f1104-934d-4bb8-bd7f-4640791e8e80)
+
+# Product details
 ![image](https://github.com/user-attachments/assets/24b50a25-9d69-4261-aca3-21979621a79c)
 
-![image](https://github.com/user-attachments/assets/ac2f1104-934d-4bb8-bd7f-4640791e8e80)
 
 ![image](https://github.com/user-attachments/assets/5934ba2f-9427-4c84-ae26-a380db77fe88)
 
