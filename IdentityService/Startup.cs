@@ -68,6 +68,17 @@ namespace IdentityService
                     ClockSkew = TimeSpan.Zero
                 };
             });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
+
+
             services.AddTransient<JwtTokenService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IUserService, UserService>();
@@ -84,9 +95,12 @@ namespace IdentityService
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "IdentityService v1"));
             }
 
+
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
             app.UseAuthorization();

@@ -23,6 +23,9 @@ namespace IdentityService.Services.Implements
 
         public async Task<UserDto> Create(UserDto user)
         {
+            var existedUser = await _userRepository.FindByEmail(user.Email);
+            if (existedUser != null)
+                return new UserDto() { Roles = new List<string> { "customer" }};
             user.Id = Guid.NewGuid().ToString();
             user.Password = PasswordHelper.HashPassword(user.Password);
             bool result = await _userRepository.CreateOne(_mapper.Map<User>(user));

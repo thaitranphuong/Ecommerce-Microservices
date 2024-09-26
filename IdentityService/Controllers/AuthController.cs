@@ -1,6 +1,7 @@
 ﻿using IdentityService.JWT;
 using IdentityService.Models.DTOs;
 using IdentityService.Services;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,12 +12,13 @@ namespace IdentityService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController : ControllerBase
+    [EnableCors("AllowAll")]
+    public class AuthController : ControllerBase
     {
         private readonly JwtTokenService _jwtTokenService;
         private readonly IUserService _userService;
 
-        public LoginController(JwtTokenService jwtTokenService, IUserService userService)
+        public AuthController(JwtTokenService jwtTokenService, IUserService userService)
         {
             _jwtTokenService = jwtTokenService;
             _userService = userService;
