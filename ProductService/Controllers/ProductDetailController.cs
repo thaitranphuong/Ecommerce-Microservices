@@ -25,21 +25,16 @@ namespace ProductService.Controllers
 
         [HttpPost]
         [Route("create")]
-        public async Task<IActionResult> Create(IFormFile[] productDetailImages)
+        public async Task<IActionResult> Create(IFormFile productDetailImage)
         {
             var formData = await Request.ReadFormAsync();
-            var json = formData["productDetails"];
+            var json = formData["productDetail"];
 
-            var productDetails = JsonConvert.DeserializeObject<List<ProductDetailDto>>(json);
-            var result = false;
-            for (int i = 0; i < productDetailImages.Length; i++)
-            {
-                var filePath = await _fileStorageService.Upload("productDetail", productDetailImages[i]);
-                productDetails[i].Image = filePath;
-                result = await _productDetailService.Save(productDetails[i]);
-            }
-            if (result) return Ok();
-            else return StatusCode(500);
+            var productDetail = JsonConvert.DeserializeObject<ProductDetailDto>(json);
+            var filePath = await _fileStorageService.Upload("productDetail", productDetailImage);
+            productDetail.Image = filePath;
+            await _productDetailService.Save(productDetail);
+            return Ok(new { status = 200});
         }
 
         [HttpPost]
@@ -49,7 +44,7 @@ namespace ProductService.Controllers
             foreach (var id in deletedProductDetailIds) {
                 await _productDetailService.DeleteById(id);
             }
-            return Ok();
+            return Ok(new { statusCode = 200 });
         }
     }
 }

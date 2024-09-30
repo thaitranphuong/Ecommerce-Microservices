@@ -36,15 +36,18 @@ namespace ProductService.Services.Implements
                 product.FullDescription = dto.FullDescription;
                 product.Price = dto.Price;
                 product.Thumbnail = dto.Thumbnail;
+                product.DiscountPercent = dto.DiscountPercent;
                 product.CategoryId = dto.CategoryId;
+                product.Expiry = dto.Expiry;
+                product.Origin = dto.Origin;
                 result = await _productRepository.SaveChange();
             }
             return result;
         }
 
-        public async Task<int> SaveShowHide(ProductDto dto)
+        public async Task<int> SaveShowHide(int id)
         {
-            Product product = await _productRepository.FindById(dto.Id);
+            Product product = await _productRepository.FindById(id);
             product.Enabled = !product.Enabled;
             return await _productRepository.SaveChange();
         }

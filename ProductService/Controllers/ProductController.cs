@@ -71,7 +71,7 @@ namespace ProductService.Controllers
             return Ok(dtos);
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update(IFormFile image)
         {
@@ -88,14 +88,11 @@ namespace ProductService.Controllers
             else return StatusCode(500);
         }
 
-        [HttpPut]
-        [Route("showhide")]
-        public async Task<IActionResult> ShowHide()
+        [HttpGet]
+        [Route("showhide/{id}")]
+        public async Task<IActionResult> ShowHide(int id)
         {
-            var formData = await Request.ReadFormAsync();
-            var json = formData["product"];
-            var product = JsonConvert.DeserializeObject<ProductDto>(json);
-            int result = await _productService.SaveShowHide(product);
+            int result = await _productService.SaveShowHide(id);
             if (result > 0) return Ok(result);
             else return StatusCode(500);
         }

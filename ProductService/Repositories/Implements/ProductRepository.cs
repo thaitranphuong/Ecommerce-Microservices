@@ -37,11 +37,13 @@ namespace ProductService.Repositories.Implements
         {
             if(string.IsNullOrEmpty(name)) 
                 return await _context.Products
+                .Include(p => p.Category)
                 .Skip((page - 1) * limit)
                 .Take(limit)
                 .ToListAsync();
 
             return await _context.Products
+                .Include(p => p.Category)
                 .Where(c => c.Name.Contains(name))
                 .Skip((page - 1) * limit)
                 .Take(limit)
@@ -56,11 +58,11 @@ namespace ProductService.Repositories.Implements
         public async Task<List<Product>> FindByName(string name)
         {
             if(string.IsNullOrEmpty(name))
-                return await _context.Products
+                return await _context.Products.Include(p => p.Category)
                 .ToListAsync();
 
             return await _context.Products
-                .Where(c => c.Name.Contains(name))
+                .Where(c => c.Name.Contains(name)).Include(p => p.Category)
                 .ToListAsync();
         }
 

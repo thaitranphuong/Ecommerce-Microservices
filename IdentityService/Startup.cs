@@ -1,3 +1,4 @@
+using IdentityService.Hubs;
 using IdentityService.JWT;
 using IdentityService.Models;
 using IdentityService.Repositories;
@@ -77,12 +78,14 @@ namespace IdentityService
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
-
+            services.AddSignalR();
 
             services.AddTransient<JwtTokenService>();
             services.AddAutoMapper(typeof(Startup));
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IMessageService, MessageService>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -99,8 +102,8 @@ namespace IdentityService
 
             app.UseHttpsRedirection();
 
-            app.UseRouting();
             app.UseCors("AllowAll");
+            app.UseRouting();
 
             app.UseAuthentication();
             app.UseAuthorization();
@@ -108,6 +111,7 @@ namespace IdentityService
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/ws");
             });
         }
     }

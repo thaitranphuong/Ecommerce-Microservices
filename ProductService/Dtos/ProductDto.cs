@@ -19,6 +19,16 @@ namespace ProductService.Dtos
 
         public float Price { get; set; }
 
+        public int DiscountPercent { get; set; }
+
+        public int Quantity { get; set; }
+
+        public int SoldQuantity { get; set; }
+
+        public string Origin { get; set; }
+
+        public int Expiry { get; set; }
+
         public bool Enabled { get; set; }
 
         public int CategoryId { get; set; }

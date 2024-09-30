@@ -38,6 +38,15 @@ namespace BlogService.Controllers
             else return StatusCode(500);
         }
 
+        [HttpPost]
+        [Route("upload-file")]
+        public async Task<IActionResult> UploadFile(IFormFile image)
+        {
+            var filePath = await _fileStorageService.Upload("ckeditor", image);
+            if (filePath != null) return Ok(new { path = filePath });
+            else return StatusCode(500);
+        }
+
         [HttpGet]
         [Route("get/{blogId}")]
         public async Task<IActionResult> Get(string blogId)
@@ -73,7 +82,7 @@ namespace BlogService.Controllers
             return Ok();
         }
 
-        [HttpPut]
+        [HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update(IFormFile thumbnail)
         {
@@ -82,7 +91,7 @@ namespace BlogService.Controllers
             var blog = JsonConvert.DeserializeObject<BlogDto>(json);
             if (thumbnail != null)
             {
-                var filePath = await _fileStorageService.Upload("product", thumbnail);
+                var filePath = await _fileStorageService.Upload("blog", thumbnail);
                 blog.Thumbnail = filePath;
             }
             bool result = await _blogService.Save(blog);
@@ -95,7 +104,7 @@ namespace BlogService.Controllers
         public async Task<IActionResult> Delete(string blogId)
         {
             bool result = await _blogService.DeleteById(blogId);
-            if (result) return Ok();
+            if (result) return Ok(new { message = "OK"});
             else return StatusCode(500);
         }
     }

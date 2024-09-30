@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using IdentityService.Helpers;
 using IdentityService.Models;
+using IdentityService.Models.Dtos.Pagination;
 using IdentityService.Models.DTOs;
 using IdentityService.Repositories;
 using System;
@@ -36,6 +37,84 @@ namespace IdentityService.Services.Implements
                 return user;
             }
             return null;
+        }
+
+        public async Task<UserOutput> FindAll(string email, int page, int limit)
+        {
+            var userList = await _userRepository.FindAll(email, page, limit);
+            var userDtoList = new List<UserDto>();
+            foreach (var user in userList)
+            {
+                var roleList = new List<string>();
+                foreach (var role in user.Roles)
+                {
+                    roleList.Add(role.Name);
+                }
+                var userDto = _mapper.Map<UserDto>(user);
+                userDto.Roles = roleList;
+                userDtoList.Add(userDto);
+            }
+
+            UserOutput output = new UserOutput();
+            output.Name = email;
+            output.Page = page;
+            output.TotalPage = (int)Math.Ceiling((double)(await _userRepository.FindAllNoPagination(email)).Count / limit);
+            output.ListResult = userDtoList;
+            return output;
+        }
+
+        public async Task<List<UserDto>> FindAllAdmin()
+        {
+            var userList = await _userRepository.FindAllAdmin();
+            var userDtoList = new List<UserDto>();
+            foreach (var user in userList)
+            {
+                var roleList = new List<string>();
+                foreach (var role in user.Roles)
+                {
+                    roleList.Add(role.Name);
+                }
+                var userDto = _mapper.Map<UserDto>(user);
+                userDto.Roles = roleList;
+                userDtoList.Add(userDto);
+            }
+            return userDtoList;
+        }
+
+        public async Task<List<UserDto>> FindAllCustomer()
+        {
+            var userList = await _userRepository.FindAllCustomer();
+            var userDtoList = new List<UserDto>();
+            foreach (var user in userList)
+            {
+                var roleList = new List<string>();
+                foreach (var role in user.Roles)
+                {
+                    roleList.Add(role.Name);
+                }
+                var userDto = _mapper.Map<UserDto>(user);
+                userDto.Roles = roleList;
+                userDtoList.Add(userDto);
+            }
+            return userDtoList;
+        }
+
+        public async Task<List<UserDto>> FindAllNoPagination()
+        {
+            var userList = await _userRepository.FindAllNoPagination(null);
+            var userDtoList = new List<UserDto>();
+            foreach (var user in userList)
+            {
+                var roleList = new List<string>();
+                foreach (var role in user.Roles)
+                {
+                    roleList.Add(role.Name);
+                }
+                var userDto = _mapper.Map<UserDto>(user);
+                userDto.Roles = roleList;
+                userDtoList.Add(userDto);
+            }
+            return userDtoList;
         }
 
         public async Task<UserDto> FindByEmail(string email)
