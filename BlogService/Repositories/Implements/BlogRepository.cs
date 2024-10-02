@@ -44,6 +44,7 @@ namespace BlogService.Repositories.Implements
             }
 
             return await _context.Blogs.Find(filter)
+                                    .SortByDescending(blog => blog.CreatedTime)
                                     .Skip((page - 1) * limit)
                                     .Limit(limit)
                                     .ToListAsync();

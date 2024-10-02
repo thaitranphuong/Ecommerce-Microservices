@@ -61,7 +61,7 @@ namespace ProductService.Controllers
         public async Task<IActionResult> Delete(int categoryId)
         {
             bool result = await _categoryService.DeleteById(categoryId);
-            if (result) return Ok();
+            if (result) return Ok(new {status = 200});
             else return StatusCode(500);
         }
     }

@@ -8,11 +8,14 @@ namespace IdentityService.Services
     public interface IUserService
     {
         Task<UserDto> Create(UserDto user);
+        Task<UserDto> Update(UserDto user);
         Task<UserDto> FindByEmail(string email);
+        Task<UserDto> FindById(string id);
         Task<UserDto> Login(string email, string password);
         Task<UserOutput> FindAll(string email, int page, int limit);
         Task<List<UserDto>> FindAllNoPagination();
         Task<List<UserDto>> FindAllCustomer();
         Task<List<UserDto>> FindAllAdmin();
+        Task<int> SaveShowHide(string id);
     }
 }

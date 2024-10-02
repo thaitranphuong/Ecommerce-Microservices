@@ -12,7 +12,7 @@ namespace IdentityService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("AllowAll")]
+    //[EnableCors("AllowAll")]
     public class AuthController : ControllerBase
     {
         private readonly JwtTokenService _jwtTokenService;

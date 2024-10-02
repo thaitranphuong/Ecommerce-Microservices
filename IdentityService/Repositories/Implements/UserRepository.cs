@@ -14,8 +14,9 @@ namespace IdentityService.Repositories.Implements
             _context = context;
         }
 
-        public async Task<bool> CreateOne(User user)
+        public async Task<bool> CreateOne(User user, bool isAdmin)
         {
+            if (isAdmin) { user.Roles.Add(_context.Roles.FirstOrDefault(role => role.Name.Equals("admin"))); }
             user.Roles.Add(_context.Roles.FirstOrDefault(role => role.Name.Equals("customer")));
             _context.Users.Add(user);
             return await _context.SaveChangesAsync() > 0;
@@ -73,5 +74,23 @@ namespace IdentityService.Repositories.Implements
                  .Include(u => u.Roles)
                  .FirstOrDefaultAsync(x => x.Email == email);
         }
+
+        public async Task<User> FindById(string id)
+        {
+            return await _context.Users
+                .Include(u => u.Roles)
+                .FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task<Role> FindRoleByName(string name)
+        {
+            return await _context.Roles.FirstOrDefaultAsync(x => x.Name == name);
+        }
+
+        public async Task<int> SaveChange()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
     }
 }

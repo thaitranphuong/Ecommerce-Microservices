@@ -134,6 +134,18 @@
       "UpstreamPathTemplate": "/product/showhide/{id}",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/product/get-all-customer-orderby-soldquantity",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/product/get-all-customer-orderby-soldquantity",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     //Product detail API
     {
       "DownstreamPathTemplate": "/api/productdetail/create",
@@ -512,6 +524,31 @@
       "UpstreamPathTemplate": "/auth/register",
       "UpstreamHttpMethod": [ "Post" ]
     },
+
+    {
+      "DownstreamPathTemplate": "/api/user/get/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/user/get/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/create",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/user/create",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
     {
       "DownstreamPathTemplate": "/api/auth/login",
       "DownstreamScheme": "https",
@@ -534,6 +571,18 @@
         }
       ],
       "UpstreamPathTemplate": "/user/get-all",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/showhide/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/user/showhide/{id}",
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
@@ -583,6 +632,18 @@
       ],
       "UpstreamPathTemplate": "/message/get-all/{userIdFirst}/{userIdSecond}",
       "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/user/update",
+      "UpstreamHttpMethod": [ "Put" ]
     }
   ],
   "GlobalConfiguration": {

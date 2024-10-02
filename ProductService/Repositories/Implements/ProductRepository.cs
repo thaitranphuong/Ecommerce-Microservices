@@ -3,6 +3,7 @@ using ProductService.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ProductService.Repositories.Implements
 {
@@ -70,9 +71,9 @@ namespace ProductService.Repositories.Implements
         {
             IQueryable<Product> result1;
             if (string.IsNullOrEmpty(name))
-                result1 = _context.Products.Where(p => p.Price >= price && p.Enabled == true).Include(p => p.Category);
+                result1 = _context.Products.OrderByDescending(p => p.Id).Where(p => p.Price >= price && p.Enabled == true).Include(p => p.Category);
             else
-                result1 = _context.Products.Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true).Include(p => p.Category);
+                result1 = _context.Products.OrderByDescending(p => p.Id).Where(p => p.Name.Contains(name) && p.Price >= price && p.Enabled == true).Include(p => p.Category);
 
             List<Product> result2;
             if (categoryId == 0)
@@ -96,6 +97,17 @@ namespace ProductService.Repositories.Implements
             else
                 result2 = await result1.Where(p => p.CategoryId == categoryId).Skip((page - 1) * limit).Take(limit).ToListAsync();
             return result2;
+        }
+
+        public async Task<List<Product>> FindAllByOrderBySoldquantity(int page, int limit)
+        {
+            return await _context.Products
+                .Where(p => p.Enabled == true)
+                .OrderByDescending(p => p.SoldQuantity)
+                .Include(p => p.Category)
+                .Skip((page - 1) * limit)
+                .Take(limit)
+                .ToListAsync();
         }
     }
 }

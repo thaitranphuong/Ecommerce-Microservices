@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace ProductService.Services.Implements
 {
@@ -90,6 +91,19 @@ namespace ProductService.Services.Implements
             output.Price = price;
             output.CategoryId = categoryId;
             output.TotalPage = (int)Math.Ceiling((double)(await _productRepository.FindByNameAndCategoryIdAndPrice(name, categoryId, price)).Count / limit);
+            output.ListResult = productDtos;
+            return output;
+        }
+
+        public async Task<ProductOutput> FindAllByOrderBySoldquantity(int page, int limit)
+        {
+            var products = await _productRepository.FindAllByOrderBySoldquantity(page, limit);
+            var productDtos = new List<ProductDto>();
+            foreach (var product in products)
+            {
+                productDtos.Add(_mapper.Map<ProductDto>(product));
+            }
+            ProductOutput output = new ProductOutput();
             output.ListResult = productDtos;
             return output;
         }

@@ -13,6 +13,8 @@ namespace OrderService.Dtos
 
         public float DiscountPercent { get; set; }
 
+        public float MaxDiscount { get; set; }
+
         public int Quantity { get; set; }
 
         public int UsedQuantity { get; set; }

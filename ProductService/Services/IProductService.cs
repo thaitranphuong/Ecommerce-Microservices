@@ -14,5 +14,6 @@ namespace ProductService.Services
         Task<ProductDto> FindById(int id);
         Task<ProductOutput> FindAll(string name, int page, int limit);
         Task<ProductOutput> FindAll(string name, int categoryId, float price,  int page, int limit);
+        Task<ProductOutput> FindAllByOrderBySoldquantity(int page, int limit);
     }
 }

@@ -14,6 +14,7 @@ namespace ProductService.Repositories
         Task<List<Product>> FindByNameAndCategoryIdAndPrice(string name, int categoryId, float price);
         Task<List<Product>> FindAll(string name, int page, int limit);
         Task<List<Product>> FindAll(string name, int categoryId, float price, int page, int limit);
+        Task<List<Product>> FindAllByOrderBySoldquantity(int page, int limit);
         Task<int> SaveChange();
 
     }

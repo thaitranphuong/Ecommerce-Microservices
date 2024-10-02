@@ -29,11 +29,41 @@ namespace IdentityService.Services.Implements
                 return new UserDto() { Roles = new List<string> { "customer" }};
             user.Id = Guid.NewGuid().ToString();
             user.Password = PasswordHelper.HashPassword(user.Password);
-            bool result = await _userRepository.CreateOne(_mapper.Map<User>(user));
+            user.Enabled = true;
+            bool result = await _userRepository.CreateOne(_mapper.Map<User>(user), user.IsAdmin);
             if (result == true)
             {
                 user.Password = "";
                 user.Roles = new List<string> { "customer" };
+                if (user.IsAdmin)
+                    user.Roles.Add("admin");
+                return user;
+            }
+            return null;
+        }
+
+        public async Task<UserDto> Update(UserDto user)
+        {
+            var existedUser = await _userRepository.FindById(user.Id);
+            var adminRole = await _userRepository.FindRoleByName("admin");
+            if (existedUser == null)
+                return null;
+            existedUser.Name = user.Name;
+            existedUser.Phone = user.Phone;
+            existedUser.Address = user.Address;
+            existedUser.BirthDay = user.BirthDay;
+            existedUser.Gender = user.Gender;
+            if (user.IsAdmin && existedUser.Roles.Count == 1)
+                existedUser.Roles.Add(adminRole);
+            if (!user.IsAdmin && existedUser.Roles.Count == 2)
+                existedUser.Roles.Remove(adminRole);
+            var result = await _userRepository.SaveChange();
+            if (result > 0)
+            {
+                user.Password = "";
+                user.Roles = new List<string> { "customer" };
+                if (user.IsAdmin)
+                    user.Roles.Add("admin");
                 return user;
             }
             return null;
@@ -122,6 +152,11 @@ namespace IdentityService.Services.Implements
             return _mapper.Map<UserDto>(await _userRepository.FindByEmail(email));
         }
 
+        public async Task<UserDto> FindById(string id)
+        {
+            return _mapper.Map<UserDto>(await _userRepository.FindById(id));
+        }
+
         public async Task<UserDto> Login(string email, string password)
         {
             var user = await _userRepository.FindByEmail(email);
@@ -140,6 +175,13 @@ namespace IdentityService.Services.Implements
                 }
                 else return null;
             }
+        }
+
+        public async Task<int> SaveShowHide(string id)
+        {
+            User user = await _userRepository.FindById(id);
+            user.Enabled = !user.Enabled;
+            return await _userRepository.SaveChange();
         }
     }
 }

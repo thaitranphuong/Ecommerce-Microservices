@@ -71,6 +71,15 @@ namespace ProductService.Controllers
             return Ok(dtos);
         }
 
+        [HttpGet]
+        [Route("get-all-customer-orderby-soldquantity")]
+        public async Task<IActionResult> GetAllOrderBySoldquantity([FromQuery] int page,
+                                                [FromQuery] int limit)
+        {
+            var dtos = await _productService.FindAllByOrderBySoldquantity(page, limit);
+            return Ok(dtos);
+        }
+
         [HttpPost]
         [Route("update")]
         public async Task<IActionResult> Update(IFormFile image)

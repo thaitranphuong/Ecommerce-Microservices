@@ -16,5 +16,6 @@ namespace IdentityService.Models.DTOs
         public bool Gender { get; set; }
         public bool Enabled { get; set; }
         public List<string> Roles { get; set; }
+        public bool IsAdmin { get; set; }
     }
 }

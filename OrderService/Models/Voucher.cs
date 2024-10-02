@@ -17,6 +17,8 @@ namespace OrderService.Models
 
         public int Quantity { get; set; }
 
+        public float MaxDiscount { get; set; }
+
         public int UsedQuantity { get; set; }
 
         public bool IsRemoved { get; set; }

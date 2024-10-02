@@ -66,7 +66,7 @@ namespace OrderService.Controllers
         public async Task<IActionResult> Delete(int voucherId)
         {
             bool result = await _voucherService.DeleteById(voucherId);
-            if (result) return Ok();
+            if (result) return Ok(new {status = 200});
             else return StatusCode(500);
         }
     }
