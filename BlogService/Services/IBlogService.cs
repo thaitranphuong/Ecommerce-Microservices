@@ -14,6 +14,7 @@ namespace BlogService.Services
         Task<BlogDto> FindById(string id);
         Task<BlogDto> FindBySlug(string slug);
         Task<BlogOutput> FindAll(string title, int page, int limit);
+        Task<BlogOutput> FindAllOrderByView();
         Task<bool> DeleteById(string id);
     }
 }

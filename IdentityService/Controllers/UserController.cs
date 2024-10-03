@@ -3,6 +3,7 @@ using IdentityService.Models.DTOs;
 using IdentityService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using System;
@@ -18,9 +19,11 @@ namespace IdentityService.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UserController(IUserService userService) 
+        private readonly IFileStorageService _fileStorageService;
+        public UserController(IUserService userService, IFileStorageService fileStorageService) 
         {
             _userService = userService;
+            _fileStorageService = fileStorageService;
         }
 
         [HttpPost]
@@ -29,6 +32,15 @@ namespace IdentityService.Controllers
         {
             var result = await _userService.Create(dto);
             if (result != null) return Ok(dto);
+            else return StatusCode(500);
+        }
+
+        [HttpPost]
+        [Route("upload-avatar")]
+        public async Task<IActionResult> UploadAvatar(IFormFile image)
+        {
+            var filePath = await _fileStorageService.Upload("avatar", image);
+            if (filePath != null) return Ok(new { path = filePath });
             else return StatusCode(500);
         }
 

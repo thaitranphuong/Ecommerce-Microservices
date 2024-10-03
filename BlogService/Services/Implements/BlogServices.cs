@@ -46,6 +46,21 @@ namespace BlogService.Services.Implements
             return output;
         }
 
+        public async Task<BlogOutput> FindAllOrderByView()
+        {
+            var blogs = await _blogRepository.FindAllOrderByView();
+            var blogDtos = new List<BlogDto>();
+            foreach (var blog in blogs)
+            {
+                var blogDto = _mapper.Map<BlogDto>(blog);
+                blogDto.CommentCount = (await _commentRepository.FindByBlogId(blog.ExternalId)).Count;
+                blogDtos.Add(blogDto);
+            }
+            BlogOutput output = new BlogOutput();
+            output.ListResult = blogDtos;
+            return output;
+        }
+
         public async Task<BlogDto> FindById(string id)
         {
             return _mapper.Map<BlogDto>(await _blogRepository.FindById(id));

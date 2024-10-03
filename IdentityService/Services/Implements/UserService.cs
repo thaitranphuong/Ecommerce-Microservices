@@ -53,6 +53,7 @@ namespace IdentityService.Services.Implements
             existedUser.Address = user.Address;
             existedUser.BirthDay = user.BirthDay;
             existedUser.Gender = user.Gender;
+            existedUser.Avatar = user.Avatar;
             if (user.IsAdmin && existedUser.Roles.Count == 1)
                 existedUser.Roles.Add(adminRole);
             if (!user.IsAdmin && existedUser.Roles.Count == 2)

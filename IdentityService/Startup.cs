@@ -1,3 +1,4 @@
+using CloudinaryDotNet;
 using IdentityService.Hubs;
 using IdentityService.JWT;
 using IdentityService.Models;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
@@ -78,6 +80,17 @@ namespace IdentityService
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
+
+            services.Configure<CloudinarySetting>(Configuration.GetSection("Cloudinary"));
+            services.AddSingleton<Cloudinary>(sp =>
+            {
+                var settings = sp.GetRequiredService<IOptions<CloudinarySetting>>().Value;
+                return new Cloudinary(new Account(
+                    settings.CloudName,
+                    settings.ApiKey,
+                    settings.ApiSecret));
+            });
+
             services.AddSignalR();
 
             services.AddTransient<JwtTokenService>();
@@ -86,6 +99,7 @@ namespace IdentityService
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IFileStorageService, FileStorageService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

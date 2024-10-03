@@ -50,6 +50,16 @@ namespace BlogService.Repositories.Implements
                                     .ToListAsync();
         }
 
+        public async Task<List<Blog>> FindAllOrderByView()
+        {
+            var filter = Builders<Blog>.Filter.Empty;
+
+            return await _context.Blogs.Find(filter)
+                                    .SortByDescending(blog => blog.ViewNumber)
+                                    .Limit(5)
+                                    .ToListAsync();
+        }
+
         public async Task<int> Update(Blog blog)
         {
             var filter = Builders<Blog>.Filter.Eq(b => b.ExternalId, blog.ExternalId);

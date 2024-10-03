@@ -75,6 +75,14 @@ namespace BlogService.Controllers
         }
 
         [HttpGet]
+        [Route("get-all-order-by-views")]
+        public async Task<IActionResult> GetAllOrderByView()
+        {
+            var dtos = await _blogService.FindAllOrderByView();
+            return Ok(dtos);
+        }
+
+        [HttpGet]
         [Route("update-view-number/{blogId}")]
         public async Task<IActionResult> UpdateViewNumber(string blogId)
         {
