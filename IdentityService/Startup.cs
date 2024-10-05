@@ -1,4 +1,5 @@
 using CloudinaryDotNet;
+using IdentityService.AsyncServices;
 using IdentityService.Hubs;
 using IdentityService.JWT;
 using IdentityService.Models;
@@ -6,6 +7,7 @@ using IdentityService.Repositories;
 using IdentityService.Repositories.Implements;
 using IdentityService.Services;
 using IdentityService.Services.Implements;
+using IdentityService.SyncServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -92,6 +94,7 @@ namespace IdentityService
             });
 
             services.AddSignalR();
+            services.AddGrpc();
 
             services.AddTransient<JwtTokenService>();
             services.AddAutoMapper(typeof(Startup));
@@ -100,6 +103,7 @@ namespace IdentityService
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IFileStorageService, FileStorageService>();
+            services.AddScoped<IMessageProducer, MessageProducer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -126,6 +130,7 @@ namespace IdentityService
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<ChatHub>("/ws");
+                endpoints.MapGrpcService<GrpcUserService>();
             });
         }
     }

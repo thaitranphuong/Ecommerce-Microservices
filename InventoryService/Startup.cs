@@ -17,6 +17,8 @@ using InventoryService.Services.Implements;
 using InventoryService.Repositories;
 using InventoryService.Repositories.Implements;
 using InventoryService.Services;
+using InventoryService.SyncServices;
+using InventoryService.AsyncServices;
 
 namespace InventoryService
 {
@@ -43,14 +45,17 @@ namespace InventoryService
              options.UseMySql(Configuration.GetConnectionString("DefaultConnection"),
              new MySqlServerVersion(new Version(8, 0, 0))));
 
-            services.AddGrpc();
-
             services.AddAutoMapper(typeof(Startup));
 
             services.AddScoped<IWarehouseService, WarehouseService>();
             services.AddScoped<IWarehouseRepository, WarehouseRepository>();
             services.AddScoped<ISupplierService, SupplierService>();
             services.AddScoped<ISupplierRepository, SupplierRepository>();
+            services.AddScoped<IImportService, ImportService>();
+            services.AddScoped<IImportRepository, ImportRepository>();
+            services.AddScoped<IGrpcUserService, GrpcUserService>();
+            services.AddScoped<IGrpcProductService, GrpcProductService>();
+            services.AddScoped<IMessageProducer, MessageProducer>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

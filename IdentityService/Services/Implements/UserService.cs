@@ -1,6 +1,10 @@
 ﻿using AutoMapper;
+using Castle.Core.Internal;
+using IdentityService.AsyncServices;
+using IdentityService.Constants;
 using IdentityService.Helpers;
 using IdentityService.Models;
+using IdentityService.Models.Dtos;
 using IdentityService.Models.Dtos.Pagination;
 using IdentityService.Models.DTOs;
 using IdentityService.Repositories;
@@ -14,12 +18,14 @@ namespace IdentityService.Services.Implements
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IMessageProducer _messageProducer;
         private readonly IMapper _mapper;
 
-        public UserService(IUserRepository userRepository, IMapper mapper)
+        public UserService(IUserRepository userRepository, IMapper mapper, IMessageProducer messageProducer)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _messageProducer = messageProducer;
         }
 
         public async Task<UserDto> Create(UserDto user)
@@ -33,6 +39,11 @@ namespace IdentityService.Services.Implements
             bool result = await _userRepository.CreateOne(_mapper.Map<User>(user), user.IsAdmin);
             if (result == true)
             {
+                try
+                {
+                    _messageProducer.SendMessage<UserPublishDto>(EventType.CreateUser, new UserPublishDto { Id = user.Id, Avatar = "", UserName = user.Name });
+                }
+                catch (Exception ex) { Console.WriteLine(ex.Message); }
                 user.Password = "";
                 user.Roles = new List<string> { "customer" };
                 if (user.IsAdmin)
@@ -59,6 +70,10 @@ namespace IdentityService.Services.Implements
             if (!user.IsAdmin && existedUser.Roles.Count == 2)
                 existedUser.Roles.Remove(adminRole);
             var result = await _userRepository.SaveChange();
+            try
+            {
+                _messageProducer.SendMessage<UserPublishDto>(EventType.UpdateUser, new UserPublishDto { Id = user.Id, Avatar = user.Avatar.IsNullOrEmpty() ? " " : user.Avatar, UserName = user.Name });
+            } catch (Exception ex) { Console.WriteLine(ex.Message); }
             if (result > 0)
             {
                 user.Password = "";

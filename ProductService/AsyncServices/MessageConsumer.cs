@@ -18,7 +18,8 @@ namespace ProductService.AsyncServices
 
         private string _queueName = "product-service-queue";
 
-        private string _authServiceExchangeName = "AuthServiceExchange";
+        private string _inventoryServiceExchangeName = "InventoryServiceExchange";
+        private string _identityServiceExchangeName = "IdentityServiceExchange";
 
         public MessageConsumer(IConfiguration configuration, IEventProcessor eventProcessor)
         {
@@ -54,7 +55,8 @@ namespace ProductService.AsyncServices
             };
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
-            _channel.ExchangeDeclare(exchange: _authServiceExchangeName, type: ExchangeType.Direct);
+            _channel.ExchangeDeclare(exchange: _inventoryServiceExchangeName, type: ExchangeType.Direct);
+            _channel.ExchangeDeclare(exchange: _identityServiceExchangeName, type: ExchangeType.Direct);
             _channel.QueueDeclare(queue: _queueName,
                                  durable: true,
                                  exclusive: false,
@@ -63,7 +65,10 @@ namespace ProductService.AsyncServices
 
 
             _channel.QueueBind(queue: _queueName, 
-                               exchange: _authServiceExchangeName, 
+                               exchange: _inventoryServiceExchangeName, 
+                               routingKey: "product-service");
+            _channel.QueueBind(queue: _queueName,
+                               exchange: _identityServiceExchangeName,
                                routingKey: "product-service");
 
         }

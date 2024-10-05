@@ -8,6 +8,8 @@ namespace ProductService.Constants
     public enum EventType
     {
         CreateUser,
+        UpdateUser,
+        CreateImport,
         Undefined
     }
 }
