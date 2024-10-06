@@ -16,6 +16,7 @@ namespace ProductService.Profiles
 
             CreateMap<Comment, CommentDto>()
                 .ForMember(dest => dest.UserName, src => src.MapFrom(x => x.User.UserName))
+                .ForMember(dest => dest.LikeCount, src => src.MapFrom(x => x.Likes.Count))
                 .ForMember(dest => dest.UserAvatar, src => src.MapFrom(x => x.User.Avatar));
         } 
     }

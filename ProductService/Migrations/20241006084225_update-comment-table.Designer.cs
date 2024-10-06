@@ -2,35 +2,22 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductService.Models;
 
 namespace ProductService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241006084225_update-comment-table")]
+    partial class updatecommenttable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.17");
-
-            modelBuilder.Entity("CommentUser", b =>
-                {
-                    b.Property<string>("LikesId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int>("LikesId1")
-                        .HasColumnType("int");
-
-                    b.HasKey("LikesId", "LikesId1");
-
-                    b.HasIndex("LikesId1");
-
-                    b.ToTable("CommentUser");
-                });
 
             modelBuilder.Entity("ProductService.Models.Category", b =>
                 {
@@ -165,21 +152,6 @@ namespace ProductService.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("CommentUser", b =>
-                {
-                    b.HasOne("ProductService.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("LikesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductService.Models.Comment", null)
-                        .WithMany()
-                        .HasForeignKey("LikesId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ProductService.Models.Comment", b =>

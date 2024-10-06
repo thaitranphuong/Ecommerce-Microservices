@@ -11,5 +11,7 @@ namespace ProductService.Services
     {
         Task<bool> Save(CommentDto comment);
         Task<CommentOutput> FindAll(int productId, int page, int limit);
+        Task<bool> DeleteById(int id);
+        Task<bool> LikeOrUnLike(bool isLike, int commentId, string userId);
     }
 }

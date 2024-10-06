@@ -90,7 +90,6 @@ namespace BlogService.Services.Implements
             }
             else
             {
-                dto.Slug += "#" + dto.ExternalId;
                 dto.UpdatedTime = DateTime.Now;
                 return await _blogRepository.Update(_mapper.Map<Blog>(dto)) > 0;
             }

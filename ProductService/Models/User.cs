@@ -14,5 +14,7 @@ namespace ProductService.Models
         public string Avatar { get; set; }
 
         public ICollection<Comment> Commnents { get; set; }
+
+        public ICollection<Comment> Likes { get; set; }
     }
 }
