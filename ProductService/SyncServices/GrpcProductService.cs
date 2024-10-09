@@ -25,14 +25,16 @@ namespace ProductService.Services
                 Id = 0,
                 Name = string.Empty,
                 Thumbnail = string.Empty,
-                Price = 0
+                Price = 0,
+                Unit = string.Empty
             };
             var response = new ProductResponse()
             {
                 Id = product.Id,
                 Name = product.Name,
                 Thumbnail = product.Thumbnail,
-                Price = product.Price
+                Price = product.Price,
+                Unit = product.Unit
             };
 
             return response;

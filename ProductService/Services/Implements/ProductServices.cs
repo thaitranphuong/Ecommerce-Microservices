@@ -41,6 +41,7 @@ namespace ProductService.Services.Implements
                 product.CategoryId = dto.CategoryId;
                 product.Expiry = dto.Expiry;
                 product.Origin = dto.Origin;
+                product.Unit = dto.Unit;
                 result = await _productRepository.SaveChange();
             }
             return result;

@@ -17,4 +17,5 @@ message ProductResponse {
   string name = 2;
   string thumbnail = 3;
   float price = 4;
+  string unit = 5;
 }

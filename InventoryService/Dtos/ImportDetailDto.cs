@@ -19,6 +19,8 @@ namespace InventoryService.Dtos
 
         public string ProductThumbnail {  get; set; }
 
+        public string Unit { get; set; }
+
         public int ImportId { get; set; }
 
     }

@@ -44,6 +44,7 @@ namespace OrderService.Services.Implements
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
                     orderDetailDto.Price = product.Price;
+                    orderDetailDto.Unit = product.Unit;
                     orderDetailDtos.Add(orderDetailDto);
                 }
                 orderDto.OrderDetails = orderDetailDtos;
@@ -72,6 +73,7 @@ namespace OrderService.Services.Implements
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
                     orderDetailDto.Price = product.Price;
+                    orderDetailDto.Unit = product.Unit;
                     orderDetailDtos.Add(orderDetailDto);
                 }
                 orderDto.OrderDetails = orderDetailDtos;
@@ -95,6 +97,7 @@ namespace OrderService.Services.Implements
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
                     orderDetailDto.Price = product.Price;
+                    orderDetailDto.Unit = product.Unit;
                     orderDetailDtos.Add(orderDetailDto);
                 }
                 orderDto.OrderDetails = orderDetailDtos;
@@ -119,6 +122,7 @@ namespace OrderService.Services.Implements
                 orderDetailDto.Thumbnail = product.Thumbnail;
                 orderDetailDto.Name = product.Name;
                 orderDetailDto.Price = product.Price;
+                orderDetailDto.Unit = product.Unit;
                 orderDetailDtos.Add(orderDetailDto);
             }
             orderDto.OrderDetails = orderDetailDtos;

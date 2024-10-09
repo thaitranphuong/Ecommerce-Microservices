@@ -61,6 +61,7 @@ namespace InventoryService.Services.Implements
                 {
                     importDetailDto.ProductName = product.Name;
                     importDetailDto.ProductThumbnail = product.Thumbnail;
+                    importDetailDto.Unit = product.Unit;
                 }
                 ImportDetailDtos.Add(importDetailDto);
             }
