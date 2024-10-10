@@ -694,7 +694,7 @@
       "UpstreamHttpMethod": [ "Get" ]
     },
     {
-      "DownstreamPathTemplate": "/api/message/get-all-admin",
+      "DownstreamPathTemplate": "/api/message/get-all/{userIdFirst}/{userIdSecond}",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
         {

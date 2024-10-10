@@ -3,6 +3,7 @@ using IdentityService.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Threading.Tasks;
 
 namespace IdentityService.Hubs
@@ -14,11 +15,26 @@ namespace IdentityService.Hubs
         {
             _messageService = messageService;
         }
-        public async Task SendMessageToUser(string receiverId, MessageDto message)
+        public async Task SendPrivateMessage(string receiverId, MessageDto message)
         {
-            await Clients.User(receiverId).SendAsync("/user-chat/" + receiverId + "/private", message);
+            await Clients.All.SendAsync("ReceivePrivateMessage/" + receiverId, message);
             await _messageService.Save(message);
+        }
 
+        public override async Task OnConnectedAsync()
+        {
+            string userId = Context.UserIdentifier;
+            // Logic for handling connection
+            await base.OnConnectedAsync();
+            Console.WriteLine($"On connected with id: {userId}");
+        }
+
+        // Handle user disconnection
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            // Logic for handling disconnection
+            await base.OnDisconnectedAsync(exception);
+            Console.WriteLine($"On disconnected");
         }
     }
 }

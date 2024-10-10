@@ -82,6 +82,16 @@ namespace IdentityService
                         .AllowAnyMethod()
                         .AllowAnyHeader());
             });
+            //services.AddCors(options =>
+            //{
+            //    options.AddDefaultPolicy(builder =>
+            //    {
+            //        builder.WithOrigins("http://localhost:3001") // Allow your React app domain
+            //               .AllowAnyHeader()
+            //               .AllowAnyMethod()
+            //               .AllowCredentials();
+            //    });
+            //});
 
             services.Configure<CloudinarySetting>(Configuration.GetSection("Cloudinary"));
             services.AddSingleton<Cloudinary>(sp =>

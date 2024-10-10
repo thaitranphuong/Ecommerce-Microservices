@@ -32,6 +32,7 @@ namespace IdentityService.Services.Implements
 
         public async Task Save(MessageDto message)
         {
+            message.CreatedTime = System.DateTime.Now;
             var mess = _mapper.Map<Message>(message);
             await _messageRepository.Save(mess);
         }

@@ -14,15 +14,13 @@ namespace IdentityService.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [EnableCors("AllowAll")]
-    [Authorize(Roles = "admin,customer")]
+   // [EnableCors("AllowAll")]
+    //[Authorize(Roles = "admin,customer")]
     public class MessageController : ControllerBase
     {
-        private readonly IHubContext<ChatHub> _hubContext;
         private readonly IMessageService _messageService;
-        public MessageController(IHubContext<ChatHub> hubContext, IMessageService messageService)
+        public MessageController(IMessageService messageService)
         {
-            _hubContext = hubContext;
             _messageService = messageService;
         }
 
@@ -32,13 +30,5 @@ namespace IdentityService.Controllers
             return await _messageService.FindAll(userIdFirst, userIdSecond);
         }
 
-        [HttpPost("private-message")]
-        public async Task<IActionResult> PrivateReceiveMessage([FromBody] MessageDto messageDTO)
-        {
-            await _hubContext.Clients.User(messageDTO.ReceiverId.ToString())
-                .SendAsync("/user-chat/" + messageDTO.ReceiverId + "/private", messageDTO);
-            await _messageService.Save(messageDTO);
-            return Ok();
-        }
     }
 }
