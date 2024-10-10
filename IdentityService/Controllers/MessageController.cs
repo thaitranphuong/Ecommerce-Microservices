@@ -19,15 +19,26 @@ namespace IdentityService.Controllers
     public class MessageController : ControllerBase
     {
         private readonly IMessageService _messageService;
-        public MessageController(IMessageService messageService)
+        private readonly IFileStorageService _fileStorageService;
+        public MessageController(IMessageService messageService, IFileStorageService fileStorageService)
         {
             _messageService = messageService;
+            _fileStorageService = fileStorageService;
         }
 
         [HttpGet("get-all/{userIdFirst}/{userIdSecond}")]
         public async Task<ActionResult<List<MessageDto>>> GetAllMessage(string userIdFirst, string userIdSecond)
         {
             return await _messageService.FindAll(userIdFirst, userIdSecond);
+        }
+
+        [HttpPost]
+        [Route("upload-message-image")]
+        public async Task<IActionResult> UploadMessageImage(IFormFile image)
+        {
+            var filePath = await _fileStorageService.Upload("message", image);
+            if (filePath != null) return Ok(new { path = filePath });
+            else return StatusCode(500);
         }
 
     }

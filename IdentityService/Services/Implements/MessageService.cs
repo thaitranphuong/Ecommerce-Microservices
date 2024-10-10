@@ -25,6 +25,7 @@ namespace IdentityService.Services.Implements
             foreach (var entity in entities)
             {
                 MessageDto dto = _mapper.Map<MessageDto>(entity);
+                dto.Avatar = entity.Sender.Avatar;
                 DTOs.Add(dto);
             }
             return DTOs;
