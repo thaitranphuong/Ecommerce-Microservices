@@ -718,6 +718,18 @@
       "UpstreamHttpMethod": [ "Put" ]
     },
     {
+      "DownstreamPathTemplate": "/api/user/change-password",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/user/change-password",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
       "DownstreamPathTemplate": "/api/message/upload-message-image",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [

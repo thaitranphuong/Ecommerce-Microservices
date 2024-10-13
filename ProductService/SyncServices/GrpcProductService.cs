@@ -26,7 +26,8 @@ namespace ProductService.Services
                 Name = string.Empty,
                 Thumbnail = string.Empty,
                 Price = 0,
-                Unit = string.Empty
+                Unit = string.Empty,
+                Quantity = 0
             };
             var response = new ProductResponse()
             {
@@ -34,7 +35,8 @@ namespace ProductService.Services
                 Name = product.Name,
                 Thumbnail = product.Thumbnail,
                 Price = product.Price,
-                Unit = product.Unit
+                Unit = product.Unit,
+                Quantity = product.Quantity
             };
 
             return response;

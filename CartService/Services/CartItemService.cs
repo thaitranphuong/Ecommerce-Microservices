@@ -65,6 +65,8 @@ namespace CartService.Services
                 dto.Name = product.Name;
                 dto.Price = product.Price;
                 dto.Thumbnail = product.Thumbnail;
+                dto.Unit = product.Unit;
+                dto.ProductQuantity = product.Quantity;
                 cartItemDtos.Add(dto);
             }
 

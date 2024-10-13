@@ -199,5 +199,18 @@ namespace IdentityService.Services.Implements
             user.Enabled = !user.Enabled;
             return await _userRepository.SaveChange();
         }
+
+        public async Task<bool> ChangePassword(string id, string oldPassword, string newPassword)
+        {
+            User user = await _userRepository.FindById(id);
+            if(user == null) return false;
+            if(PasswordHelper.VerifyPassword(oldPassword, user.Password))
+            {
+                user.Password = PasswordHelper.HashPassword(newPassword);
+                await _userRepository.SaveChange();
+                return true;
+            }
+            return false;
+        }
     }
 }

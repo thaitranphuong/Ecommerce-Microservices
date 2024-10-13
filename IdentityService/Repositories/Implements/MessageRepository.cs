@@ -21,6 +21,7 @@ namespace IdentityService.Repositories.Implements
                 .Include(m => m.Receiver)
                 .Where(m => (m.Sender.Id == userIdFirst && m.Receiver.Id == userIdSecond) ||
                     (m.Sender.Id == userIdSecond && m.Receiver.Id == userIdFirst))
+                .OrderBy(m => m.CreatedTime)
                 .ToListAsync();
 
         }

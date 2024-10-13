@@ -18,4 +18,5 @@ message ProductResponse {
   string thumbnail = 3;
   float price = 4;
   string unit = 5;
+  int32 quantity = 6;
 }

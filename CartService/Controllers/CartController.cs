@@ -53,7 +53,7 @@ namespace CartService.Controllers
         public async Task<IActionResult> Delete(string userId, int productId)
         {
             var result = await _cartItemService.Delete(userId, productId);
-            if (result) return Ok();
+            if (result) return Ok(new {status = 200});
             else return StatusCode(500);
         }
     }

@@ -16,5 +16,9 @@ namespace CartService.Dtos
         public string Thumbnail { get; set; }
 
         public float Price { get; set; }
+
+        public string Unit { get; set; }
+
+        public int ProductQuantity { get; set; }
     }
 }

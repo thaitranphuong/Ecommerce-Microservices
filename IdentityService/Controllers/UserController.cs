@@ -62,6 +62,15 @@ namespace IdentityService.Controllers
             else return StatusCode(500);
         }
 
+        [HttpGet]
+        [Route("change-password")]
+        public async Task<IActionResult> ChangePassword(string id, string oldPassword, string newPassword)
+        {
+            var result = await _userService.ChangePassword(id, oldPassword, newPassword);
+            if (result) return Ok(new {status = 200});
+            else return StatusCode(500);
+        }
+
         [HttpGet("get-all")]
         public async Task<ActionResult<UserOutput>> GetAll(string email, int page = 1, int limit = 5)
         {
