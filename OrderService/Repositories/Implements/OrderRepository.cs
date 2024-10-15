@@ -29,6 +29,7 @@ namespace OrderService.Repositories.Implements
         {
             if (status != OrderStatus.ALL)
                 return await _context.Orders.Include(o => o.OrderDetails)
+                   .Include(o => o.Voucher)
                    .Where(o => o.Status == status)
                    .OrderByDescending(o => o.CreatedTime)
                    .Skip((page - 1) * limit)
@@ -36,6 +37,7 @@ namespace OrderService.Repositories.Implements
                    .ToListAsync();
 
             return await _context.Orders.Include(o => o.OrderDetails)
+                    .Include(o => o.Voucher)
                     .OrderByDescending(o => o.CreatedTime)
                     .Skip((page - 1) * limit)
                     .Take(limit)
@@ -53,16 +55,18 @@ namespace OrderService.Repositories.Implements
 
         public async Task<Order> FindById(int id)
         {
-            return await _context.Orders.Include(o => o.OrderDetails).FirstOrDefaultAsync(o => o.Id == id);
+            return await _context.Orders.Include(o => o.OrderDetails).Include(o => o.Voucher).FirstOrDefaultAsync(o => o.Id == id);
         }
 
         public async Task<List<Order>> FindByStatus(OrderStatus status = OrderStatus.ALL)
         {
             if (status == OrderStatus.ALL)
-                return await _context.Orders.Include(o => o.OrderDetails)
+                return await _context.Orders.Include(o => o.OrderDetails).Include(o => o.Voucher)
+                    .OrderBy(o => o.CreatedTime)
                     .ToListAsync();
 
-            return await _context.Orders.Include(o => o.OrderDetails)
+            return await _context.Orders.Include(o => o.OrderDetails).Include(o => o.Voucher)
+                    .OrderBy(o => o.CreatedTime)
                     .Where(o => o.Status == status)
                     .ToListAsync();
         }
@@ -70,12 +74,12 @@ namespace OrderService.Repositories.Implements
         public async Task<List<Order>> FindByUserIdAndStatus(string userId, OrderStatus status = OrderStatus.ALL)
         {
             if (status == OrderStatus.ALL)
-                return await _context.Orders.Include(o => o.OrderDetails)
+                return await _context.Orders.Include(o => o.OrderDetails).Include(o => o.Voucher)
                     .Where(o => o.UserId == userId)
                     .OrderByDescending(o => o.CreatedTime)
                     .ToListAsync();
 
-            return await _context.Orders.Include(o => o.OrderDetails)
+            return await _context.Orders.Include(o => o.OrderDetails).Include(o => o.Voucher)
                     .Where(o => o.Status == status && o.UserId == userId)
                     .OrderByDescending(o => o.CreatedTime)
                     .ToListAsync();

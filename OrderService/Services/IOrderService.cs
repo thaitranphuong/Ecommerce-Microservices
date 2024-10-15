@@ -9,6 +9,7 @@ namespace OrderService.Services
     public interface IOrderService
     {
         Task<bool> Save(OrderDto dto);
+        Task<bool> Update(int id, int status);
         Task<OrderDto> FindById(int id);
         Task<OrderOutput> FindAll(OrderStatus status, int page, int limit);
         Task<List<OrderDto>> FindAllByUserId(string userId, OrderStatus status);

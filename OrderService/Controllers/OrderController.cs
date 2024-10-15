@@ -60,12 +60,12 @@ namespace OrderService.Controllers
             return Ok(dtos);
         }
 
-        [HttpPut]
+        [HttpGet]
         [Route("update")]
-        public async Task<IActionResult> Update(OrderDto dto)
+        public async Task<IActionResult> Update([FromQuery] int id, [FromQuery] int status)
         {
-            bool result = await _orderService.Save(dto);
-            if (result) return Ok(dto);
+            bool result = await _orderService.Update(id, status);
+            if (result) return Ok(new { status = 200 });
             else return StatusCode(500);
         }
     }

@@ -24,13 +24,25 @@ namespace OrderService.Dtos
 
         public PaymentMethod PaymentMethod { get; set; }
 
+        public string TransportMethod { get; set; }
+
+        public string Note { get; set; }
+
+        public float TransportFee { get; set; }
+
+        public float Total { get; set; }
+
         public int VoucherId { get; set; }
 
         public string VoucherName { get; set; }
 
         public float VoucherDiscountPercent { get; set; }
 
+        public float VoucherMaxDiscount { get; set; }
+
         public string UserId { get; set; }
+
+        public string UserName { get; set; }
 
         public ICollection<OrderDetailDto> OrderDetails { get; set; }
     }

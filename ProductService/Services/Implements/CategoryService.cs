@@ -62,6 +62,8 @@ namespace ProductService.Services.Implements
         public async Task<bool> DeleteById(int id)
         {
             var category = await _categoryRepository.FindById(id);
+            if (category.Products.Count > 0)
+                return false;
             return await _categoryRepository.Remove(category) > 0;
         }
     }

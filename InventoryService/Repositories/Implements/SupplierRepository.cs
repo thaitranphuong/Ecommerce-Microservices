@@ -24,7 +24,7 @@ namespace InventoryService.Repositories.Implements
 
         public async Task<Supplier> FindById(int id)
         {
-            return await _context.Suppliers.FindAsync(id);
+            return await _context.Suppliers.Include(c => c.Imports).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<Supplier>> FindAll(string name, int page, int limit)

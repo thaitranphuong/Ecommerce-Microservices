@@ -60,5 +60,15 @@ namespace InventoryService.Repositories.Implements
                 .OrderBy(i => i.CreatedTime)
                 .ToListAsync();
         }
+
+        public async Task<List<Import>> FindByWarehouseId(int id)
+        {
+            return await _context.Imports
+               .Include(i => i.ImportDetails)
+               .Include(i => i.Supplier)
+               .Include(i => i.Warehouse)
+               .Where(i => i.WarehouseId == id)
+               .ToListAsync();
+        }
     }
 }

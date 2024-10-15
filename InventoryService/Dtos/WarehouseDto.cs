@@ -1,4 +1,6 @@
-﻿namespace InventoryService.Dtos
+﻿using System.Collections.Generic;
+
+namespace InventoryService.Dtos
 {
     public class WarehouseDto
     {
@@ -7,5 +9,7 @@
         public string Name { get; set; }
 
         public string Address { get; set; }
+
+        public List<ProductOfWarehouseDto> ProductOfWarehouseDtos { get; set; }
     }
 }

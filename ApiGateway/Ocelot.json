@@ -557,7 +557,7 @@
         }
       ],
       "UpstreamPathTemplate": "/order/update",
-      "UpstreamHttpMethod": [ "Put" ]
+      "UpstreamHttpMethod": [ "Get" ]
     },
     {
       "DownstreamPathTemplate": "/api/order/get-all-by-year",

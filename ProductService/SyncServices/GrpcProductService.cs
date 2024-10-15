@@ -34,7 +34,7 @@ namespace ProductService.Services
                 Id = product.Id,
                 Name = product.Name,
                 Thumbnail = product.Thumbnail,
-                Price = product.Price,
+                Price = product.Price - product.Price * product.DiscountPercent / 100,
                 Unit = product.Unit,
                 Quantity = product.Quantity
             };

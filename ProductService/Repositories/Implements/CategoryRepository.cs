@@ -24,7 +24,7 @@ namespace ProductService.Repositories.Implements
 
         public async Task<Category> FindById(int id)
         {
-            return await _context.Categories.FindAsync(id);
+            return await _context.Categories.Include(c => c.Products).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<Category>> FindAll(string name, int page, int limit)

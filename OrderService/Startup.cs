@@ -52,6 +52,7 @@ namespace OrderService
             services.AddScoped<IOrderService, OrderServices>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IGrpcProductService, GrpcProductService>();
+            services.AddScoped<IGrpcUserService, GrpcUserService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
         }
 

@@ -12,12 +12,14 @@ namespace InventoryService.Services.Implements
     public class WarehouseService : IWarehouseService
     {
         private readonly IWarehouseRepository _warehouseRepository;
+        private readonly IImportRepository _importRepository;
         private readonly IMapper _mapper;
 
-        public WarehouseService(IWarehouseRepository warehouseRepository, IMapper mapper)
+        public WarehouseService(IWarehouseRepository warehouseRepository, IMapper mapper, IImportRepository importRepository)
         {
             _warehouseRepository = warehouseRepository;
             _mapper = mapper;
+            _importRepository = importRepository;
         }
 
         public async Task<bool> Save(WarehouseDto dto)
@@ -39,7 +41,37 @@ namespace InventoryService.Services.Implements
 
         public async Task<WarehouseDto> FindById(int id)
         {
-            return _mapper.Map<WarehouseDto>(await _warehouseRepository.FindById(id));
+            var warehouseDto = _mapper.Map<WarehouseDto>(await _warehouseRepository.FindById(id));
+            var imports = await _importRepository.FindByWarehouseId(id);
+            var productsOfWarehouse = new List<ProductOfWarehouseDto>();
+            Dictionary<int, ProductOfWarehouseDto> productDictionary = new Dictionary<int, ProductOfWarehouseDto>();
+            foreach (var import in imports)
+            {
+                foreach(var importDetai in import.ImportDetails)
+                {
+                    if(productDictionary.ContainsKey(importDetai.ProductId)) {
+                        productDictionary[importDetai.ProductId].WarehouseQuantity += importDetai.Quantity;
+                    }
+                    else
+                    {
+                        //productDictionary.Add(importDetai.ProductId, new ProductOfWarehouseDto
+                        //{
+                        //    Id = importDetai.ProductId,
+
+                        //    WarehouseQuantity = importDetai.Quantity,
+
+                        //    Price = ,
+
+                        //    Name = ,
+
+                        //    Thumbnail = ,
+
+                        //    Unit = 
+                        //});
+                    }
+                }
+            }
+            return warehouseDto;
         }
 
         public async Task<WarehouseOutput> FindAll(string name, int page, int limit)
@@ -61,6 +93,8 @@ namespace InventoryService.Services.Implements
         public async Task<bool> DeleteById(int id)
         {
             var warehouse = await _warehouseRepository.FindById(id);
+            if (warehouse.Imports.Count > 0)
+                return false;
             return await _warehouseRepository.Remove(warehouse) > 0;
         }
     }

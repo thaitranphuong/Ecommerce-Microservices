@@ -22,6 +22,14 @@ namespace OrderService.Models
 
         public PaymentMethod PaymentMethod { get; set; }
 
+        public string TransportMethod { get; set; }
+
+        public float TransportFee { get; set; }
+
+        public string Note { get; set; }
+
+        public float Total { get; set; }
+
         public ICollection<OrderDetail> OrderDetails { get; set; }
 
         public int? VoucherId { get; set; }

@@ -63,6 +63,8 @@ namespace InventoryService.Services.Implements
         public async Task<bool> DeleteById(int id)
         {
             var supplier = await _supplierRepository.FindById(id);
+            if (supplier.Imports.Count > 0)
+                return false;   
             return await _supplierRepository.Remove(supplier) > 0;
         }
     }

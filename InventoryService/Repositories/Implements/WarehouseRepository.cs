@@ -24,7 +24,7 @@ namespace InventoryService.Repositories.Implements
 
         public async Task<Warehouse> FindById(int id)
         {
-            return await _context.Warehouses.FindAsync(id);
+            return await _context.Warehouses.Include(c => c.Imports).ThenInclude(i => i.ImportDetails).FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<Warehouse>> FindAll(string name, int page, int limit)

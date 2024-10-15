@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace OrderService.Services.Implements
+namespace OrderService.Services
 {
     public class VoucherService : IVoucherService
     {

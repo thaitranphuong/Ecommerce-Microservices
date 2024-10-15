@@ -9,6 +9,7 @@ namespace OrderService.Constants
     {
         ALL,
         PENDING,
+        WAITING,
         DELIVERING,
         RECEIVED,
         CANCELED

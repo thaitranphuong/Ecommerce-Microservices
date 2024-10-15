@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OrderService.Models;
 
 namespace OrderService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241014081338_aa")]
+    partial class aa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,12 +45,6 @@ namespace OrderService.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
-
-                    b.Property<float>("Total")
-                        .HasColumnType("float");
-
-                    b.Property<float>("TransportFee")
-                        .HasColumnType("float");
 
                     b.Property<string>("TransportMethod")
                         .HasColumnType("longtext");

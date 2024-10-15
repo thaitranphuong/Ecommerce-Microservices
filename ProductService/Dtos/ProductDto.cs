@@ -21,6 +21,8 @@ namespace ProductService.Dtos
 
         public float Price { get; set; }
 
+        public float OldPrice { get; set; }
+
         public int DiscountPercent { get; set; }
 
         public int Quantity { get; set; }
