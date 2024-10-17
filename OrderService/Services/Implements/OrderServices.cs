@@ -51,7 +51,6 @@ namespace OrderService.Services.Implements
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
-                    orderDetailDto.Price = product.Price;
                     orderDetailDto.Unit = product.Unit;
                     orderDetailDtos.Add(orderDetailDto);
                 }
@@ -86,7 +85,6 @@ namespace OrderService.Services.Implements
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
-                    orderDetailDto.Price = product.Price;
                     orderDetailDto.Unit = product.Unit;
                     orderDetailDtos.Add(orderDetailDto);
                 }
@@ -116,7 +114,6 @@ namespace OrderService.Services.Implements
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
-                    orderDetailDto.Price = product.Price;
                     orderDetailDto.Unit = product.Unit;
                     orderDetailDtos.Add(orderDetailDto);
                 }
@@ -149,7 +146,6 @@ namespace OrderService.Services.Implements
                 ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                 orderDetailDto.Thumbnail = product.Thumbnail;
                 orderDetailDto.Name = product.Name;
-                orderDetailDto.Price = product.Price;
                 orderDetailDto.Unit = product.Unit;
                 orderDetailDtos.Add(orderDetailDto);
             }

@@ -14,5 +14,7 @@ namespace OrderService.Models
         public Order Order { get; set; }
 
         public int Quantity { get; set; }
+
+        public float Price { get; set; }
     }
 }

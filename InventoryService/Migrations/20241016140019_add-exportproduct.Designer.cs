@@ -3,14 +3,16 @@ using System;
 using InventoryService.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace InventoryService.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241016140019_add-exportproduct")]
+    partial class addexportproduct
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -19,18 +21,21 @@ namespace InventoryService.Migrations
 
             modelBuilder.Entity("InventoryService.Models.ExportProduct", b =>
                 {
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.HasKey("WarehouseId", "Id");
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
 
-                    b.ToTable("ExportProducts");
+                    b.HasKey("Id");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("ExportProduct");
                 });
 
             modelBuilder.Entity("InventoryService.Models.Import", b =>

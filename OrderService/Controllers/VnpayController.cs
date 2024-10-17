@@ -5,10 +5,8 @@ using OrderService.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 
 namespace OrderService.Controllers
 {
@@ -16,79 +14,87 @@ namespace OrderService.Controllers
     [Route("api/[controller]")]
     public class VnpayController : ControllerBase
     {
-        [HttpGet("create_payment")] //https://localhost:5011/api/Vnpay/create_payment?amount=1000000&bankCode=NCB&locale=vn
-        public IActionResult CreatePayment([FromQuery] long amount, [FromQuery] string bankCode, [FromQuery] string locale)
+        private SortedList<String, String> _requestData = new SortedList<String, String>(new VnPayCompare());
+        public class VnPayCompare : IComparer<string>
+        {
+            public int Compare(string x, string y)
+            {
+                if (x == y) return 0;
+                if (x == null) return -1;
+                if (y == null) return 1;
+                var vnpCompare = CompareInfo.GetCompareInfo("en-US");
+                return vnpCompare.Compare(x, y, CompareOptions.Ordinal);
+            }
+        }
+
+        public void AddRequestData(string key, string value)
+        {
+            if (!String.IsNullOrEmpty(value))
+            {
+                _requestData.Add(key, value);
+            }
+        }
+
+        public string CreateRequestUrl(string baseUrl, string vnp_HashSecret)
+        {
+            StringBuilder data = new StringBuilder();
+            foreach (KeyValuePair<string, string> kv in _requestData)
+            {
+                if (!String.IsNullOrEmpty(kv.Value))
+                {
+                    data.Append(WebUtility.UrlEncode(kv.Key) + "=" + WebUtility.UrlEncode(kv.Value) + "&");
+                }
+            }
+            string queryString = data.ToString();
+
+            baseUrl += "?" + queryString;
+            String signData = queryString;
+            if (signData.Length > 0)
+            {
+
+                signData = signData.Remove(data.Length - 1, 1);
+            }
+            string vnp_SecureHash = VnpayConfig.HmacSHA512(vnp_HashSecret, signData);
+            baseUrl += "vnp_SecureHash=" + vnp_SecureHash;
+
+            return baseUrl;
+        }
+
+        [HttpGet("create_payment")] //https://localhost:5011/api/Vnpay/create_payment?amount=1000000&locale=vn
+        public IActionResult CreatePayment([FromQuery] long amount, [FromQuery] string locale)
         {
             try
             {
-                string orderType = "other";
-                long amountInCents = amount * 100;
-                string vnpTxnRef = VnpayConfig.GetRandomNumber(8);
-                string vnpIpAddr = VnpayConfig.GetIpAddress(HttpContext.Request);
-                string vnpTmnCode = VnpayConfig.VnpTmnCode;
-
-                var vnpParams = new Dictionary<string, string>
-            {
-                { "vnp_Version", VnpayConfig.VnpVersion },
-                { "vnp_Command", VnpayConfig.VnpCommand },
-                { "vnp_TmnCode", vnpTmnCode },
-                { "vnp_Amount", amountInCents.ToString() },
-                { "vnp_CurrCode", "VND" },
-                { "vnp_BankCode", bankCode },
-                { "vnp_TxnRef", vnpTxnRef },
-                { "vnp_OrderInfo", $"Thanh toan don hang {vnpTxnRef}" },
-                { "vnp_OrderType", orderType },
-                { "vnp_ReturnUrl", VnpayConfig.VnpReturnUrl },
-                { "vnp_IpAddr", vnpIpAddr },
-                { "vnp_Locale", locale }
-            };
-
-                var cld = DateTime.UtcNow.AddHours(7);
-                string vnpCreateDate = cld.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-                vnpParams["vnp_CreateDate"] = vnpCreateDate;
-
-                cld = cld.AddMinutes(15);
-                string vnpExpireDate = cld.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-                vnpParams["vnp_ExpireDate"] = vnpExpireDate;
-
-                var sortedParams = vnpParams.OrderBy(p => p.Key);
-
-                List<string> fieldNames = vnpParams.Keys.Cast<string>().ToList();
-                fieldNames.Sort();
-                StringBuilder hashData = new StringBuilder();
-                StringBuilder query = new StringBuilder();
-                foreach (string fieldName in fieldNames)
+                var vnpParams = new SortedList<string, string>
                 {
-                    string fieldValue = vnpParams[fieldName]?.ToString();
-                    if (!string.IsNullOrEmpty(fieldValue))
-                    {
-                        // Build hash data
-                        hashData.Append(fieldName);
-                        hashData.Append('=');
-                        hashData.Append(HttpUtility.UrlEncode(fieldValue, Encoding.ASCII));
+                    { "vnp_Version", VnpayConfig.VnpVersion },
+                    { "vnp_Command", VnpayConfig.VnpCommand },  
+                    { "vnp_TmnCode", VnpayConfig.VnpTmnCode },
+                    { "vnp_Amount", (amount * 100).ToString() },
+                    { "vnp_BankCode", "NCB" },
+                    { "vnp_CreateDate", DateTime.Now.ToString("yyyyMMddHHmmss") },
+                    { "vnp_CurrCode", "VND" },
+                    { "vnp_IpAddr", "123.123.123.123" },
+                    { "vnp_Locale", locale },
+                    { "vnp_OrderInfo", $"Thanh toan don hang 123" },
+                    { "vnp_OrderType", "other" },
+                    { "vnp_ReturnUrl", VnpayConfig.VnpReturnUrl },
+                    { "vnp_TxnRef", VnpayConfig.GetRandomNumber(8) },
+                    { "vnp_ExpireDate", DateTime.UtcNow.AddHours(7).AddMinutes(15).ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture) },
+                };
 
-                        // Build query
-                        query.Append(HttpUtility.UrlEncode(fieldName, Encoding.ASCII));
-                        query.Append('=');
-                        query.Append(HttpUtility.UrlEncode(fieldValue, Encoding.ASCII));
-                        if (fieldName != fieldNames.Last())
-                        {
-                            query.Append('&');
-                            hashData.Append('&');
-                        }
-                    }
+                _requestData = new SortedList<string, string>(new VnPayCompare());
+
+                foreach (var param in vnpParams)
+                {
+                    _requestData.Add(param.Key, param.Value);
                 }
-
-                string queryUrl = query.ToString();
-                string vnp_SecureHash = VnpayConfig.HmacSHA512(VnpayConfig.SecretKey, hashData.ToString());
-                queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-                string paymentUrl = VnpayConfig.VnpPayUrl + "?" + queryUrl;
 
                 var dto = new VnpayDto
                 {
-                    Status = "OK",
+                    Status = "200",
                     Message = "successfully",
-                    Url = paymentUrl
+                    Url = CreateRequestUrl(VnpayConfig.VnpPayUrl, VnpayConfig.HashSecret)
                 };
 
                 return Ok(dto);
@@ -96,19 +102,6 @@ namespace OrderService.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { Message = ex.Message });
-            }
-        }
-
-        [HttpGet("payment_result")]
-        public IActionResult PaymentResult([FromQuery] int vnpAmount, [FromQuery] string vnpOrderInfo, [FromQuery] string vnpResponseCode)
-        {
-            if (vnpResponseCode == "00")
-            {
-                return Ok($"Thanh toan thanh cong. So tien: {vnpAmount / 100} VND, Thong tin giao dich: {vnpOrderInfo}");
-            }
-            else
-            {
-                return BadRequest("Loi thanh toan, vui long thanh toan lai.");
             }
         }
     }

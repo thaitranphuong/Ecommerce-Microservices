@@ -13,5 +13,7 @@ namespace InventoryService.Models
         public string Address { get; set; }
 
         public ICollection<Import> Imports { get; set; }
+
+        public ICollection<ExportProduct> ExportProducts { get; set; }
     }
 }

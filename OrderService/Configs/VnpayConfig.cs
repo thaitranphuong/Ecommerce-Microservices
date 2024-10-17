@@ -10,61 +10,21 @@ namespace OrderService.Configs
     public class VnpayConfig
     {
         public static string VnpPayUrl { get; } = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        public static string VnpReturnUrl { get; } = "http://localhost:3000/payment-vnpay/result";
-        public static string VnpTmnCode { get; } = "6E3KRNR8";
-        public static string SecretKey { get; } = "HG4B7ZUPCJQVVPLBKDOHY7048I5SJI6B";
+        public static string VnpReturnUrl { get; } = "http://localhost:3001/payment-vnpay/result";
+        public static string VnpTmnCode { get; } = "UJY7DQ82";
+        public static string HashSecret { get; } = "4WHFIPQDD0YKYDEGAYIIB6WVXRCKJQHU";
         public static string VnpApiUrl { get; } = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
         public static string VnpVersion { get; } = "2.1.0";
         public static string VnpCommand { get; } = "pay";
 
-        public static string Sha256(string message)
-        {
-            try
-            {
-                using (SHA256 sha256 = SHA256.Create())
-                {
-                    byte[] hash = sha256.ComputeHash(Encoding.UTF8.GetBytes(message));
-                    StringBuilder sb = new StringBuilder();
-                    foreach (byte b in hash)
-                    {
-                        sb.Append(b.ToString("x2"));
-                    }
-                    return sb.ToString();
-                }
-            }
-            catch (Exception)
-            {
-                return string.Empty;
-            }
-        }
-
-        public static string HashAllFields(IDictionary<string, string> fields)
-        {
-            var sortedFields = fields.OrderBy(f => f.Key).ToList();
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < sortedFields.Count; i++)
-            {
-                var field = sortedFields[i];
-                if (!string.IsNullOrEmpty(field.Value))
-                {
-                    sb.Append(field.Key).Append("=").Append(field.Value);
-                    if (i < sortedFields.Count - 1)
-                    {
-                        sb.Append("&");
-                    }
-                }
-            }
-            return HmacSHA512(SecretKey, sb.ToString());
-        }
-
         public static string HmacSHA512(string key, string inputData)
         {
             var hash = new StringBuilder();
-            var keyBytes = Encoding.UTF8.GetBytes(key);
-            var inputBytes = Encoding.UTF8.GetBytes(inputData);
+            byte[] keyBytes = Encoding.UTF8.GetBytes(key);
+            byte[] inputBytes = Encoding.UTF8.GetBytes(inputData);
             using (var hmac = new HMACSHA512(keyBytes))
             {
-                var hashValue = hmac.ComputeHash(inputBytes);
+                byte[] hashValue = hmac.ComputeHash(inputBytes);
                 foreach (var theByte in hashValue)
                 {
                     hash.Append(theByte.ToString("x2"));
@@ -74,22 +34,28 @@ namespace OrderService.Configs
             return hash.ToString();
         }
 
-        public static string GetIpAddress(HttpRequest request)
+
+
+        public static string GetIpAddress(HttpContext httpContext)
         {
+            string ipAddress;
             try
             {
-                string ipAddress = request.Headers["X-FORWARDED-FOR"].FirstOrDefault();
-                if (string.IsNullOrEmpty(ipAddress))
+                ipAddress = httpContext.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+
+                if (string.IsNullOrEmpty(ipAddress) || ipAddress.ToLower() == "unknown" || ipAddress.Length > 45)
                 {
-                    ipAddress = request.HttpContext.Connection.RemoteIpAddress?.ToString();
+                    ipAddress = httpContext.Connection.RemoteIpAddress?.ToString();
                 }
-                return ipAddress;
             }
             catch (Exception ex)
             {
-                return $"Invalid IP: {ex.Message}";
+                ipAddress = "Invalid IP: " + ex.Message;
             }
+
+            return ipAddress;
         }
+
 
         public static string GetRandomNumber(int len)
         {
