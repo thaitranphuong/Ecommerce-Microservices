@@ -174,6 +174,13 @@ namespace OrderService.Services.Implements
                     var publishDto = new CartItemPublishDto() { UserId = order.UserId, ProductId = orderDetail.ProductId };
                     _messageProducer.SendMessage<CartItemPublishDto>(EventType.RemoveCartItem, publishDto);
                 }
+                var reduceProductPublishDto = new List<ReduceProductPublishDto>();
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    var publishDto = new ReduceProductPublishDto() { Id = orderDetail.ProductId, Quantity = orderDetail.Quantity };
+                    reduceProductPublishDto.Add(publishDto);
+                }
+                _messageProducer.SendMessage<List<ReduceProductPublishDto>>(EventType.ReduceProductQuantity, reduceProductPublishDto);
                 if (order.VoucherId != null)
                 {
                     var voucher = await _voucherService.FindById((int)order.VoucherId);

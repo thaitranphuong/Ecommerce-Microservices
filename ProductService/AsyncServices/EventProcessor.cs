@@ -49,6 +49,17 @@ namespace ProductService.AsyncServices
                     }
                     Console.WriteLine("Created import detail");
                     return;
+                case EventType.ReduceProductQuantity:
+                    productDtos = JsonSerializer.Deserialize<AsyncMessageDto<List<ProductDto>>>(jsonMessage).Data;
+                    foreach (var productDto in productDtos)
+                    {
+                        var product = await _productRepository.FindById(productDto.Id);
+                        product.Quantity -= productDto.Quantity;
+                        product.SoldQuantity += productDto.Quantity;
+                        await _productRepository.SaveChange();
+                    }
+                    Console.WriteLine("Reduced product quantity");
+                    return;
                 default:
                     Console.WriteLine("Undefined");
                     return;
@@ -65,6 +76,8 @@ namespace ProductService.AsyncServices
                     return EventType.UpdateUser;
                 case "CreateImport":
                     return EventType.CreateImport;
+                case "ReduceProductQuantity":
+                    return EventType.ReduceProductQuantity;
                 default:
                     return EventType.Undefined;
             }

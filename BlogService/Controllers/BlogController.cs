@@ -87,7 +87,7 @@ namespace BlogService.Controllers
         public async Task<IActionResult> UpdateViewNumber(string blogId)
         {
             await _blogService.UpdateViewNumber(blogId);
-            return Ok();
+            return Ok(new { StatusCode = 200});
         }
 
         [HttpPost]

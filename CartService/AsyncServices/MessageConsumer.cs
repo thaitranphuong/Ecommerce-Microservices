@@ -19,7 +19,7 @@ namespace CartService.AsyncServices
 
         private string _queueName = "cart-service-queue";
 
-        private string _authServiceExchangeName = "OrderServiceExchange";
+        private string _orderServiceExchangeName = "OrderServiceExchange";
 
         public MessageConsumer(IConfiguration configuration, IEventProcessor eventProcessor)
         {
@@ -87,7 +87,7 @@ namespace CartService.AsyncServices
             _connection = factory.CreateConnection();
             _channel = _connection.CreateModel();
             _channel.BasicQos(prefetchSize: 0, prefetchCount: 1, global: false);
-            _channel.ExchangeDeclare(exchange: _authServiceExchangeName, type: ExchangeType.Direct);
+            _channel.ExchangeDeclare(exchange: _orderServiceExchangeName, type: ExchangeType.Direct);
             _channel.QueueDeclare(queue: _queueName,
                                  durable: true,
                                  exclusive: false,
@@ -96,7 +96,7 @@ namespace CartService.AsyncServices
 
 
             _channel.QueueBind(queue: _queueName, 
-                               exchange: _authServiceExchangeName, 
+                               exchange: _orderServiceExchangeName, 
                                routingKey: "cart-service");
         }
 

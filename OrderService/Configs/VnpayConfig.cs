@@ -10,7 +10,7 @@ namespace OrderService.Configs
     public class VnpayConfig
     {
         public static string VnpPayUrl { get; } = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        public static string VnpReturnUrl { get; } = "http://localhost:3001/payment-vnpay/result";
+        public static string VnpReturnUrl { get; } = "http://localhost:3001/vnpay-result";
         public static string VnpTmnCode { get; } = "UJY7DQ82";
         public static string HashSecret { get; } = "4WHFIPQDD0YKYDEGAYIIB6WVXRCKJQHU";
         public static string VnpApiUrl { get; } = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";

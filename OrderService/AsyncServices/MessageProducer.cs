@@ -43,7 +43,6 @@ namespace OrderService.AsyncServices
 
         public void SendMessage<T>(EventType eventType, T data)
         {
-
             var properties = _channel.CreateBasicProperties();
             properties.Persistent = true;
 
@@ -65,10 +64,22 @@ namespace OrderService.AsyncServices
                 var message = new AsyncMessageDto<T>() { EventType = Event, Data = data };
                 var json = JsonSerializer.Serialize(message);
                 var body = Encoding.UTF8.GetBytes(json);
-                _channel.BasicPublish(exchange: _orderServiceExchangeName,
+
+                switch(eventType)
+                {
+                    case EventType.RemoveCartItem:
+                        _channel.BasicPublish(exchange: _orderServiceExchangeName,
                                  routingKey: "cart-service",
                                  basicProperties: null,
                                  body: body);
+                        break;
+                    case EventType.ReduceProductQuantity:
+                        _channel.BasicPublish(exchange: _orderServiceExchangeName,
+                                 routingKey: "product-service",
+                                 basicProperties: null,
+                                 body: body);
+                        break;
+                }
                 Console.WriteLine($"---> We have sent the message");
             } catch (Exception ex)
             {

@@ -8,7 +8,7 @@ namespace OrderService.Constants
     public enum PaymentMethod
     {
         COD,
-        MOMO,
+        VNPAY,
         PAYPAL
     }
 }

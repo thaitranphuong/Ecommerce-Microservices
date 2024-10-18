@@ -571,6 +571,18 @@
       "UpstreamPathTemplate": "/order/get-all-by-year",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/vnpay/create_payment",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/vnpay/create_payment",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     //Identity Service
     {
       "DownstreamPathTemplate": "/api/user/upload-avatar",

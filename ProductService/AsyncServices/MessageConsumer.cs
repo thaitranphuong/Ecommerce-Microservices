@@ -20,6 +20,7 @@ namespace ProductService.AsyncServices
 
         private string _inventoryServiceExchangeName = "InventoryServiceExchange";
         private string _identityServiceExchangeName = "IdentityServiceExchange";
+        private string _orderServiceExchangeName = "OrderServiceExchange";
 
         public MessageConsumer(IConfiguration configuration, IEventProcessor eventProcessor)
         {
@@ -57,6 +58,7 @@ namespace ProductService.AsyncServices
             _channel = _connection.CreateModel();
             _channel.ExchangeDeclare(exchange: _inventoryServiceExchangeName, type: ExchangeType.Direct);
             _channel.ExchangeDeclare(exchange: _identityServiceExchangeName, type: ExchangeType.Direct);
+            _channel.ExchangeDeclare(exchange: _orderServiceExchangeName, type: ExchangeType.Direct);
             _channel.QueueDeclare(queue: _queueName,
                                  durable: true,
                                  exclusive: false,
@@ -70,7 +72,9 @@ namespace ProductService.AsyncServices
             _channel.QueueBind(queue: _queueName,
                                exchange: _identityServiceExchangeName,
                                routingKey: "product-service");
-
+            _channel.QueueBind(queue: _queueName,
+                               exchange: _orderServiceExchangeName,
+                               routingKey: "product-service");
         }
 
         public override void Dispose()
