@@ -85,6 +85,12 @@ namespace OrderService.Repositories.Implements
                     .ToListAsync();
         }
 
+        public async Task<Models.OrderDetail> FindOrderDetail(int orderId, int productId)
+        {
+            var orderDetail = await _context.OrderDetails.FirstOrDefaultAsync(o => o.ProductId == productId && o.OrderId == orderId);
+            return orderDetail;
+        }
+
         public async Task<int> SaveChange()
         {
             return await _context.SaveChangesAsync();

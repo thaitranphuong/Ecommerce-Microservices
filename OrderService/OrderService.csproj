@@ -31,10 +31,12 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.34.0" />
   </ItemGroup>
 
   <ItemGroup>
 	  <Protobuf Include="Protos\product.proto" GrpcServices="Client" />
 	  <Protobuf Include="Protos\user.proto" GrpcServices="Client" />
+    <Protobuf Include="Protos\orderdetail.proto" GrpcServices="Server" />
   </ItemGroup>
 </Project>

@@ -47,6 +47,22 @@ namespace InventoryService.Controllers
             return Ok(dtos);
         }
 
+        [HttpGet]
+        [Route("get-all-to-export")] // Get all warehouses that had product's quantity greater or equal productQuantity;
+        public async Task<IActionResult> GetAllToExport([FromQuery] int productId, [FromQuery] int productQuantity)
+        {
+            var dtos = await _warehouseService.FindAllToExport(productId, productQuantity);
+            return Ok(dtos);
+        }
+
+        [HttpGet]
+        [Route("get-all-in-stock/{warehouseId}")] // Get all warehouses that had product's quantity greater or equal productQuantity;
+        public async Task<IActionResult> GetAllInStock(int warehouseId)
+        {
+            var dtos = await _warehouseService.FindAllInstock(warehouseId);
+            return Ok(dtos);
+        }
+
         [HttpPut]
         [Route("update")]
         public async Task<IActionResult> Update(WarehouseDto dto)

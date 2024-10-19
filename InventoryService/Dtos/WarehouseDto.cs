@@ -10,6 +10,6 @@ namespace InventoryService.Dtos
 
         public string Address { get; set; }
 
-        public List<ProductOfWarehouseDto> ProductOfWarehouseDtos { get; set; }
+        public List<InStockProductDto> InStockProducts { get; set; }
     }
 }

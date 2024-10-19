@@ -20,5 +20,7 @@ namespace OrderService.Dtos
         public int Quantity { get; set; }
 
         public string Unit { get; set;}
+
+        public int WarehouseId { get; set; }
     }
 }

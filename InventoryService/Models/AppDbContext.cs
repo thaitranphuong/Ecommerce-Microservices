@@ -12,16 +12,9 @@ namespace InventoryService.Models
         public DbSet<Supplier> Suppliers { get; set; }
         public DbSet<ImportDetail> ImportDetails { get; set; }
 
-        public DbSet<ExportProduct> ExportProducts { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<ExportProduct>(entity =>
-            {
-                entity.HasKey(o => new { o.WarehouseId, o.Id });
-            });
         }
     }
 }

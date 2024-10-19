@@ -2,6 +2,8 @@
 using OrderService.Constants;
 using OrderService.Dtos;
 using OrderService.Services;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace OrderService.Controllers
@@ -65,6 +67,15 @@ namespace OrderService.Controllers
         public async Task<IActionResult> Update([FromQuery] int id, [FromQuery] int status)
         {
             bool result = await _orderService.Update(id, status);
+            if (result) return Ok(new { status = 200 });
+            else return StatusCode(500);
+        }
+
+        [HttpPut]
+        [Route("update-order-details")]
+        public async Task<IActionResult> UpdateOrderDetails(OrderDetailDto[] orderDetailDtos)
+        {
+            bool result = await _orderService.UpdateOrderDetails(orderDetailDtos);
             if (result) return Ok(new { status = 200 });
             else return StatusCode(500);
         }

@@ -16,5 +16,6 @@ namespace OrderService.Repositories
         Task<List<Order>> FindAllByYear(int year);
         Task<List<Order>> FindByUserIdAndStatus(string userId, OrderStatus status);
         Task<int> SaveChange();
+        Task<Models.OrderDetail> FindOrderDetail(int orderId, int productId);
     }
 }

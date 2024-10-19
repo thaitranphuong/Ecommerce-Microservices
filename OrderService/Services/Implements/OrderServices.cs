@@ -38,6 +38,7 @@ namespace OrderService.Services.Implements
             foreach (var order in orders)
             {
                 var orderDto = _mapper.Map<OrderDto>(order);
+                
                 if (order.VoucherId != null)
                 {
                     orderDto.VoucherDiscountPercent = order.Voucher.DiscountPercent;
@@ -47,7 +48,15 @@ namespace OrderService.Services.Implements
                 var orderDetailDtos = new List<OrderDetailDto>();
                 foreach(var orderDetail in order.OrderDetails)
                 {
-                    var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    //var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    var orderDetailDto = new OrderDetailDto()
+                    {
+                        ProductId = orderDetail.ProductId,
+                        OrderId = orderDetail.OrderId,
+                        Price = orderDetail.Price,
+                        Quantity = orderDetail.Quantity,
+                        WarehouseId = orderDetail.WarehouseId,
+                    };
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
@@ -81,7 +90,14 @@ namespace OrderService.Services.Implements
                 var orderDetailDtos = new List<OrderDetailDto>();
                 foreach (var orderDetail in order.OrderDetails)
                 {
-                    var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    var orderDetailDto = new OrderDetailDto()
+                    {
+                        ProductId = orderDetail.ProductId,
+                        OrderId = orderDetail.OrderId,
+                        Price = orderDetail.Price,
+                        Quantity = orderDetail.Quantity,
+                        WarehouseId = orderDetail.WarehouseId,
+                    };
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
@@ -110,7 +126,14 @@ namespace OrderService.Services.Implements
                 var orderDetailDtos = new List<OrderDetailDto>();
                 foreach (var orderDetail in order.OrderDetails)
                 {
-                    var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                    var orderDetailDto = new OrderDetailDto()
+                    {
+                        ProductId = orderDetail.ProductId,
+                        OrderId = orderDetail.OrderId,
+                        Price = orderDetail.Price,
+                        Quantity = orderDetail.Quantity,
+                        WarehouseId = orderDetail.WarehouseId,
+                    };
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
                     orderDetailDto.Name = product.Name;
@@ -142,7 +165,14 @@ namespace OrderService.Services.Implements
             var orderDetailDtos = new List<OrderDetailDto>();
             foreach (var orderDetail in order.OrderDetails)
             {
-                var orderDetailDto = _mapper.Map<OrderDetailDto>(orderDetail);
+                var orderDetailDto = new OrderDetailDto()
+                {
+                    ProductId = orderDetail.ProductId,
+                    OrderId = orderDetail.OrderId,
+                    Price = orderDetail.Price,
+                    Quantity = orderDetail.Quantity,
+                    WarehouseId = orderDetail.WarehouseId,
+                };
                 ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                 orderDetailDto.Thumbnail = product.Thumbnail;
                 orderDetailDto.Name = product.Name;
@@ -205,6 +235,20 @@ namespace OrderService.Services.Implements
             if (status == 5)
                 order.Status = OrderStatus.CANCELED;
             await _orderRepository.SaveChange();
+            return true;
+        }
+
+        public async Task<bool> UpdateOrderDetails(OrderDetailDto[] orderDetailDtos)
+        {
+            foreach(var dto in orderDetailDtos)
+            {
+                var orderDetail = await _orderRepository.FindOrderDetail(dto.OrderId, dto.ProductId);
+                if(orderDetail != null)
+                {
+                    orderDetail.WarehouseId = dto.WarehouseId;
+                    await _orderRepository.SaveChange();
+                }
+            }
             return true;
         }
     }

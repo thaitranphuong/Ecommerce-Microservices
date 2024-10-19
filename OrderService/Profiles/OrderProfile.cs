@@ -13,7 +13,8 @@ namespace OrderService.Profiles
         public OrderProfile()
         {
             CreateMap<OrderDto, Order>();
-            CreateMap<Order, OrderDto>();
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.OrderDetails, opt => opt.MapFrom(src => new List<OrderDetailDto>()));
         }
     }
 }

@@ -1,0 +1,27 @@
+﻿syntax = "proto3";
+
+option csharp_namespace = "OrderService";
+
+package OrderDetailInfo;
+
+service GrpcOrderDetail {
+  rpc GetOrderDetail (OrderDetailRequest) returns (OrderDetailResponse);
+}
+
+message OrderDetailRequest {
+  int32 orderId = 2;
+  int32 productId = 1;
+  int32 warehouseId = 3;
+}
+
+message OrderDetail {
+  int32 orderId = 2;
+  int32 productId = 1;
+  int32 quantity = 3;
+  float price = 4;
+  int32 warehouseId = 5;
+}
+
+message OrderDetailResponse {
+  repeated OrderDetail orderDetails = 1;
+}

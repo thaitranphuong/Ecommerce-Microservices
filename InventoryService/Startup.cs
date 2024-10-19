@@ -55,6 +55,7 @@ namespace InventoryService
             services.AddScoped<IImportRepository, ImportRepository>();
             services.AddScoped<IGrpcUserService, GrpcUserService>();
             services.AddScoped<IGrpcProductService, GrpcProductService>();
+            services.AddScoped<IGrpcOrderDetailService, GrpcOrderDetailService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
         }
 

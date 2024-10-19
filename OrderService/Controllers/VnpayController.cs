@@ -27,6 +27,7 @@ namespace OrderService.Controllers
             }
         }
 
+        [NonAction]
         public void AddRequestData(string key, string value)
         {
             if (!String.IsNullOrEmpty(value))
@@ -35,6 +36,7 @@ namespace OrderService.Controllers
             }
         }
 
+        [NonAction]
         public string CreateRequestUrl(string baseUrl, string vnp_HashSecret)
         {
             StringBuilder data = new StringBuilder();

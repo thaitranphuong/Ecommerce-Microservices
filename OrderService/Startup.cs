@@ -47,6 +47,8 @@ namespace OrderService
 
             services.AddAutoMapper(typeof(Startup));
 
+            services.AddGrpc();
+
             services.AddScoped<IVoucherService, VoucherService>();
             services.AddScoped<IVoucherRepository, VoucherRepository>();
             services.AddScoped<IOrderService, OrderServices>();
@@ -74,6 +76,7 @@ namespace OrderService
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapGrpcService<GrpcOrderDetailService>();
                 endpoints.MapControllers();
             });
         }
