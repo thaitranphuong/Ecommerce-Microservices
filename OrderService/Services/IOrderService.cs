@@ -1,6 +1,8 @@
 ﻿using OrderService.Constants;
 using OrderService.Dtos;
 using OrderService.Dtos.Paginations;
+using OrderService.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -15,5 +17,10 @@ namespace OrderService.Services
         Task<OrderOutput> FindAll(OrderStatus status, int page, int limit);
         Task<List<OrderDto>> FindAllByUserId(string userId, OrderStatus status);
         Task<List<OrderDto>> FindAllByYear(int year);
+        Task<List<OrderDto>> FindAllByYearToStatistic(int year);
+
+        Task<List<OrderDto>> FindAllByMonthToStatistic(int month, int year);
+
+        Task<List<OrderDto>> FindAllByDateToStatistic(DateTime startDate, DateTime endDate);
     }
 }

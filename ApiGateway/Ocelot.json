@@ -595,6 +595,42 @@
       "UpstreamPathTemplate": "/vnpay/create_payment",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/order/find-all-by-date-to-statistic",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/order/find-all-by-date-to-statistic",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/order/find-all-by-month-to-statistic",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/order/find-all-by-month-to-statistic",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/order/find-all-by-year-to-statistic",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5011
+        }
+      ],
+      "UpstreamPathTemplate": "/order/find-all-by-year-to-statistic",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     //Identity Service
     {
       "DownstreamPathTemplate": "/api/user/upload-avatar",

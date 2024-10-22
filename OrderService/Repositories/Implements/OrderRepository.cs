@@ -3,6 +3,7 @@
 using Microsoft.EntityFrameworkCore;
 using OrderService.Constants;
 using OrderService.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -94,6 +95,26 @@ namespace OrderService.Repositories.Implements
         public async Task<int> SaveChange()
         {
             return await _context.SaveChangesAsync();
+        }
+        public async Task<List<Order>> FindAllByYearToStatistic(int year)
+        {
+            return await _context.Orders
+                    .Where(o => o.CreatedTime.Year == year)
+                    .ToListAsync();
+        }
+
+        public async Task<List<Order>> FindAllByMonthToStatistic(int month, int year)
+        {
+            return await _context.Orders
+                    .Where(o => o.CreatedTime.Month == month && o.CreatedTime.Year == year)
+                    .ToListAsync();
+        }
+
+        public async Task<List<Order>> FindAllByDateToStatistic(DateTime startDate, DateTime endDate)
+        {
+            return await _context.Orders
+                    .Where(o => o.CreatedTime >= startDate && o.CreatedTime <= endDate)
+                    .ToListAsync();
         }
     }
 }

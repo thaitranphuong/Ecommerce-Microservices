@@ -79,5 +79,29 @@ namespace OrderService.Controllers
             if (result) return Ok(new { status = 200 });
             else return StatusCode(500);
         }
+
+        [HttpGet]
+        [Route("find-all-by-year-to-statistic")]
+        public async Task<IActionResult> FindAllByYearToStatistic([FromQuery] int year)
+        {
+            var result = await _orderService.FindAllByYearToStatistic(year);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("find-all-by-date-to-statistic")]
+        public async Task<IActionResult> FindAllByDateToStatistic([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var result = await _orderService.FindAllByDateToStatistic(startDate, endDate);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("find-all-by-month-to-statistic")]
+        public async Task<IActionResult> FindAllByMonthToStatistic([FromQuery] int month, [FromQuery] int year)
+        {
+            var result = await _orderService.FindAllByMonthToStatistic(month, year);
+            return Ok(result);
+        }
     }
 }

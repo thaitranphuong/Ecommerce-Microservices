@@ -186,15 +186,25 @@ namespace OrderService.Services.Implements
         public async Task<bool> Save(OrderDto dto)
         {
             var result = false;
+            var orderDetailDtos = dto.OrderDetails;
+            dto.OrderDetails = null;
             var order = _mapper.Map<Order>(dto);
             order.CreatedTime = DateTime.Now;
             order.UpdatedTime = DateTime.Now;
             order.Status = OrderStatus.PENDING;
             if (order.VoucherId == 0) order.VoucherId = null;
-            var orderDetails = new List<OrderDetail>();
-            foreach (var detail in dto.OrderDetails)
+            var orderDetails = new List<Models.OrderDetail>();
+            foreach (var detailDto in orderDetailDtos)
             {
-                orderDetails.Add(_mapper.Map<OrderDetail>(detail));
+                var detail = new Models.OrderDetail()
+                {
+                    ProductId = detailDto.ProductId,
+                    Quantity = detailDto.Quantity,
+                    Price = detailDto.Price,
+                    WarehouseId = 0
+                };
+                orderDetails.Add(detail);
+                order.OrderDetails.Add(detail);
             }
             result = await _orderRepository.CreateOne(order) > 0;
             if (result)
@@ -250,6 +260,45 @@ namespace OrderService.Services.Implements
                 }
             }
             return true;
+        }
+
+        public async Task<List<OrderDto>> FindAllByYearToStatistic(int year)
+        {
+            var orders = await _orderRepository.FindAllByYearToStatistic(year);
+            var orderDtos = new List<OrderDto>();
+            foreach(var order in orders)
+            {
+                var orderDto = _mapper.Map<OrderDto>(order);
+                orderDtos.Add(orderDto);
+            }
+
+            return orderDtos;
+        }
+
+        public async Task<List<OrderDto>> FindAllByDateToStatistic(DateTime startDate, DateTime endDate)
+        {
+            var orders = await _orderRepository.FindAllByDateToStatistic(startDate, endDate);
+            var orderDtos = new List<OrderDto>();
+            foreach (var order in orders)
+            {
+                var orderDto = _mapper.Map<OrderDto>(order);
+                orderDtos.Add(orderDto);
+            }
+
+            return orderDtos;
+        }
+
+        public async Task<List<OrderDto>> FindAllByMonthToStatistic(int month, int year)
+        {
+            var orders = await _orderRepository.FindAllByMonthToStatistic(month, year);
+            var orderDtos = new List<OrderDto>();
+            foreach (var order in orders)
+            {
+                var orderDto = _mapper.Map<OrderDto>(order);
+                orderDtos.Add(orderDto);
+            }
+
+            return orderDtos;
         }
     }
 }
