@@ -23,13 +23,15 @@ namespace IdentityService.SyncServices
             {
                 Id = string.Empty,
                 UserName = string.Empty,
-                Avatar = string.Empty
+                Avatar = string.Empty,
+                Email = string.Empty,
             };
             var response = new UserResponse()
             {
                 Id = user.Id,
                 UserName = user.Name,
-                Avatar = user.Avatar
+                Avatar = user.Avatar,
+                Email = user.Email,
             };
 
             return response;

@@ -656,7 +656,18 @@
       "UpstreamPathTemplate": "/auth/register",
       "UpstreamHttpMethod": [ "Post" ]
     },
-
+    {
+      "DownstreamPathTemplate": "/api/auth/google-login",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/auth/google-login",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
     {
       "DownstreamPathTemplate": "/api/user/get/{id}",
       "DownstreamScheme": "https",
@@ -715,6 +726,18 @@
         }
       ],
       "UpstreamPathTemplate": "/user/showhide/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/user/active-account/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5003
+        }
+      ],
+      "UpstreamPathTemplate": "/user/active-account/{id}",
       "UpstreamHttpMethod": [ "Get" ]
     },
     {

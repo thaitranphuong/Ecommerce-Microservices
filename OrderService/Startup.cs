@@ -56,6 +56,7 @@ namespace OrderService
             services.AddScoped<IGrpcProductService, GrpcProductService>();
             services.AddScoped<IGrpcUserService, GrpcUserService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
+            services.AddScoped<IMailService, MailService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -96,10 +96,19 @@ namespace IdentityService.Controllers
         }
 
         [HttpGet]
-        [Route("showhide/{id}")]
+        [Route("showhide/{id}")] 
         public async Task<IActionResult> ShowHide(string id)
         {
             int result = await _userService.SaveShowHide(id);
+            if (result > 0) return Ok(result);
+            else return StatusCode(500);
+        }
+
+        [HttpGet]
+        [Route("active-account/{id}")] 
+        public async Task<IActionResult> ActiveAccount(string id)
+        {
+            int result = await _userService.ActiveAccount(id);
             if (result > 0) return Ok(result);
             else return StatusCode(500);
         }

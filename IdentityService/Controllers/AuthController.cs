@@ -45,6 +45,23 @@ namespace IdentityService.Controllers
 
             if (dto == null)
                 return BadRequest(dto);
+            if (dto.Id.Equals("-1"))
+                return Ok(new { user = dto, Token = "" });
+
+            var token = _jwtTokenService.GenerateToken(user.Email, dto.Roles);
+            return Ok(new { user = dto, Token = token });
+        }
+
+        [HttpPost]
+        [Route("google-login")]
+        public async Task<IActionResult> GoogleLogin(UserDto user)
+        {
+            var dto = await _userService.GoogleLogin(user.Name, user.Email, user.Avatar);
+
+            if (dto == null)
+                return BadRequest(dto);
+            if (dto.Id.Equals("-1"))
+                return Ok(new { user = dto, Token = "" });
 
             var token = _jwtTokenService.GenerateToken(user.Email, dto.Roles);
             return Ok(new { user = dto, Token = token });

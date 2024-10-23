@@ -14,12 +14,13 @@ namespace IdentityService.Repositories.Implements
             _context = context;
         }
 
-        public async Task<bool> CreateOne(User user, bool isAdmin)
+        public async Task<string> CreateOne(User user, bool isAdmin)
         {
             if (isAdmin) { user.Roles.Add(_context.Roles.FirstOrDefault(role => role.Name.Equals("admin"))); }
             user.Roles.Add(_context.Roles.FirstOrDefault(role => role.Name.Equals("customer")));
             _context.Users.Add(user);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return user.Id;
         }
 
         public async Task<List<User>> FindAll(string email, int page, int limit)

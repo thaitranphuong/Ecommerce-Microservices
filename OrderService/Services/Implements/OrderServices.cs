@@ -20,8 +20,9 @@ namespace OrderService.Services.Implements
         private readonly IGrpcProductService _grpcProductService;
         private readonly IGrpcUserService _grpcUserService;
         private readonly IMessageProducer _messageProducer;
+        private readonly IMailService _mailService;
 
-        public OrderServices(IOrderRepository orderRepository, IMapper mapper, IGrpcProductService grpcProductService, IMessageProducer messageProducer, IVoucherService voucherService, IGrpcUserService grpcUserService)
+        public OrderServices(IOrderRepository orderRepository, IMapper mapper, IGrpcProductService grpcProductService, IMessageProducer messageProducer, IVoucherService voucherService, IGrpcUserService grpcUserService, IMailService mailService)
         {
             _orderRepository = orderRepository;
             _mapper = mapper;
@@ -29,6 +30,7 @@ namespace OrderService.Services.Implements
             _messageProducer = messageProducer;
             _voucherService = voucherService;
             _grpcUserService = grpcUserService;
+            _mailService = mailService;
         }
 
         public async Task<OrderOutput> FindAll(OrderStatus status, int page, int limit)
@@ -232,11 +234,41 @@ namespace OrderService.Services.Implements
             return result;
         }
 
+        public async Task SendMailWhenOrderUpdate(Order order, int status)
+        {
+            UserResponse user = await _grpcUserService.GetUser(order.UserId);
+            var email = user.Email;
+            var subject = "";
+            var body = "Thông tin đơn hàng<br/>";
+            int stt = 1;
+            body += $"<div>Ngày đặt: {order.CreatedTime.Day}/{order.CreatedTime.Month}/{order.CreatedTime.Year}</div><br/>";
+            foreach (var orderDetail in order.OrderDetails)
+            {
+                ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
+                body += $"<div>{stt} | <img src='{product.Thumbnail}' width='100'/> | {product.Name} | Đơn giá: {product.Price}/{product.Unit} | Số lượng: {orderDetail.Quantity}{product.Unit}</div>";
+                stt++;
+            }
+            body += $"<strong>Tổng cộng: {order.Total}</strong><br/>Nếu có thắc mắc, vui lòng liên hệ chúng tôi qua email này";
+            if (status == 2)
+                subject = "[Fruitable Shop] Đơn hàng đã được duyệt";
+            if (status == 3)
+                subject = "[Fruitable Shop] Đơn hàng đang giao";
+            if (status == 5)
+                subject = "[Fruitable Shop] Đơn hàng đã bị hủy";
+
+            _ = _mailService.Send(new MailDto()
+            {
+                To = email,
+                Subject = subject,
+                Body = body
+            });
+        }
+
         public async Task<bool> Update(int id, int status)
         {
             var order = await _orderRepository.FindById(id);
             if (order == null) return false;
-            if(status == 2)
+            if (status == 2)
                 order.Status = OrderStatus.WAITING;
             if (status == 3)
                 order.Status = OrderStatus.DELIVERING;
@@ -245,6 +277,10 @@ namespace OrderService.Services.Implements
             if (status == 5)
                 order.Status = OrderStatus.CANCELED;
             await _orderRepository.SaveChange();
+            if (status == 2 || status == 3 || status == 5)
+            {
+               _ = SendMailWhenOrderUpdate(order, status);
+            }
             return true;
         }
 

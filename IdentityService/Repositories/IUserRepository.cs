@@ -6,7 +6,7 @@ namespace IdentityService.Repositories
 {
     public interface IUserRepository
     {
-        Task<bool> CreateOne(User user, bool isAdmin);
+        Task<string> CreateOne(User user, bool isAdmin);
         Task<User> FindByEmail(string email);
         Task<List<User>> FindAll(string email, int page, int limit);
         Task<List<User>> FindAllNoPagination(string email);

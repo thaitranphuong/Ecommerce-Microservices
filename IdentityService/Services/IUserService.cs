@@ -8,6 +8,7 @@ namespace IdentityService.Services
     public interface IUserService
     {
         Task<UserDto> Create(UserDto user);
+        Task<UserDto> GoogleLogin(string name, string email, string avatar);
         Task<UserDto> Update(UserDto user);
         Task<bool> ChangePassword(string id, string oldPassword, string newPassword);
         Task<UserDto> FindByEmail(string email);
@@ -18,5 +19,6 @@ namespace IdentityService.Services
         Task<List<UserDto>> FindAllCustomer();
         Task<List<UserDto>> FindAllAdmin();
         Task<int> SaveShowHide(string id);
+        Task<int> ActiveAccount(string id);
     }
 }

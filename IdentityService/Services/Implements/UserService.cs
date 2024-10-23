@@ -8,6 +8,7 @@ using IdentityService.Models.Dtos;
 using IdentityService.Models.Dtos.Pagination;
 using IdentityService.Models.DTOs;
 using IdentityService.Repositories;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -20,12 +21,14 @@ namespace IdentityService.Services.Implements
         private readonly IUserRepository _userRepository;
         private readonly IMessageProducer _messageProducer;
         private readonly IMapper _mapper;
+        private readonly IMailService _mailService;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, IMessageProducer messageProducer)
+        public UserService(IUserRepository userRepository, IMapper mapper, IMessageProducer messageProducer, IMailService mailService)
         {
             _userRepository = userRepository;
             _mapper = mapper;
             _messageProducer = messageProducer;
+            _mailService = mailService;
         }
 
         public async Task<UserDto> Create(UserDto user)
@@ -35,19 +38,63 @@ namespace IdentityService.Services.Implements
                 return new UserDto() { Roles = new List<string> { "customer" }};
             user.Id = Guid.NewGuid().ToString();
             user.Password = PasswordHelper.HashPassword(user.Password);
-            user.Enabled = true;
-            bool result = await _userRepository.CreateOne(_mapper.Map<User>(user), user.IsAdmin);
-            if (result == true)
+            user.Enabled = false;
+            string id = await _userRepository.CreateOne(_mapper.Map<User>(user), user.IsAdmin);
+            if (!string.IsNullOrEmpty(id))
             {
                 try
                 {
                     _messageProducer.SendMessage<UserPublishDto>(EventType.CreateUser, new UserPublishDto { Id = user.Id, Avatar = "", UserName = user.Name });
                 }
                 catch (Exception ex) { Console.WriteLine(ex.Message); }
+                _ = _mailService.Send(new MailDto()
+                {
+                    To = user.Email,
+                    Subject = "Kích hoạt tài khoản Fruitable Shop của bạn",
+                    Body = $"<h1>Click vào link bên dưới để kích hoạt tài khoản<h1><br/>http://localhost:3001/auth/verify-account/{id}<br/>Nếu có thắc mắc, vui lòng liên hệ với chúng tôi qua email này."
+                });
                 user.Password = "";
                 user.Roles = new List<string> { "customer" };
                 if (user.IsAdmin)
                     user.Roles.Add("admin");
+                return user;
+            }
+            return null;
+        }
+
+        public async Task<UserDto> GoogleLogin(string name, string email, string avatar)
+        {
+            var existedUser = await _userRepository.FindByEmail(email);
+            if (existedUser != null)
+            {
+                if (!existedUser.Enabled)
+                    return new UserDto()
+                    {
+                        Id = "-1"
+                    };
+                var dto = _mapper.Map<UserDto>(existedUser);
+                dto.Roles = new List<string> { "customer" };
+                if (existedUser.Roles.Count == 2)
+                    dto.Roles.Add("admin");
+                return dto;
+            }
+            var user = new UserDto();
+            user.Id = Guid.NewGuid().ToString();
+            user.Password = PasswordHelper.HashPassword("12345");
+            user.Enabled = true;
+            user.Avatar = avatar;
+            user.Name = name;
+            user.Email = email;
+            string id = await _userRepository.CreateOne(_mapper.Map<User>(user), user.IsAdmin);
+            if (!string.IsNullOrEmpty(id))
+            {
+                try
+                {
+                    _messageProducer.SendMessage<UserPublishDto>(EventType.CreateUser, new UserPublishDto { Id = user.Id, Avatar = user.Avatar, UserName = user.Name });
+                }
+                catch (Exception ex) { Console.WriteLine(ex.Message); }
+                user.Password = "";
+                user.Roles = new List<string> { "customer" };
                 return user;
             }
             return null;
@@ -178,6 +225,11 @@ namespace IdentityService.Services.Implements
             var user = await _userRepository.FindByEmail(email);
             if (user == null)
                 return null;
+            else if (!user.Enabled)
+                return new UserDto()
+                {
+                    Id = "-1"
+                };
             else
             {
                 var isMatch = Helpers.PasswordHelper.VerifyPassword(password, user.Password);
@@ -197,7 +249,36 @@ namespace IdentityService.Services.Implements
         {
             User user = await _userRepository.FindById(id);
             user.Enabled = !user.Enabled;
-            return await _userRepository.SaveChange();
+            int result = await _userRepository.SaveChange();
+            string subject = "Tài khoản Fruitable Shop của bạn đã bị vô hiệu hóa";
+            if (user.Enabled )
+                subject = "Tài khoản Fruitable Shop của bạn đã được kích hoạt";
+            if (result > 0)
+                _ = _mailService.Send(new MailDto()
+                {
+                    To = user.Email,
+                    Subject = subject,
+                    Body = $"<h1>{subject}<h1><br/>Nếu có thắc mắc, vui lòng liên hệ với chúng tôi qua email này."
+                });
+            return result;
+        }
+
+        public async Task<int> ActiveAccount(string id)
+        {
+            User user = await _userRepository.FindById(id);
+            if (user == null)
+                return 0;
+            user.Enabled = true;
+            int result = await _userRepository.SaveChange();
+            string subject = "Tài khoản Fruitable Shop của bạn đã được kích hoạt";
+            if (result > 0)
+                _ = _mailService.Send(new MailDto()
+                {
+                    To = user.Email,
+                    Subject = subject,
+                    Body = $"<h1>{subject}<h1><br/>Nếu có thắc mắc, vui lòng liên hệ với chúng tôi qua email này."
+                });
+            return result;
         }
 
         public async Task<bool> ChangePassword(string id, string oldPassword, string newPassword)
