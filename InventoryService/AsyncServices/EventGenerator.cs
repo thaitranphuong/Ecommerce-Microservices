@@ -13,6 +13,8 @@ namespace InventoryService.AsyncServices
             {
                 case EventType.CreateImport:
                     return "CreateImport";
+                case EventType.CreateExport:
+                    return "CreateExport";
                 default:
                     return string.Empty;
             }

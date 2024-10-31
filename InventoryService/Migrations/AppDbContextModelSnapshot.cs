@@ -17,6 +17,63 @@ namespace InventoryService.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.17");
 
+            modelBuilder.Entity("InventoryService.Models.Export", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<bool>("IsExpired")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Reason")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ReceiverName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("WarehouseId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WarehouseId");
+
+                    b.ToTable("Exports");
+                });
+
+            modelBuilder.Entity("InventoryService.Models.ExportDetail", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ExportId")
+                        .HasColumnType("int");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExportId");
+
+                    b.ToTable("ExportDetails");
+                });
+
             modelBuilder.Entity("InventoryService.Models.Import", b =>
                 {
                     b.Property<int>("Id")
@@ -110,6 +167,28 @@ namespace InventoryService.Migrations
                     b.ToTable("Warehouses");
                 });
 
+            modelBuilder.Entity("InventoryService.Models.Export", b =>
+                {
+                    b.HasOne("InventoryService.Models.Warehouse", "Warehouse")
+                        .WithMany()
+                        .HasForeignKey("WarehouseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Warehouse");
+                });
+
+            modelBuilder.Entity("InventoryService.Models.ExportDetail", b =>
+                {
+                    b.HasOne("InventoryService.Models.Export", "Export")
+                        .WithMany("ExportDetails")
+                        .HasForeignKey("ExportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Export");
+                });
+
             modelBuilder.Entity("InventoryService.Models.Import", b =>
                 {
                     b.HasOne("InventoryService.Models.Supplier", "Supplier")
@@ -138,6 +217,11 @@ namespace InventoryService.Migrations
                         .IsRequired();
 
                     b.Navigation("Import");
+                });
+
+            modelBuilder.Entity("InventoryService.Models.Export", b =>
+                {
+                    b.Navigation("ExportDetails");
                 });
 
             modelBuilder.Entity("InventoryService.Models.Import", b =>

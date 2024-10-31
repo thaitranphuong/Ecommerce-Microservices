@@ -94,22 +94,22 @@ namespace InventoryService.Services.Implements
                 }
             }
 
-            var orderDetails = (await _grpcOrderDetailService.GetOrderDetail(0, productId, 0)).OrderDetails;
-            foreach (var orderDetail in orderDetails)
-            {
-                var warehouseId = orderDetail.WarehouseId;
-                if (warehouseId != 0)
-                {
-                    if (!warehouseHadExportQuantity.ContainsKey(warehouseId))
-                    {
-                        warehouseHadExportQuantity.Add(warehouseId, orderDetail.Quantity);
-                    }
-                    else
-                    {
-                        warehouseHadExportQuantity[warehouseId] += orderDetail.Quantity;
-                    }
-                }
-            }
+            //var orderDetails = (await _grpcOrderDetailService.GetOrderDetail(0, productId, 0)).OrderDetails;
+            //foreach (var orderDetail in orderDetails)
+            //{
+            //    var warehouseId = orderDetail.WarehouseId;
+            //    if (warehouseId != 0)
+            //    {
+            //        if (!warehouseHadExportQuantity.ContainsKey(warehouseId))
+            //        {
+            //            warehouseHadExportQuantity.Add(warehouseId, orderDetail.Quantity);
+            //        }
+            //        else
+            //        {
+            //            warehouseHadExportQuantity[warehouseId] += orderDetail.Quantity;
+            //        }
+            //    }
+            //}
 
             // Duyệt qua tất cả các kho trong dictionary nhập hàng
             foreach (var import in warehouseHadImportQuantity)
@@ -191,19 +191,19 @@ namespace InventoryService.Services.Implements
                 }
             }
 
-            var orderDetails = (await _grpcOrderDetailService.GetOrderDetail(0, 0, id)).OrderDetails;
-            foreach (var orderDetail in orderDetails)
-            {
-                var productId = orderDetail.ProductId;
-                if (!exportProducts.ContainsKey(productId))
-                {
-                    exportProducts.Add(productId, orderDetail.Quantity);
-                }
-                else
-                {
-                    exportProducts[productId] += orderDetail.Quantity;
-                }
-            }
+            //var orderDetails = (await _grpcOrderDetailService.GetOrderDetail(0, 0, id)).OrderDetails;
+            //foreach (var orderDetail in orderDetails)
+            //{
+            //    var productId = orderDetail.ProductId;
+            //    if (!exportProducts.ContainsKey(productId))
+            //    {
+            //        exportProducts.Add(productId, orderDetail.Quantity);
+            //    }
+            //    else
+            //    {
+            //        exportProducts[productId] += orderDetail.Quantity;
+            //    }
+            //}
 
             // Duyệt qua tất cả các kho trong dictionary nhập hàng
             foreach (var import in importProducts)

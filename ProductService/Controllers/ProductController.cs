@@ -65,9 +65,10 @@ namespace ProductService.Controllers
                                                 [FromQuery] int limit,
                                                 [FromQuery] string name,
                                                 [FromQuery] int categoryId,
+                                                [FromQuery] int unitId,
                                                 [FromQuery] float price)
         {
-            var dtos = await _productService.FindAll(name, categoryId, price, page, limit);
+            var dtos = await _productService.FindAll(name, categoryId, unitId, price, page, limit);
             return Ok(dtos);
         }
 

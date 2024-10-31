@@ -49,7 +49,7 @@ namespace ProductService.AsyncServices
                     }
                     Console.WriteLine("Created import detail");
                     return;
-                case EventType.ReduceProductQuantity:
+                case EventType.CreateExport:
                     productDtos = JsonSerializer.Deserialize<AsyncMessageDto<List<ProductDto>>>(jsonMessage).Data;
                     foreach (var productDto in productDtos)
                     {
@@ -76,8 +76,8 @@ namespace ProductService.AsyncServices
                     return EventType.UpdateUser;
                 case "CreateImport":
                     return EventType.CreateImport;
-                case "ReduceProductQuantity":
-                    return EventType.ReduceProductQuantity;
+                case "CreateExport":
+                    return EventType.CreateExport;
                 default:
                     return EventType.Undefined;
             }

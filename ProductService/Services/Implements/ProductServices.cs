@@ -41,7 +41,7 @@ namespace ProductService.Services.Implements
                 product.CategoryId = dto.CategoryId;
                 product.Expiry = dto.Expiry;
                 product.Origin = dto.Origin;
-                product.Unit = dto.Unit;
+                product.UnitId = dto.UnitId;
                 result = await _productRepository.SaveChange();
             }
             return result;
@@ -77,10 +77,10 @@ namespace ProductService.Services.Implements
             return output;
         }
 
-        public async Task<ProductOutput> FindAll(string name, int categoryId, float price, int page, int limit)
+        public async Task<ProductOutput> FindAll(string name, int categoryId, int unitId, float price, int page, int limit)
         {
             if (float.IsNaN(price)) price = 0;
-            var products = await _productRepository.FindAll(name, categoryId, price, page, limit);
+            var products = await _productRepository.FindAll(name, categoryId, unitId, price, page, limit);
             var productDtos = new List<ProductDto>();
             foreach (var product in products)
             {
@@ -91,7 +91,7 @@ namespace ProductService.Services.Implements
             output.Page = page;
             output.Price = price;
             output.CategoryId = categoryId;
-            output.TotalPage = (int)Math.Ceiling((double)(await _productRepository.FindByNameAndCategoryIdAndPrice(name, categoryId, price)).Count / limit);
+            output.TotalPage = (int)Math.Ceiling((double)(await _productRepository.FindByNameAndCategoryIdAndPrice(name, categoryId, unitId, price)).Count / limit);
             output.ListResult = productDtos;
             return output;
         }

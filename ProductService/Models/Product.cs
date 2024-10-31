@@ -31,7 +31,8 @@ namespace ProductService.Models
 
         public bool Enabled { get; set; }
 
-        public string Unit {  get; set; }
+        public int? UnitId { get; set; }
+        public Unit Unit_ {  get; set; }
 
         public int CategoryId { get; set; }
         public Category Category { get; set; }

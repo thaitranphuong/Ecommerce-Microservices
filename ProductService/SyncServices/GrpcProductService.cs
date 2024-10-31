@@ -1,6 +1,7 @@
 ﻿using Grpc.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using ProductService.Models;
 using System;
@@ -19,7 +20,7 @@ namespace ProductService.Services
 
         public async override Task<ProductResponse> GetProduct(ProductRequest request, ServerCallContext context)
         {
-            Product product = await _context.Products.FindAsync(request.Id);
+            Product product = await _context.Products.Include(p => p.Unit_).FirstOrDefaultAsync(p => p.Id == request.Id);
             if (product == null) return new ProductResponse()
             {
                 Id = 0,
@@ -35,7 +36,7 @@ namespace ProductService.Services
                 Name = product.Name,
                 Thumbnail = product.Thumbnail,
                 Price = product.Price - product.Price * product.DiscountPercent / 100,
-                Unit = product.Unit,
+                Unit = product.Unit_.Name,
                 Quantity = product.Quantity
             };
 

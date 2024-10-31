@@ -66,6 +66,8 @@ namespace ProductService
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IUnitService, UnitService>();
+            services.AddScoped<IUnitRepository, UnitRepository>();
             services.AddScoped<IProductService, ProductServices>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductDetailService, ProductDetailService>();

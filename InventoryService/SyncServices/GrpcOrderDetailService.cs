@@ -16,10 +16,10 @@ namespace InventoryService.SyncServices
             channel = GrpcChannel.ForAddress(_configuration["GrpcUrl:OrderService"]);
             client = new GrpcOrderDetail.GrpcOrderDetailClient(channel);
         }
-        public async Task<OrderDetailResponse> GetOrderDetail(int orderId, int productId, int warehouseId)
-        {
-            var reply = await client.GetOrderDetailAsync(new OrderDetailRequest { OrderId = orderId, ProductId = productId, WarehouseId = warehouseId });
-            return reply;
-        }
+        //public async Task<OrderDetailResponse> GetOrderDetail(int orderId, int productId, int warehouseId)
+        //{
+        //    var reply = new OrderDetailResponse(); //await client.GetOrderDetailAsync(new OrderDetailRequest { OrderId = orderId, ProductId = productId, WarehouseId = warehouseId });
+        //    return reply;
+        //}
     }
 }

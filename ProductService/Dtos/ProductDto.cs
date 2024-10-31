@@ -11,8 +11,6 @@ namespace ProductService.Dtos
 
         public string Name { get; set; }
 
-        public string Unit { get; set; }
-
         public string ShortDescription { get; set; }
 
         public string FullDescription { get; set; }
@@ -34,6 +32,10 @@ namespace ProductService.Dtos
         public int Expiry { get; set; }
 
         public bool Enabled { get; set; }
+
+        public int UnitId { get; set; }
+
+        public string Unit { get; set; }
 
         public int CategoryId { get; set; }
 

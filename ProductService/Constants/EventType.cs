@@ -10,7 +10,7 @@ namespace ProductService.Constants
         CreateUser,
         UpdateUser,
         CreateImport,
-        ReduceProductQuantity,
+        CreateExport,
         Undefined
     }
 }

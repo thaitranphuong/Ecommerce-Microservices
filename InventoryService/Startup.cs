@@ -53,6 +53,8 @@ namespace InventoryService
             services.AddScoped<ISupplierRepository, SupplierRepository>();
             services.AddScoped<IImportService, ImportService>();
             services.AddScoped<IImportRepository, ImportRepository>();
+            services.AddScoped<IExportService, ExportService>();
+            services.AddScoped<IExportRepository, ExportRepository>();
             services.AddScoped<IGrpcUserService, GrpcUserService>();
             services.AddScoped<IGrpcProductService, GrpcProductService>();
             services.AddScoped<IGrpcOrderDetailService, GrpcOrderDetailService>();

@@ -61,6 +61,67 @@
       "UpstreamPathTemplate": "/category/delete/{id}",
       "UpstreamHttpMethod": [ "Delete" ]
     },
+    //Unit API
+    {
+      "DownstreamPathTemplate": "/api/unit/create",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/unit/create",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/unit/get/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/unit/get/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/unit/get-all",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/unit/get-all",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/unit/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/unit/update",
+      "UpstreamHttpMethod": [ "Put" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/unit/delete/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5005
+        }
+      ],
+      "UpstreamPathTemplate": "/unit/delete/{id}",
+      "UpstreamHttpMethod": [ "Delete" ]
+    },
     //Product API
     {
       "DownstreamPathTemplate": "/api/product/create",
@@ -1005,6 +1066,43 @@
         }
       ],
       "UpstreamPathTemplate": "/import/get-all",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    // Export APIs
+    {
+      "DownstreamPathTemplate": "/api/export/create",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5013
+        }
+      ],
+      "UpstreamPathTemplate": "/export/create",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/export/get/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5013
+        }
+      ],
+      "UpstreamPathTemplate": "/export/get/{id}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/export/get-all",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5013
+        }
+      ],
+      "UpstreamPathTemplate": "/export/get-all",
       "UpstreamHttpMethod": [ "Get" ]
     }
   ],

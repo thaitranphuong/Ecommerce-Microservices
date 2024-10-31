@@ -124,12 +124,14 @@ namespace ProductService.Migrations
                     b.Property<string>("Thumbnail")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Unit")
-                        .HasColumnType("longtext");
+                    b.Property<int?>("UnitId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("UnitId");
 
                     b.ToTable("Products");
                 });
@@ -151,6 +153,20 @@ namespace ProductService.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("ProductDetails");
+                });
+
+            modelBuilder.Entity("ProductService.Models.Unit", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Units");
                 });
 
             modelBuilder.Entity("ProductService.Models.User", b =>
@@ -210,7 +226,13 @@ namespace ProductService.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("ProductService.Models.Unit", "Unit_")
+                        .WithMany("Products")
+                        .HasForeignKey("UnitId");
+
                     b.Navigation("Category");
+
+                    b.Navigation("Unit_");
                 });
 
             modelBuilder.Entity("ProductService.Models.ProductDetail", b =>
@@ -234,6 +256,11 @@ namespace ProductService.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("ProductDetails");
+                });
+
+            modelBuilder.Entity("ProductService.Models.Unit", b =>
+                {
+                    b.Navigation("Products");
                 });
 
             modelBuilder.Entity("ProductService.Models.User", b =>

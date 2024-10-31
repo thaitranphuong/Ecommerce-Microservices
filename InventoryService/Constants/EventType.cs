@@ -4,6 +4,7 @@ namespace InventoryService.Constants
 {
     public enum EventType
     {
-        CreateImport
+        CreateImport,
+        CreateExport
     }
 }

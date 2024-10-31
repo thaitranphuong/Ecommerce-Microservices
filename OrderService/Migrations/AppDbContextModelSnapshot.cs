@@ -83,9 +83,6 @@ namespace OrderService.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int>("WarehouseId")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderId", "ProductId");
 
                     b.ToTable("OrderDetails");

@@ -13,6 +13,7 @@ namespace ProductService.Models
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<ProductDetail> ProductDetails { get; set; }
+        public DbSet<Unit> Units { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -37,6 +38,11 @@ namespace ProductService.Models
                 entity.HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId);
+
+                entity.HasOne(p => p.Unit_)
+                .WithMany(c => c.Products)
+                .HasForeignKey(p => p.UnitId)
+                .IsRequired(false); ;
             });
 
             modelBuilder.Entity<ProductDetail>(entity =>

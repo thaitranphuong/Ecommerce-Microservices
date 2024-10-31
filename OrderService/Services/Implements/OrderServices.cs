@@ -57,7 +57,6 @@ namespace OrderService.Services.Implements
                         OrderId = orderDetail.OrderId,
                         Price = orderDetail.Price,
                         Quantity = orderDetail.Quantity,
-                        WarehouseId = orderDetail.WarehouseId,
                     };
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
@@ -98,7 +97,6 @@ namespace OrderService.Services.Implements
                         OrderId = orderDetail.OrderId,
                         Price = orderDetail.Price,
                         Quantity = orderDetail.Quantity,
-                        WarehouseId = orderDetail.WarehouseId,
                     };
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
@@ -134,7 +132,6 @@ namespace OrderService.Services.Implements
                         OrderId = orderDetail.OrderId,
                         Price = orderDetail.Price,
                         Quantity = orderDetail.Quantity,
-                        WarehouseId = orderDetail.WarehouseId,
                     };
                     ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                     orderDetailDto.Thumbnail = product.Thumbnail;
@@ -173,7 +170,6 @@ namespace OrderService.Services.Implements
                     OrderId = orderDetail.OrderId,
                     Price = orderDetail.Price,
                     Quantity = orderDetail.Quantity,
-                    WarehouseId = orderDetail.WarehouseId,
                 };
                 ProductResponse product = await _grpcProductService.GetProduct(orderDetail.ProductId);
                 orderDetailDto.Thumbnail = product.Thumbnail;
@@ -203,7 +199,6 @@ namespace OrderService.Services.Implements
                     ProductId = detailDto.ProductId,
                     Quantity = detailDto.Quantity,
                     Price = detailDto.Price,
-                    WarehouseId = 0
                 };
                 orderDetails.Add(detail);
                 order.OrderDetails.Add(detail);
@@ -216,13 +211,13 @@ namespace OrderService.Services.Implements
                     var publishDto = new CartItemPublishDto() { UserId = order.UserId, ProductId = orderDetail.ProductId };
                     _messageProducer.SendMessage<CartItemPublishDto>(EventType.RemoveCartItem, publishDto);
                 }
-                var reduceProductPublishDto = new List<ReduceProductPublishDto>();
-                foreach (var orderDetail in order.OrderDetails)
-                {
-                    var publishDto = new ReduceProductPublishDto() { Id = orderDetail.ProductId, Quantity = orderDetail.Quantity };
-                    reduceProductPublishDto.Add(publishDto);
-                }
-                _messageProducer.SendMessage<List<ReduceProductPublishDto>>(EventType.ReduceProductQuantity, reduceProductPublishDto);
+                //var reduceProductPublishDto = new List<ReduceProductPublishDto>();
+                //foreach (var orderDetail in order.OrderDetails)
+                //{
+                //    var publishDto = new ReduceProductPublishDto() { Id = orderDetail.ProductId, Quantity = orderDetail.Quantity };
+                //    reduceProductPublishDto.Add(publishDto);
+                //}
+                //_messageProducer.SendMessage<List<ReduceProductPublishDto>>(EventType.ReduceProductQuantity, reduceProductPublishDto);
                 if (order.VoucherId != null)
                 {
                     var voucher = await _voucherService.FindById((int)order.VoucherId);
@@ -284,6 +279,7 @@ namespace OrderService.Services.Implements
             return true;
         }
 
+        // Not use
         public async Task<bool> UpdateOrderDetails(OrderDetailDto[] orderDetailDtos)
         {
             foreach(var dto in orderDetailDtos)
@@ -291,7 +287,7 @@ namespace OrderService.Services.Implements
                 var orderDetail = await _orderRepository.FindOrderDetail(dto.OrderId, dto.ProductId);
                 if(orderDetail != null)
                 {
-                    orderDetail.WarehouseId = dto.WarehouseId;
+                    //orderDetail.WarehouseId = dto.WarehouseId;
                     await _orderRepository.SaveChange();
                 }
             }

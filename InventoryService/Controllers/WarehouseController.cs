@@ -56,7 +56,7 @@ namespace InventoryService.Controllers
         }
 
         [HttpGet]
-        [Route("get-all-in-stock/{warehouseId}")] // Get all warehouses that had product's quantity greater or equal productQuantity;
+        [Route("get-all-in-stock/{warehouseId}")]
         public async Task<IActionResult> GetAllInStock(int warehouseId)
         {
             var dtos = await _warehouseService.FindAllInstock(warehouseId);
