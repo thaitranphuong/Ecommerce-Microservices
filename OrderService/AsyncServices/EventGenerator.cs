@@ -13,6 +13,8 @@ namespace OrderService.AsyncServices
             {
                 case EventType.RemoveCartItem:
                     return "RemoveCartItem";
+                case EventType.DeleverySuccess:
+                    return "DeleverySuccess";
                 default:
                     return string.Empty;
             }

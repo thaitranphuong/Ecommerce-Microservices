@@ -13,8 +13,6 @@ namespace InventoryService.Models
 
         public string Reason { get; set; }
 
-        public bool IsExpired { get; set; }
-
         public string ReceiverName { get; set; }
 
         [Required]

@@ -19,4 +19,5 @@ message ProductResponse {
   float price = 4;
   string unit = 5;
   int32 quantity = 6;
+  int32 expiry = 7;
 }

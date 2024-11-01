@@ -50,9 +50,8 @@ namespace InventoryService.Controllers
         [HttpGet]
         [Route("get-all-to-export")] // Get all warehouses that had product's quantity greater or equal productQuantity;
         public async Task<IActionResult> GetAllToExport([FromQuery] int productId, [FromQuery] int productQuantity)
-        {
-            var dtos = await _warehouseService.FindAllToExport(productId, productQuantity);
-            return Ok(dtos);
+        {         
+            return Ok(new {status = 200});
         }
 
         [HttpGet]

@@ -211,13 +211,6 @@ namespace OrderService.Services.Implements
                     var publishDto = new CartItemPublishDto() { UserId = order.UserId, ProductId = orderDetail.ProductId };
                     _messageProducer.SendMessage<CartItemPublishDto>(EventType.RemoveCartItem, publishDto);
                 }
-                //var reduceProductPublishDto = new List<ReduceProductPublishDto>();
-                //foreach (var orderDetail in order.OrderDetails)
-                //{
-                //    var publishDto = new ReduceProductPublishDto() { Id = orderDetail.ProductId, Quantity = orderDetail.Quantity };
-                //    reduceProductPublishDto.Add(publishDto);
-                //}
-                //_messageProducer.SendMessage<List<ReduceProductPublishDto>>(EventType.ReduceProductQuantity, reduceProductPublishDto);
                 if (order.VoucherId != null)
                 {
                     var voucher = await _voucherService.FindById((int)order.VoucherId);
@@ -268,7 +261,17 @@ namespace OrderService.Services.Implements
             if (status == 3)
                 order.Status = OrderStatus.DELIVERING;
             if (status == 4)
+            {
                 order.Status = OrderStatus.RECEIVED;
+                var productPublishDto = new List<ProductPublishDto>();
+                foreach (var orderDetail in order.OrderDetails)
+                {
+                    var publishDto = new ProductPublishDto() { Id = orderDetail.ProductId, Quantity = orderDetail.Quantity };
+                    productPublishDto.Add(publishDto);
+                }
+                _messageProducer.SendMessage<List<ProductPublishDto>>(EventType.DeleverySuccess, productPublishDto);
+
+            }
             if (status == 5)
                 order.Status = OrderStatus.CANCELED;
             await _orderRepository.SaveChange();
@@ -287,7 +290,6 @@ namespace OrderService.Services.Implements
                 var orderDetail = await _orderRepository.FindOrderDetail(dto.OrderId, dto.ProductId);
                 if(orderDetail != null)
                 {
-                    //orderDetail.WarehouseId = dto.WarehouseId;
                     await _orderRepository.SaveChange();
                 }
             }

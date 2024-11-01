@@ -28,7 +28,8 @@ namespace ProductService.Services
                 Thumbnail = string.Empty,
                 Price = 0,
                 Unit = string.Empty,
-                Quantity = 0
+                Quantity = 0,
+                Expiry = 0
             };
             var response = new ProductResponse()
             {
@@ -37,7 +38,8 @@ namespace ProductService.Services
                 Thumbnail = product.Thumbnail,
                 Price = product.Price - product.Price * product.DiscountPercent / 100,
                 Unit = product.Unit_.Name,
-                Quantity = product.Quantity
+                Quantity = product.Quantity,
+                Expiry = product.Expiry
             };
 
             return response;

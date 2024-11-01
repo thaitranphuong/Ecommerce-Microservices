@@ -11,6 +11,7 @@ namespace ProductService.Constants
         UpdateUser,
         CreateImport,
         CreateExport,
+        DeleverySuccess,
         Undefined
     }
 }

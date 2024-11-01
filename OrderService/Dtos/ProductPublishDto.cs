@@ -1,6 +1,6 @@
-﻿namespace OrderService.Dtos.Paginations
+﻿namespace OrderService.Dtos
 {
-    public class ReduceProductPublishDto
+    public class ProductPublishDto
     {
         public int Id { get; set; }
         public int Quantity { get; set; }

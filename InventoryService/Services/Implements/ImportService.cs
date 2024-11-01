@@ -94,5 +94,46 @@ namespace InventoryService.Services.Implements
             output.ListResult = ImportDtos;
             return output;
         }
+
+        public async Task<bool> UpdateImportDetail(List<ImportDetailDto> importDetailDtos)
+        {
+            foreach (var dto in importDetailDtos)
+            {
+                var importDetail = await _importRepository.FindImportDetailById(dto.Id);
+                importDetail.ExportedQuantity += dto.ExportedQuantity;
+                await _importRepository.SaveChange();
+            }
+
+            return true;
+        }
+
+        public async Task<List<ItemLineDto>> GetAllItemLines(int warehouseId)
+        {
+            var imports = await _importRepository.FindByWarehouseId(warehouseId);
+            var itemLineDtos = new List<ItemLineDto>();
+            foreach (var import in imports)
+            {
+                foreach (var importDetail in import.ImportDetails)
+                {
+                    var product = await _grpcProductService.GetProduct(importDetail.ProductId);
+                    bool isExpired = (DateTime.Now - import.CreatedTime).Days > product.Expiry;
+                    var status = isExpired ? "HẾT HẠN" : "CÒN HẠN";
+                    var itemLineDto = new ItemLineDto()
+                    {
+                        Id = importDetail.Id,
+                        ImportDetailId = importDetail.Id,
+                        ProductId = importDetail.ProductId,
+                        ImportId = importDetail.ImportId,
+                        RemainingQuantity = importDetail.Quantity - importDetail.ExportedQuantity,
+                        IsExpired = isExpired,
+                        Unit = product.Unit,
+                        Name = "Mã lô (phiếu nhập): " + import.Id + "  |  " + product.Name + "  |  " + importDetail.Position + " [" + status + "]",
+                    };
+                    itemLineDtos.Add(itemLineDto);
+                }
+
+            }
+            return itemLineDtos;
+        }
     }
 }

@@ -79,5 +79,10 @@ namespace InventoryService.Repositories.Implements
                .Where(i => i.ProductId == id)
                .ToListAsync();
         }
+
+        public async Task<ImportDetail> FindImportDetailById(int id)
+        {
+            return await _context.ImportDetails.FindAsync(id);
+        }
     }
 }

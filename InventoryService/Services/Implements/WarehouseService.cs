@@ -74,104 +74,13 @@ namespace InventoryService.Services.Implements
             return await _warehouseRepository.Remove(warehouse) > 0;
         }
 
-        public async Task<List<WarehouseDto>> FindAllToExport(int productId, int productQuantity)
-        {
-            var importDetails = await _importRepository.FindAllByProductId(productId);
-            var warehouseHadImportQuantity = new Dictionary<int, int>();
-            var warehouseHadExportQuantity = new Dictionary<int, int>();
-            var warehouseRemainingQuantity = new Dictionary<int, int>();
-
-            foreach (var importDetail in importDetails)
-            {
-                var warehouseId = importDetail.Import.WarehouseId;
-                if (!warehouseHadImportQuantity.ContainsKey(warehouseId))
-                {
-                    warehouseHadImportQuantity.Add(warehouseId, importDetail.Quantity);
-                }
-                else
-                {
-                    warehouseHadImportQuantity[warehouseId] += importDetail.Quantity;
-                }
-            }
-
-            //var orderDetails = (await _grpcOrderDetailService.GetOrderDetail(0, productId, 0)).OrderDetails;
-            //foreach (var orderDetail in orderDetails)
-            //{
-            //    var warehouseId = orderDetail.WarehouseId;
-            //    if (warehouseId != 0)
-            //    {
-            //        if (!warehouseHadExportQuantity.ContainsKey(warehouseId))
-            //        {
-            //            warehouseHadExportQuantity.Add(warehouseId, orderDetail.Quantity);
-            //        }
-            //        else
-            //        {
-            //            warehouseHadExportQuantity[warehouseId] += orderDetail.Quantity;
-            //        }
-            //    }
-            //}
-
-            // Duyệt qua tất cả các kho trong dictionary nhập hàng
-            foreach (var import in warehouseHadImportQuantity)
-            {
-                int warehouseId = import.Key;
-                int importQuantity = import.Value;
-
-                if (warehouseHadExportQuantity.TryGetValue(warehouseId, out int exportQuantity))
-                {
-                    int remainingQuantity = importQuantity - exportQuantity;
-                    warehouseRemainingQuantity[warehouseId] = remainingQuantity;
-                }
-                else
-                {
-                    warehouseRemainingQuantity[warehouseId] = importQuantity;
-                }
-            }
-
-            // Duyệt qua các kho chỉ có trong danh sách xuất hàng mà không có trong danh sách nhập hàng
-            foreach (var export in warehouseHadExportQuantity)
-            {
-                int warehouseId = export.Key;
-                if (!warehouseHadImportQuantity.ContainsKey(warehouseId))
-                {
-                    warehouseRemainingQuantity[warehouseId] = -export.Value;
-                }
-            }
-
-            var qualifiedWarehouseToExports = new List<WarehouseDto>();
-            foreach (var kpv in warehouseRemainingQuantity)
-            {
-                if(kpv.Value >= productQuantity)
-                {
-                    var warehouse = await _warehouseRepository.FindById(kpv.Key);
-                    if (warehouse != null)
-                    {
-                        var warehouseDto = new WarehouseDto()
-                        {
-                            Id = warehouse.Id,
-                            Name = warehouse.Name,
-                            Address = warehouse.Address,
-                            InStockProducts = new List<InStockProductDto>(),
-                        };
-                        warehouseDto.InStockProducts.Add(new InStockProductDto()
-                        {
-                            Id = productId,
-                            RemaningQuantity = warehouseRemainingQuantity[kpv.Key],
-                        });
-                        qualifiedWarehouseToExports.Add(warehouseDto);
-                    }
-                }
-            }
-
-            return qualifiedWarehouseToExports;
-        }
-
         public async Task<List<InStockProductDto>> FindAllInstock(int id)
         {
             var imports = await _importRepository.FindByWarehouseId(id);
             var importProducts = new Dictionary<int, int>();
             var exportProducts = new Dictionary<int, int>();
             var remainingProducts = new Dictionary<int, int>();
+            var expiredProducts = new Dictionary<int, int>();
 
 
             foreach (var import in imports)
@@ -188,47 +97,39 @@ namespace InventoryService.Services.Implements
                     {
                         importProducts[productId] += importDetail.Quantity;
                     }
+                    if (!exportProducts.ContainsKey(productId))
+                    {
+                        exportProducts.Add(productId, importDetail.ExportedQuantity);
+                    }
+                    else
+                    {
+                        exportProducts[productId] += importDetail.ExportedQuantity;
+                    }
+                    if (!remainingProducts.ContainsKey(productId))
+                    {
+                        remainingProducts.Add(productId, importDetail.Quantity - importDetail.ExportedQuantity);
+                    }
+                    else
+                    {
+                        remainingProducts[productId] += (importDetail.Quantity - importDetail.ExportedQuantity);
+                    }
                 }
             }
 
-            //var orderDetails = (await _grpcOrderDetailService.GetOrderDetail(0, 0, id)).OrderDetails;
-            //foreach (var orderDetail in orderDetails)
-            //{
-            //    var productId = orderDetail.ProductId;
-            //    if (!exportProducts.ContainsKey(productId))
-            //    {
-            //        exportProducts.Add(productId, orderDetail.Quantity);
-            //    }
-            //    else
-            //    {
-            //        exportProducts[productId] += orderDetail.Quantity;
-            //    }
-            //}
-
-            // Duyệt qua tất cả các kho trong dictionary nhập hàng
-            foreach (var import in importProducts)
+            foreach (var kpv in remainingProducts)
             {
-                int productId = import.Key;
-                int importQuantity = import.Value;
-
-                if (exportProducts.TryGetValue(productId, out int exportQuantity))
-                {
-                    int remainingQuantity = importQuantity - exportQuantity;
-                    remainingProducts[productId] = remainingQuantity;
-                }
-                else
-                {
-                    remainingProducts[productId] = importQuantity;
-                }
+                expiredProducts.Add(kpv.Key, 0);
             }
 
-            // Duyệt qua các kho chỉ có trong danh sách xuất hàng mà không có trong danh sách nhập hàng
-            foreach (var export in exportProducts)
+            foreach (var import in imports)
             {
-                int productId = export.Key;
-                if (!importProducts.ContainsKey(productId))
+                var importDetails = import.ImportDetails;
+                foreach (var importDetail in importDetails)
                 {
-                    remainingProducts[productId] = -export.Value;
+                    var product = await _grpcProductService.GetProduct(importDetail.ProductId);
+                    if((DateTime.Now - import.CreatedTime).Days > product.Expiry)
+                        if (expiredProducts.ContainsKey(product.Id))
+                                expiredProducts[product.Id] += importDetail.Quantity - importDetail.ExportedQuantity;
                 }
             }
 
@@ -239,11 +140,15 @@ namespace InventoryService.Services.Implements
                 var exportedQuantity = 0;
                 if (exportProducts.ContainsKey(kpv.Key))
                     exportedQuantity = exportProducts[kpv.Key];
+                var expiredQuantity = 0;
+                if (expiredProducts.ContainsKey(kpv.Key))
+                    expiredQuantity = expiredProducts[kpv.Key];
                 InStockProductDtos.Add(new InStockProductDto()
                 {
                     Id = kpv.Key,
                     ExportedQuantity = exportedQuantity,
                     RemaningQuantity = remainingProducts[kpv.Key],
+                    ExpiredQuantity = expiredQuantity,
                     Name = product.Name,
                     Thumbnail = product.Thumbnail,
                     Unit = product.Unit,
@@ -262,6 +167,11 @@ namespace InventoryService.Services.Implements
             }
             Console.WriteLine("Remaining");
             foreach (var kpv in remainingProducts)
+            {
+                Console.WriteLine(kpv.Key + ": " + kpv.Value);
+            }
+            Console.WriteLine("Expired");
+            foreach (var kpv in expiredProducts)
             {
                 Console.WriteLine(kpv.Key + ": " + kpv.Value);
             }

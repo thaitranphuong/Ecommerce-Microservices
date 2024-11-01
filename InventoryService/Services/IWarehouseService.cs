@@ -13,7 +13,6 @@ namespace InventoryService.Services
         Task<WarehouseDto> FindById(int id);
         Task<WarehouseOutput> FindAll(string name, int page, int limit);
         Task<bool> DeleteById(int id);
-        Task<List<WarehouseDto>> FindAllToExport(int productId, int productQuantity);
         Task<List<InStockProductDto>> FindAllInstock(int id);
     }
 }

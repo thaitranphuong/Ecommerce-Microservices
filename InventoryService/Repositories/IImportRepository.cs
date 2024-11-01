@@ -10,6 +10,7 @@ namespace InventoryService.Repositories
     {
         Task<int> CreateOne(Import import);
         Task<Import> FindById(int id);
+        Task<ImportDetail> FindImportDetailById(int id);
         Task<List<Import>> FindByWarehouseId(int id);
         Task<List<Import>> FindAllByDate(DateTime startTime, DateTime endTime);
         Task<List<Import>> FindAll(DateTime startTime, DateTime endTime, int page, int limit);

@@ -55,10 +55,19 @@ namespace ProductService.AsyncServices
                     {
                         var product = await _productRepository.FindById(productDto.Id);
                         product.Quantity -= productDto.Quantity;
+                        await _productRepository.SaveChange();
+                    }
+                    Console.WriteLine("Create export detail");
+                    return;
+                case EventType.DeleverySuccess:
+                    productDtos = JsonSerializer.Deserialize<AsyncMessageDto<List<ProductDto>>>(jsonMessage).Data;
+                    foreach (var productDto in productDtos)
+                    {
+                        var product = await _productRepository.FindById(productDto.Id);
                         product.SoldQuantity += productDto.Quantity;
                         await _productRepository.SaveChange();
                     }
-                    Console.WriteLine("Reduced product quantity");
+                    Console.WriteLine("Delevery successfully");
                     return;
                 default:
                     Console.WriteLine("Undefined");
@@ -78,6 +87,8 @@ namespace ProductService.AsyncServices
                     return EventType.CreateImport;
                 case "CreateExport":
                     return EventType.CreateExport;
+                case "DeleverySuccess":
+                    return EventType.DeleverySuccess;
                 default:
                     return EventType.Undefined;
             }

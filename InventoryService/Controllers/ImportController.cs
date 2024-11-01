@@ -3,6 +3,7 @@ using InventoryService.Dtos;
 using InventoryService.Services;
 using System.Threading.Tasks;
 using System;
+using System.Collections.Generic;
 
 namespace InventoryService.Controllers
 {
@@ -44,6 +45,22 @@ namespace InventoryService.Controllers
         {
             var dtos = await _importService.FindAll(startTime, endTime, page, limit);
             return Ok(dtos);
+        }
+
+        [HttpPost]
+        [Route("update-import-detail")]
+        public async Task<IActionResult> UpdateImportDetail(List<ImportDetailDto> importDetailDtos)
+        {
+            var result = await _importService.UpdateImportDetail(importDetailDtos);
+            return Ok(new { status = 200});
+        }
+
+        [HttpGet]
+        [Route("get-all-item-lines")]
+        public async Task<IActionResult> GetAllItemLines([FromQuery] int warehouseId)
+        {
+            var result = await _importService.GetAllItemLines(warehouseId);
+            return Ok(result);
         }
     }
 }

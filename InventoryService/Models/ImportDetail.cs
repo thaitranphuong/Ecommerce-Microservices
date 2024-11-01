@@ -11,6 +11,10 @@ namespace InventoryService.Models
 
         public float Price { get; set; }
 
+        public int ExportedQuantity { get; set; }
+
+        public string Position { get; set; }
+
         [Required]
         public int ProductId { get; set; }
 

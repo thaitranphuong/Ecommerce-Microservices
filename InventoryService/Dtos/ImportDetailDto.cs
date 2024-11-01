@@ -13,6 +13,10 @@ namespace InventoryService.Dtos
 
         public float Price { get; set; }
 
+        public int ExportedQuantity { get; set; }
+
+        public string Position { get; set; }
+
         public int ProductId { get; set; }
 
         public string ProductName { get; set; }

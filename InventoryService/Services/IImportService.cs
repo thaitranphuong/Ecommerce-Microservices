@@ -11,6 +11,8 @@ namespace InventoryService.Services
     {
         Task<bool> Save(ImportDto import);
         Task<ImportDto> FindById(int id);
+        Task<bool> UpdateImportDetail(List<ImportDetailDto> importDetailDtos);
         Task<ImportOutput> FindAll(DateTime startTime, DateTime endTime, int page, int limit);
+        Task<List<ItemLineDto>> GetAllItemLines(int warehouseId);
     }
 }

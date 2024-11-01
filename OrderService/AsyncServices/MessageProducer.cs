@@ -73,6 +73,12 @@ namespace OrderService.AsyncServices
                                  basicProperties: null,
                                  body: body);
                         break;
+                    case EventType.DeleverySuccess:
+                        _channel.BasicPublish(exchange: _orderServiceExchangeName,
+                                 routingKey: "product-service",
+                                 basicProperties: null,
+                                 body: body);
+                        break;
                 }
                 Console.WriteLine($"---> We have sent the message");
             } catch (Exception ex)

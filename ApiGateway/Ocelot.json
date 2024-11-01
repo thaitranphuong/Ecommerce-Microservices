@@ -1068,6 +1068,30 @@
       "UpstreamPathTemplate": "/import/get-all",
       "UpstreamHttpMethod": [ "Get" ]
     },
+    {
+      "DownstreamPathTemplate": "/api/import/update-import-detail",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5013
+        }
+      ],
+      "UpstreamPathTemplate": "/import/update-import-detail",
+      "UpstreamHttpMethod": [ "Post" ]
+    },
+    {
+      "DownstreamPathTemplate": "/api/import/get-all-item-lines",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5013
+        }
+      ],
+      "UpstreamPathTemplate": "/import/get-all-item-lines",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
     // Export APIs
     {
       "DownstreamPathTemplate": "/api/export/create",

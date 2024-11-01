@@ -12,6 +12,8 @@
 
         public int RemaningQuantity { get; set; }
 
+        public int ExpiredQuantity { get; set; }
+
         public int ExportedQuantity { get; set; }
 
     }
