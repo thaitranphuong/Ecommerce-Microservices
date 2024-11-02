@@ -11,10 +11,10 @@ namespace IdentityService.Models
         public string Password { get; set; }
         public string Phone { get; set; }
         public string Avatar { get; set; }
-        public string Address { get; set; }
         public DateTime BirthDay { get; set; }
         public bool Gender { get; set; }
         public bool Enabled { get; set; }
         public List<Role> Roles { get; set; }
+        public List<Address> Addresses { get; set; }
     }
 }

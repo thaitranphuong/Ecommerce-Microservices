@@ -108,7 +108,6 @@ namespace IdentityService.Services.Implements
                 return null;
             existedUser.Name = user.Name;
             existedUser.Phone = user.Phone;
-            existedUser.Address = user.Address;
             existedUser.BirthDay = user.BirthDay;
             existedUser.Gender = user.Gender;
             existedUser.Avatar = user.Avatar;

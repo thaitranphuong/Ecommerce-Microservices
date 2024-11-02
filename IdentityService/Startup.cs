@@ -112,6 +112,8 @@ namespace IdentityService
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IMessageService, MessageService>();
             services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IAddressService, AddressService>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
             services.AddScoped<IFileStorageService, FileStorageService>();
             services.AddScoped<IMessageProducer, MessageProducer>();
             services.AddScoped<IMailService, MailService>();

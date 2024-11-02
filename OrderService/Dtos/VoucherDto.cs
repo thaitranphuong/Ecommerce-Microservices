@@ -15,6 +15,8 @@ namespace OrderService.Dtos
 
         public float MaxDiscount { get; set; }
 
+        public float MinValidPrice { get; set; }
+
         public int Quantity { get; set; }
 
         public int UsedQuantity { get; set; }
