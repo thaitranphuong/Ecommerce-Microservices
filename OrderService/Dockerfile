@@ -2,15 +2,15 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5011
+ENV ASPNETCORE_URLS=http://+:5011
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["OrderService/OrderService.csproj", "OrderService/"]
-RUN dotnet restore "OrderService/OrderService.csproj"
+COPY ["OrderService.csproj", "./"]
+RUN dotnet restore "OrderService.csproj"
 COPY . .
-WORKDIR "/src/OrderService"
+WORKDIR "/src/."
 RUN dotnet build "OrderService.csproj" -c Release -o /app/build
 
 FROM build AS publish

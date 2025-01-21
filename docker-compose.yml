@@ -1,0 +1,163 @@
+# version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: initdatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: 12345
+    ports:
+      - "7777:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver_container
+    ports:
+      - "8888:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=<YourStrong@Passw0rd>
+    volumes:
+      - ~/docker/sql/sqlserver/:/opt/mssql-tools18/bin
+
+  mongodb:
+    image: mongo:latest
+    container_name: mongo_container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+
+  # apigateway:
+  #   build:
+  #     context: ./ApiGateway
+  #     dockerfile: Dockerfile
+  #   container_name: apigateway_container
+  #   ports:
+  #     - "5001:5001"
+
+  blogservice:
+    build:
+      context: ./BlogService
+      dockerfile: Dockerfile
+    container_name: blogservice_container
+    ports:
+      - "5007:5007"
+    environment:
+      - ASPNETCORE_URLS=http://+:5007
+      - MongoDB__ConnectionString=mongodb://mongodb:27017
+      - MongoDB__DatabaseName=BlogService
+      - GrpcUrl__AuthService=https://identityservice:5003
+    depends_on:
+      - mongodb
+
+  cartservice:
+    build:
+      context: ./CartService
+      dockerfile: Dockerfile
+    container_name: cartservice_container
+    ports:
+      - "5009:5009"
+    environment:
+      - ASPNETCORE_URLS=http://+:5009
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=cartservice;user=root;password=12345
+      - Redis__ConnectionString=redis:6379
+      - GrpcUrl__ProductService=https://productservice:5005
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+      - RabbitMQ__Port=5672
+    depends_on:
+      - mysql
+
+  identityservice:
+    build:
+      context: ./IdentityService
+      dockerfile: Dockerfile
+    container_name: identityservice_container
+    ports:
+      - "5003:5003"
+    environment:
+      - ASPNETCORE_URLS=http://+:5003
+      - ConnectionStrings__DefaultConnection=Server=host.docker.internal,8888;Database=IdentityService;User Id=sa;Password=<YourStrong@Passw0rd>;
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+      - RabbitMQ__Port=5672
+    depends_on:
+      - sqlserver
+
+  inventoryservice:
+    build:
+      context: ./InventoryService
+      dockerfile: Dockerfile
+    container_name: inventoryservice_container
+    ports:
+      - "5013:5013"
+    environment:
+      - ASPNETCORE_URLS=http://+:5013
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=inventoryservice;user=root;password=12345
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+      - RabbitMQ__Port=5672
+      - GrpcUrl__IdentityService=https://identityservice:5003
+      - GrpcUrl__ProductService=https://productservice:5005
+      - GrpcUrl__OrderService=https://orderservice:5011
+    depends_on:
+      - mysql
+
+  orderservice:
+    build:
+      context: ./OrderService
+      dockerfile: Dockerfile
+    container_name: orderservice_container
+    ports:
+      - "5011:5011"
+    environment:
+      - ASPNETCORE_URLS=http://+:5011
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=orderservice;user=root;password=12345
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+      - RabbitMQ__Port=5672
+      - GrpcUrl__IdentityService=https://identityservice:5003
+      - GrpcUrl__ProductService=https://productservice:5005
+    depends_on:
+      - mysql
+
+  productservice:
+    build:
+      context: ./ProductService
+      dockerfile: Dockerfile
+    container_name: productservice_container
+    ports:
+      - "5005:5005"
+    environment:
+      - ASPNETCORE_URLS=http://+:5005
+      - ConnectionStrings__DefaultConnection=server=mysql;port=3306;database=productservice;user=root;password=12345
+      - RabbitMQ__HostName=host.docker.internal
+      - RabbitMQ__UserName=guest
+      - RabbitMQ__Password=guest
+      - RabbitMQ__VirtualHost=/
+      - RabbitMQ__Port=5672
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+  mongo_data:

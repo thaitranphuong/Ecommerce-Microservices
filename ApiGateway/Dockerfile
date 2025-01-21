@@ -2,15 +2,15 @@
 
 FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 443
+EXPOSE 5001
+ENV ASPNETCORE_URLS=http://+:5001
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["ApiGateway/ApiGateway.csproj", "ApiGateway/"]
-RUN dotnet restore "ApiGateway/ApiGateway.csproj"
+COPY ["ApiGateway.csproj", "./"]
+RUN dotnet restore "ApiGateway.csproj"
 COPY . .
-WORKDIR "/src/ApiGateway"
+WORKDIR "/src/."
 RUN dotnet build "ApiGateway.csproj" -c Release -o /app/build
 
 FROM build AS publish
